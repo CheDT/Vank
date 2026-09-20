@@ -29,12 +29,6 @@ A browser-based **Expense Planner and Virtual Bank Ledger** designed for profess
 
 ---
 
-## What is this Project? (Is this an Expense Planner?)
-
-> **Yes! This application fits and expands upon the definition of an Expense Planner:**
-> 
-> *"Expense Planner is a browser-based application designed to help users record, organize, and monitor their daily expenses and budget. Users can enter expense details, categorize their spending, view their expense history, and monitor their total expenses and remaining budget. The application will gradually be developed through HTML, CSS, JavaScript, and later lightweight backend integration."*
-
 ### How It Fulfills Every Aspect of the Definition:
 
 | Expense Planner Requirement | Implementation in Workspace Capital Ledger |
