@@ -1,0 +1,355 @@
+/* TRANSACTION LEDGER - COMPACT SPREADSHEET DENSITY */
+
+.ledger-card {
+  background-color: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* LEDGER TOOLBAR */
+.ledger-toolbar {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ledger-title-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ledger-heading {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+}
+
+.ledger-count-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: var(--surface-container-low);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+
+/* COMPACT PILL FILTERS */
+.segmented-filters {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background-color: var(--surface-container-low);
+  border-radius: var(--radius-pill);
+  padding: 4px;
+}
+
+.filter-btn {
+  background: transparent;
+  border: none;
+  padding: 7px 16px;
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all var(--duration-fast) var(--ease-spring);
+}
+
+.filter-btn:hover {
+  color: var(--text-primary);
+}
+
+.filter-btn.active {
+  background-color: #ffffff;
+  color: var(--mono-black);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.ledger-actions-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* TABLE CONTAINER */
+.ledger-table-container {
+  overflow-x: auto;
+  max-height: 560px;
+  position: relative;
+}
+
+.ledger-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.ledger-table thead {
+  position: sticky;
+  top: 0;
+  background-color: #fafbfc;
+  z-index: 10;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.ledger-table th {
+  padding: 13px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.ledger-table tbody tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  transition: background-color var(--duration-fast) var(--ease-smooth);
+}
+
+.ledger-table tbody tr:hover {
+  background-color: #f8fafd;
+}
+
+.ledger-table td {
+  padding: 13px 18px;
+  vertical-align: middle;
+}
+
+/* ROW CELLS */
+.cell-date {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.cell-description {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 280px;
+}
+
+.description-title {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.description-memo {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* CLASSIFICATION BADGES */
+.badge-classification {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.badge-classification.business {
+  background-color: var(--biz-bg);
+  color: var(--biz-primary);
+}
+
+.badge-classification.personal {
+  background-color: var(--pers-bg);
+  color: var(--pers-primary);
+}
+
+.badge-tax {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 7px;
+  background-color: #f0fdf4;
+  color: #166534;
+  border-radius: var(--radius-pill);
+  font-size: 9.5px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+/* CATEGORY & ACCOUNT CHIPS (INTERACTIVE FILTERS) */
+.chip-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  background-color: var(--surface-container-low);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-spring);
+}
+
+.chip-category:hover {
+  background-color: var(--mono-200);
+  color: var(--text-primary);
+  border-color: var(--mono-300);
+  transform: translateY(-1px);
+}
+
+.chip-category.active {
+  background-color: var(--mono-black) !important;
+  color: #ffffff !important;
+  border-color: var(--mono-black) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* ACCOUNT / BANK BADGE (OVERHAULED: NEVER WRAPS INTO UGLY CIRCLE) */
+.ledger-table td:nth-child(5) {
+  white-space: nowrap;
+}
+
+.chip-account {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background-color: var(--surface-container-low);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  max-width: 175px;
+  transition: all var(--duration-fast) var(--ease-spring);
+}
+
+.chip-account-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chip-account:hover {
+  background-color: var(--mono-200);
+  border-color: var(--mono-400);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.chip-account.active {
+  background-color: #ffffff !important;
+  color: var(--mono-black) !important;
+  border: 1.5px solid var(--mono-black) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.chip-account.active::after {
+  content: '✓';
+  font-size: 10px;
+  font-weight: 800;
+  margin-left: 2px;
+  color: var(--mono-black);
+}
+
+/* AMOUNT */
+.cell-amount {
+  font-size: 15px;
+  font-weight: 800;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cell-amount.income {
+  color: var(--cash-in-primary);
+}
+
+.cell-amount.expense {
+  color: var(--cash-out-primary);
+}
+
+/* ACTIONS */
+.row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.btn-icon-subtle {
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 5px;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-fast) var(--ease-spring);
+}
+
+.btn-icon-subtle:hover {
+  background-color: var(--surface-container);
+  color: var(--text-primary);
+}
+
+.btn-icon-subtle.delete:hover {
+  background-color: var(--cash-out-bg);
+  color: var(--cash-out-primary);
+}
+
+/* EMPTY LEDGER STATE */
+.ledger-empty-state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 16px;
+  text-align: center;
+  gap: 8px;
+}
+
+.empty-state-icon {
+  font-size: 36px;
+  color: var(--text-tertiary);
+  opacity: 0.5;
+}
+
+.empty-state-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.empty-state-desc {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  max-width: 280px;
+}

@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Capital | Finance & Expense Ledger</title>
+  <meta name="description" content="Tactical expense & income tracker in Philippine Pesos with Business vs Personal allocation.">
+  
+  <!-- Modern Monochromatic Typography -->
+  <link rel="preconnect" href="https://fonts.bunny.net">
+  <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800|jetbrains-mono:400,500,600,700" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <script type="module" crossorigin src="/assets/index-CE-eMe_4.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-awbFulX6.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- TOP APP BAR -->
+    <header class="workspace-header">
+      <div class="header-left">
+        <a href="#" class="brand-badge" id="brand-home-link">
+          <div class="workspace-icon-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <rect x="3" y="3" width="18" height="18" rx="3"/>
+              <path d="M3 9h18M9 21V9"/>
+            </svg>
+          </div>
+          <span class="brand-name">Workspace</span>
+        </a>
+
+        <!-- WORKSPACE SWITCHER DROPDOWN -->
+        <div class="workspace-switcher">
+          <button class="btn-workspace-select" id="btn-workspace-dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="workspace-indicator-dot"></span>
+            <span id="current-workspace-label">Consolidated</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="opacity: 0.6;">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </button>
+
+          <div class="workspace-dropdown-menu" id="workspace-dropdown-menu">
+            <div class="dropdown-header-label">Switch Workspace</div>
+            <div class="workspace-option-item selected" data-workspace="all">
+              <strong>Consolidated</strong>
+              <span class="mono-num" style="font-size: 10px; color: var(--text-tertiary);">ALL</span>
+            </div>
+            <div class="workspace-option-item" data-workspace="business">
+              <strong>Business</strong>
+              <span class="badge-classification business" style="font-size: 9px;">BIZ</span>
+            </div>
+            <div class="workspace-option-item" data-workspace="personal">
+              <strong>Personal</strong>
+              <span class="badge-classification personal" style="font-size: 9px;">PERS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTER SEARCH -->
+      <div class="header-center">
+        <div class="workspace-search-container">
+          <svg class="search-icon-svg" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <div class="search-chips-wrapper" id="search-chips-container"></div>
+          <input 
+            type="search" 
+            id="global-search-input" 
+            class="workspace-search-input" 
+            placeholder="Search... (/ to focus)"
+            aria-label="Search ledger"
+          >
+          <span class="search-shortcut-badge">/</span>
+        </div>
+      </div>
+
+      <!-- HEADER RIGHT ACTIONS -->
+      <div class="header-right">
+        <button class="btn-pill btn-primary open-add-modal-btn" title="Add Entry (Press N)">
+          <span style="font-size: 14px; font-weight: 700;">+</span>
+          <span>Entry</span>
+        </button>
+
+        <!-- USER PROFILE POPOVER -->
+        <div style="position: relative;">
+          <button class="user-account-btn" id="user-avatar-btn" title="Account Settings">
+            —
+          </button>
+
+          <div class="workspace-dropdown-menu" id="account-popover" style="right: 0; left: auto; width: 250px;">
+            <div style="padding: 10px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 8px;">
+              <div class="dynamic-avatar-preview" id="popover-avatar-preview" style="width: 32px; height: 32px; font-size: 12px;">—</div>
+              <div>
+                <strong id="popover-user-name" style="font-size: 12px;">New Profile</strong>
+                <div id="popover-user-email" style="font-size: 10px; color: var(--text-tertiary);">Click Personalize to setup</div>
+              </div>
+            </div>
+            <div class="workspace-option-item" id="btn-repersonalize">
+              <span>Setup Wizard</span>
+              <span style="font-size: 11px; opacity: 0.6;">→</span>
+            </div>
+            <div class="workspace-option-item" id="btn-show-guide">
+              <span>Tutorial Guide</span>
+              <span style="font-size: 10px; color: var(--text-tertiary);">Guide</span>
+            </div>
+            <div class="workspace-option-item" id="btn-new-profile">
+              <span>New Blank Profile</span>
+              <span style="font-size: 10px; color: var(--text-tertiary);">Blank</span>
+            </div>
+            <div class="workspace-option-item" id="btn-reset-demo">
+              <span>Load Demo Data</span>
+              <span style="font-size: 10px; color: var(--text-tertiary);">Demo</span>
+            </div>
+            <div class="workspace-option-item" id="btn-clear-transactions">
+              <span>Clear Ledger</span>
+              <span style="font-size: 10px; color: var(--text-tertiary);">Reset</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- WORKSPACE MAIN BODY -->
+    <div class="workspace-body">
+      <!-- SIDE NAVIGATION RAIL (MINIMALIST & CLEAN) -->
+      <aside class="nav-rail">
+        <div class="nav-section">
+          <div class="nav-section-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Virtual Banks</span>
+            <button type="button" class="btn-icon-subtle open-add-bank-trigger" title="Add Virtual Bank" style="font-size: 14px; padding: 0 6px; cursor: pointer; color: var(--mono-black); font-weight: 800;">+</button>
+          </div>
+          <div class="nav-item active" data-bank-nav="all">
+            <div class="nav-item-content">
+              <svg class="nav-item-icon-svg" viewBox="0 0 24 24">
+                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                <line x1="2" y1="10" x2="22" y2="10"/>
+              </svg>
+              <span>All Cards</span>
+            </div>
+            <span class="nav-counter" id="nav-count-all">0</span>
+          </div>
+          <div id="rail-banks-list" style="display: flex; flex-direction: column; gap: 2px;">
+            <!-- Injected by workspace.js -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN VIEWPORT -->
+      <main class="workspace-viewport">
+        <!-- INTERACTIVE TUTORIAL / GUIDE BANNER WITH TEXT LINE ANIMATION -->
+        <div class="tutorial-banner hidden" id="tutorial-banner">
+          <div class="tutorial-left">
+            <div class="tutorial-badge">
+              <span class="tutorial-pulse-dot"></span>
+              <span>GUIDE</span>
+            </div>
+            <div class="tutorial-text-wrapper">
+              <span class="tutorial-text-prefix" id="tutorial-topic">Virtual Banks:</span>
+              <span class="tutorial-text-line" id="tutorial-text-line">Tap cards above to filter transactions, or press + Bank to add Visa/Mastercard.</span>
+              <span class="tutorial-cursor">|</span>
+            </div>
+          </div>
+          <div class="tutorial-controls">
+            <div class="tutorial-nav-pills">
+              <button type="button" class="btn-tutorial-nav" id="btn-tutorial-prev" title="Previous tip">‹</button>
+              <span class="tutorial-counter" id="tutorial-counter">1/5</span>
+              <button type="button" class="btn-tutorial-nav" id="btn-tutorial-next" title="Next tip">›</button>
+            </div>
+            <button type="button" class="tutorial-action-link" id="tutorial-action-btn">+ Bank</button>
+            <button type="button" class="tutorial-dismiss-btn" id="btn-tutorial-dismiss" title="Dismiss guide">Got it</button>
+          </div>
+        </div>
+
+        <!-- VIRTUAL DEBIT CARDS SHELF (RADIANT GRADIENTS) -->
+        <section class="virtual-cards-section">
+          <div class="cards-shelf-header">
+            <div class="cards-shelf-title-group">
+              <span class="cards-shelf-title">Virtual Banks</span>
+              <button type="button" class="btn-all-cards-view" id="btn-all-cards-view" title="Toggle between filtered card and all cards view">
+                <span class="all-cards-dot"></span>
+                <span id="all-cards-view-text">All Cards</span>
+              </button>
+            </div>
+            <button type="button" class="btn-pill btn-outline open-add-bank-trigger" style="font-size: 12px; padding: 6px 14px;">
+              <span>+ Bank</span>
+            </button>
+          </div>
+
+          <div class="virtual-cards-rack" id="virtual-cards-rack">
+            <!-- Dynamically populated by workspace.js -->
+          </div>
+        </section>
+        <!-- COMPACT SUMMARY METRIC CARDS -->
+        <section class="tactical-summary-grid">
+          <div class="metric-card highlight-dark">
+            <div class="metric-header">
+              <span class="metric-label">Net</span>
+              <span class="metric-badge" style="background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.2);">LIVE</span>
+            </div>
+            <div class="metric-value mono-num" id="metric-net-balance">₱0.00</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">Inflow</span>
+              <span class="metric-badge">+</span>
+            </div>
+            <div class="metric-value mono-num" id="metric-cash-in">₱0.00</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">Burn</span>
+              <span class="metric-badge">-</span>
+            </div>
+            <div class="metric-value mono-num" id="metric-cash-out">₱0.00</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">Deductibles</span>
+              <span class="metric-badge">BIZ</span>
+            </div>
+            <div class="metric-value mono-num" id="metric-tax-deductible">₱0.00</div>
+          </div>
+        </section>
+
+        <!-- ASYMMETRIC CONTENT GRID: 65% LEDGER / 35% CHARTS & TOOLS -->
+        <section class="content-grid-asymmetric">
+          <!-- PRIMARY TRANSACTION LEDGER -->
+          <div class="ledger-card">
+            <div class="ledger-toolbar">
+              <div class="ledger-title-area">
+                <h2 class="ledger-heading">Ledger</h2>
+                <span class="ledger-count-tag" id="ledger-count-tag">0 entries</span>
+              </div>
+
+              <!-- SEGMENTED FILTERS -->
+              <div class="segmented-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="business">Biz</button>
+                <button class="filter-btn" data-filter="personal">Pers</button>
+                <button class="filter-btn" data-filter="income">In</button>
+                <button class="filter-btn" data-filter="expense">Out</button>
+              </div>
+
+              <div class="ledger-actions-bar">
+                <button class="btn-pill btn-outline" id="btn-export-csv" title="Download CSV">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  <span>Export</span>
+                </button>
+                <button class="btn-pill btn-primary open-add-modal-btn">
+                  <span>+</span>
+                  <span>Add</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- TABLE CONTAINER -->
+            <div class="ledger-table-container">
+              <table class="ledger-table" id="main-ledger-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Bank</th>
+                    <th style="text-align: right;">Amount</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="ledger-table-body">
+                  <!-- Injected by ledger.js -->
+                </tbody>
+              </table>
+
+              <!-- Empty state -->
+              <div class="ledger-empty-state" id="ledger-empty-state">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="opacity: 0.4;">
+                  <rect x="3" y="4" width="18" height="16" rx="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <div class="empty-state-title">No matching records found</div>
+                <div class="empty-state-desc">Try clearing your search query or switching your filter.</div>
+                <button class="btn-pill btn-primary open-add-modal-btn" style="margin-top: 6px;">+ Add Transaction</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ASYMMETRIC ANALYTICS & BUDGETS COLUMN -->
+          <div class="analytics-column" id="analytics-container">
+            <!-- Injected by charts.js -->
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- MOBILE BOTTOM NAVIGATION DOCK (LARGE & WEBAPP COMPATIBLE) -->
+    <nav class="mobile-bottom-dock" id="mobile-bottom-dock" aria-label="Mobile Navigation">
+      <button type="button" class="mobile-dock-btn active" data-dock-tab="cards" id="mobile-tab-cards" title="Virtual Banks">
+        <svg class="dock-icon-svg" viewBox="0 0 24 24">
+          <rect x="2" y="5" width="20" height="14" rx="2"/>
+          <line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+        <span class="dock-label">Cards</span>
+      </button>
+
+      <button type="button" class="mobile-dock-btn" data-dock-tab="ledger" id="mobile-tab-ledger" title="Transactions Ledger">
+        <svg class="dock-icon-svg" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        <span class="dock-label">Ledger</span>
+      </button>
+
+      <!-- FLOATING CENTER ADD BUTTON -->
+      <button type="button" class="mobile-dock-btn dock-add-center open-add-modal-btn" id="mobile-dock-add-btn" title="Add Entry">
+        <span class="dock-add-icon">+</span>
+      </button>
+
+      <button type="button" class="mobile-dock-btn" data-dock-tab="stats" id="mobile-tab-stats" title="Analytics & Budgets">
+        <svg class="dock-icon-svg" viewBox="0 0 24 24">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+        <span class="dock-label">Stats</span>
+      </button>
+
+      <button type="button" class="mobile-dock-btn" data-dock-tab="menu" id="mobile-dock-menu-btn" title="Web App Menu">
+        <div class="dock-menu-icon-wrap">
+          <svg class="dock-icon-svg" viewBox="0 0 24 24">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+          <span class="dock-avatar-mini" id="dock-avatar-mini">—</span>
+        </div>
+        <span class="dock-label">Menu</span>
+      </button>
+    </nav>
+
+    <!-- LARGE MOBILE WEB APP MENU SHEET -->
+    <div class="mobile-menu-sheet-backdrop" id="mobile-app-menu-sheet" role="dialog" aria-modal="true">
+      <div class="mobile-menu-sheet">
+        <div class="mobile-sheet-drag-handle"></div>
+
+        <div class="mobile-sheet-header">
+          <div class="mobile-sheet-title-group">
+            <span class="mobile-sheet-title">Workspace Menu</span>
+            <span class="mobile-sheet-badge">Enterprise PWA</span>
+          </div>
+          <button type="button" class="mobile-sheet-close-btn" id="btn-close-mobile-menu" aria-label="Close menu">✕</button>
+        </div>
+
+        <div class="mobile-menu-sheet-body">
+          <!-- LARGE USER PROFILE CARD -->
+          <div class="mobile-menu-profile-card">
+            <div class="mobile-menu-avatar" id="mobile-menu-avatar">—</div>
+            <div class="mobile-menu-user-info">
+              <div class="mobile-menu-user-name" id="mobile-menu-user-name">New Profile</div>
+              <div class="mobile-menu-user-email" id="mobile-menu-user-email">Click Personalize to setup</div>
+              <div class="mobile-menu-badge-row">
+                <span class="mobile-menu-status-pill">
+                  <span class="status-pulse-dot"></span> Active
+                </span>
+                <span class="mobile-menu-struct-pill" id="mobile-menu-struct-pill">₱ PHP</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- LARGE WORKSPACE SWITCHER -->
+          <div class="mobile-menu-section">
+            <div class="mobile-menu-section-label">Switch Workspace View</div>
+            <div class="mobile-workspace-switcher">
+              <button type="button" class="mobile-ws-btn active" data-mobile-ws="all">
+                <span class="mobile-ws-dot"></span>
+                <span>Consolidated</span>
+              </button>
+              <button type="button" class="mobile-ws-btn" data-mobile-ws="business">
+                <span class="badge-classification business" style="font-size: 10px;">BIZ</span>
+                <span>Business</span>
+              </button>
+              <button type="button" class="mobile-ws-btn" data-mobile-ws="personal">
+                <span class="badge-classification personal" style="font-size: 10px;">PERS</span>
+                <span>Personal</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- LARGE VIRTUAL BANKS STRIP -->
+          <div class="mobile-menu-section">
+            <div class="mobile-menu-section-header">
+              <span class="mobile-menu-section-label">Virtual Banks</span>
+              <button type="button" class="btn-pill btn-tonal open-add-bank-trigger" style="font-size: 11px; padding: 4px 12px;">+ Add Bank</button>
+            </div>
+            <div class="mobile-menu-banks-slider" id="mobile-menu-banks-rack">
+              <!-- Dynamically populated by workspace.js -->
+            </div>
+          </div>
+
+          <!-- LARGE WEB APP ACTION MENU ROWS -->
+          <div class="mobile-menu-section">
+            <div class="mobile-menu-section-label">Quick Actions</div>
+            <div class="mobile-menu-action-list">
+              <div class="mobile-menu-action-row" id="mobile-action-setup" role="button" tabindex="0">
+                <div class="mobile-action-left">
+                  <div class="mobile-action-icon-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                    </svg>
+                  </div>
+                  <div class="mobile-action-text">
+                    <span class="mobile-action-title">Setup Wizard</span>
+                    <span class="mobile-action-sub">Re-configure profile, bank & currency</span>
+                  </div>
+                </div>
+                <span class="mobile-action-arrow">→</span>
+              </div>
+
+              <div class="mobile-menu-action-row" id="mobile-action-guide" role="button" tabindex="0">
+                <div class="mobile-action-left">
+                  <div class="mobile-action-icon-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                      <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                  </div>
+                  <div class="mobile-action-text">
+                    <span class="mobile-action-title">Tutorial Guide</span>
+                    <span class="mobile-action-sub">Step-by-step interactive feature walkthrough</span>
+                  </div>
+                </div>
+                <span class="mobile-action-arrow">→</span>
+              </div>
+
+              <div class="mobile-menu-action-row open-add-bank-trigger" role="button" tabindex="0">
+                <div class="mobile-action-left">
+                  <div class="mobile-action-icon-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="2" y="5" width="20" height="14" rx="2"/>
+                      <line x1="2" y1="10" x2="22" y2="10"/>
+                    </svg>
+                  </div>
+                  <div class="mobile-action-text">
+                    <span class="mobile-action-title">Add Virtual Bank</span>
+                    <span class="mobile-action-sub">Maya, GCash, BDO, BPI or custom card</span>
+                  </div>
+                </div>
+                <span class="mobile-action-arrow">→</span>
+              </div>
+
+              <div class="mobile-menu-action-row open-add-budget-btn" role="button" tabindex="0">
+                <div class="mobile-action-left">
+                  <div class="mobile-action-icon-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                  </div>
+                  <div class="mobile-action-text">
+                    <span class="mobile-action-title">Category Budgets</span>
+                    <span class="mobile-action-sub">Set and manage monthly spending caps</span>
+                  </div>
+                </div>
+                <span class="mobile-action-arrow">→</span>
+              </div>
+
+              <div class="mobile-menu-action-row" id="mobile-action-export" role="button" tabindex="0">
+                <div class="mobile-action-left">
+                  <div class="mobile-action-icon-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="7 10 12 15 17 10"/>
+                      <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                  </div>
+                  <div class="mobile-action-text">
+                    <span class="mobile-action-title">Export CSV</span>
+                    <span class="mobile-action-sub">Download complete ledger spreadsheet</span>
+                  </div>
+                </div>
+                <span class="mobile-action-arrow">↓</span>
+              </div>
+
+              <div class="mobile-menu-action-row" id="mobile-action-new-profile" role="button" tabindex="0">
+                <div class="mobile-action-left">
+                  <div class="mobile-action-icon-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="12" y1="5" x2="12" y2="19"/>
+                      <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                  </div>
+                  <div class="mobile-action-text">
+                    <span class="mobile-action-title">New Blank Profile</span>
+                    <span class="mobile-action-sub">Reset state with a clean blank slate</span>
+                  </div>
+                </div>
+                <span class="mobile-action-arrow">→</span>
+              </div>
+
+              <div class="mobile-menu-action-row" id="mobile-action-demo" role="button" tabindex="0">
+                <div class="mobile-action-left">
+                  <div class="mobile-action-icon-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <polygon points="10 8 16 12 10 16 10 8"/>
+                    </svg>
+                  </div>
+                  <div class="mobile-action-text">
+                    <span class="mobile-action-title">Load Demo Records</span>
+                    <span class="mobile-action-sub">Load sample Maya, GCash & BDO cards</span>
+                  </div>
+                </div>
+                <span class="mobile-action-arrow">→</span>
+              </div>
+
+              <div class="mobile-menu-action-row danger" id="mobile-action-clear" role="button" tabindex="0">
+                <div class="mobile-action-left">
+                  <div class="mobile-action-icon-box danger">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                  </div>
+                  <div class="mobile-action-text">
+                    <span class="mobile-action-title" style="color: #ef4444;">Clear Ledger</span>
+                    <span class="mobile-action-sub">Permanently delete all transaction entries</span>
+                  </div>
+                </div>
+                <span class="mobile-action-arrow" style="color: #ef4444;">✕</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- DONE BUTTON -->
+          <button type="button" class="mobile-sheet-done-btn" id="btn-done-mobile-menu">Close Menu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CASHEW ADD/EDIT TRANSACTION MODAL -->
+  <div class="modal-backdrop" id="transaction-modal" role="dialog" aria-modal="true">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title-text">Add Transaction</h3>
+        <button class="modal-close-btn modal-close-trigger" aria-label="Close modal">✕</button>
+      </div>
+
+      <form id="transaction-form" class="modal-body">
+        <!-- FLOW SWITCH -->
+        <div class="cashew-flow-switch">
+          <button type="button" class="flow-toggle-btn active expense" id="flow-btn-expense">
+            <span>↑</span>
+            <span>Cash Out (Expense)</span>
+          </button>
+          <button type="button" class="flow-toggle-btn" id="flow-btn-income">
+            <span>↓</span>
+            <span>Cash In (Income)</span>
+          </button>
+        </div>
+
+        <!-- AMOUNT IN PESOS (₱) -->
+        <div class="amount-input-group">
+          <label for="tx-amount" style="font-size: 11px; font-weight: 700; text-transform: uppercase;">Amount (PHP)</label>
+          <div class="amount-input-wrapper">
+            <span class="amount-currency-symbol" id="modal-currency-symbol">₱</span>
+            <input 
+              type="number" 
+              id="tx-amount" 
+              class="amount-field" 
+              placeholder="0.00" 
+              step="0.01" 
+              min="0.01" 
+              required
+            >
+          </div>
+        </div>
+
+        <!-- CLASSIFICATION: BIZ VS PERS -->
+        <div class="classification-selector-group">
+          <label style="font-size: 11px; font-weight: 700; text-transform: uppercase;">Classification</label>
+          <div class="classification-options">
+            <div class="classification-option-card" id="choice-class-business">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+              <div class="classification-text">
+                <span class="classification-label">Business Ops</span>
+                <span class="classification-sub">Work, Studio, Tax Ded.</span>
+              </div>
+            </div>
+
+            <div class="classification-option-card selected personal" id="choice-class-personal">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <div class="classification-text">
+                <span class="classification-label">Personal Living</span>
+                <span class="classification-sub">Household & Living</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BUSINESS-SPECIFIC ROW -->
+        <div id="biz-specific-fields" style="display: none; flex-direction: column; gap: 8px;">
+          <div class="tax-deductible-row">
+            <input type="checkbox" id="tx-tax-deductible" class="tax-checkbox">
+            <label for="tx-tax-deductible" class="tax-label">
+              <span>Tax-Deductible Business Expense</span>
+            </label>
+          </div>
+          <div class="form-group">
+            <label for="tx-client">Client / Project Code</label>
+            <input type="text" id="tx-client" placeholder="e.g. Acme Studio, Internal Infra, Client XYZ">
+          </div>
+        </div>
+
+        <!-- DESCRIPTION & MEMO -->
+        <div class="form-group">
+          <label for="tx-description">Description *</label>
+          <input type="text" id="tx-description" placeholder="e.g. AWS Cloud, Client Retainer, Groceries" required>
+        </div>
+
+        <div class="form-row-dual">
+          <div class="form-group">
+            <label for="tx-category">Category</label>
+            <select id="tx-category" required>
+              <option value="Cloud & Tech">Cloud & Tech</option>
+              <option value="Client Revenue">Client Revenue</option>
+              <option value="Groceries">Groceries</option>
+              <option value="Meals & Meetings">Meals & Meetings</option>
+              <option value="Payroll & Salary">Payroll & Salary</option>
+              <option value="Commute & Travel">Commute & Travel</option>
+              <option value="Equipment & Office">Equipment & Office</option>
+              <option value="Education & Books">Education & Books</option>
+              <option value="General">General</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="tx-account">Account / Wallet</label>
+            <select id="tx-account" required>
+              <option value="BDO Business Checking">BDO Business Checking</option>
+              <option value="Personal Savings">Personal Savings</option>
+              <option value="GCash Wallet">GCash Wallet</option>
+              <option value="Physical Cash">Physical Cash</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-dual">
+          <div class="form-group">
+            <label for="tx-date">Transaction Date</label>
+            <input type="date" id="tx-date" required>
+          </div>
+
+          <div class="form-group">
+            <label for="tx-memo">Memo / Note</label>
+            <input type="text" id="tx-memo" placeholder="Optional reference #">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-pill btn-tonal modal-close-trigger">Cancel</button>
+          <button type="submit" class="btn-pill btn-primary">Save Transaction ↵</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADD VIRTUAL BANK MODAL (DEBIT CARD THEME) -->
+  <div class="modal-backdrop" id="add-bank-modal" role="dialog" aria-modal="true">
+    <div class="modal-container" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="bank-modal-title">New Virtual Bank Card</h3>
+        <button class="modal-close-btn bank-modal-close-trigger" aria-label="Close modal">✕</button>
+      </div>
+
+      <form id="add-bank-form" class="modal-body" style="gap: 16px;">
+        <!-- LIVE PREVIEW DEBIT CARD -->
+        <div style="display: flex; justify-content: center; margin-bottom: 4px;">
+          <div class="debit-card gradient-emerald" id="new-card-preview" style="position: relative; width: 100%; max-width: 340px; height: 195px; top: auto; left: auto; transform: none; transition: none;">
+            <div class="card-top-row">
+              <div class="card-brand-header-left">
+                <div class="card-brand-emblem" id="modal-preview-brand-logo">
+                  <svg class="bank-brand-svg maya-logo" viewBox="0 0 90 28" fill="none" height="22"><rect width="90" height="28" rx="6" fill="#09090b" fill-opacity="0.5"/><text x="8" y="19" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="16" font-weight="900" fill="#ffffff" letter-spacing="-0.04em">maya</text><circle cx="56" cy="11" r="3" fill="#00D563"/><path d="M64 12L71 19M71 12L64 19" stroke="#00D563" stroke-width="2.5" stroke-linecap="round"/></svg>
+                </div>
+                <div class="card-bank-info">
+                  <span class="card-bank-name" id="preview-card-name">Maya Virtual Visa</span>
+                  <span class="card-class-badge" id="preview-card-badge">BIZ</span>
+                </div>
+              </div>
+              <div class="card-network-logo" id="preview-card-logo">
+                <svg class="visa-logo-svg" viewBox="0 0 50 16">
+                  <path d="M19.5 1.5L13.1 15.5H8.7L5.3 4.2C5.1 3.4 4.9 3.1 4.3 2.7C3.3 2.1 1.5 1.6 0 1.3L0.1 0.7H7.1C8.0 0.7 8.8 1.3 9.0 2.3L10.7 11.2L15.1 0.7H19.5ZM37.1 10.7C37.1 6.6 31.4 6.4 31.5 4.6C31.5 4.0 32.1 3.4 33.3 3.3C33.9 3.2 35.6 3.1 37.3 3.9L38.0 0.8C37.0 0.4 35.8 0.1 34.2 0.1C30.0 0.1 27.0 2.4 27.0 5.6C26.9 8.0 29.1 9.3 30.7 10.1C32.4 10.9 32.9 11.4 32.9 12.1C32.9 13.2 31.6 13.7 30.3 13.7C28.2 13.7 27.0 13.1 26.0 12.6L25.2 15.8C26.3 16.3 28.3 16.7 30.2 16.7C34.6 16.7 37.1 14.5 37.1 10.7ZM47.8 15.5H51.7L48.3 0.7H44.7C43.9 0.7 43.2 1.2 42.9 1.9L36.7 15.5H41.1L42.0 13.0H47.3L47.8 15.5ZM43.2 9.8L45.4 3.7L46.7 9.8H43.2ZM26.2 0.7L22.8 15.5H18.7L22.1 0.7H26.2Z"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="card-mid-row">
+              <div class="card-emv-chip"></div>
+              <svg class="card-contactless-icon" viewBox="0 0 24 24">
+                <path d="M8.5 16.5a5 5 0 0 1 0-9M12 19a9 9 0 0 0 0-14M15.5 21.5a13 13 0 0 0 0-19"/>
+              </svg>
+              <span class="card-number-display">•••• •••• •••• 9104</span>
+            </div>
+
+            <div class="card-bottom-row">
+              <div class="card-holder-area">
+                <span class="card-holder-label">Cardholder</span>
+                <span class="card-holder-name" id="preview-card-holder">User</span>
+              </div>
+              <div class="card-balance-box">
+                <span class="card-balance-label">Balance</span>
+                <span class="card-balance-value" id="preview-card-balance">₱0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BANK BRAND SELECTION (PHILIPPINES) -->
+        <div class="form-group">
+          <div class="bank-brand-selector-title">
+            <span>Bank / Wallet Brand</span>
+            <span style="font-size: 10px; color: var(--text-tertiary);">Tap to choose logo</span>
+          </div>
+          <div class="bank-brand-grid">
+            <button type="button" class="bank-brand-btn selected modal-bank-brand-btn" data-brand="maya" title="Maya (PayMaya)">
+              <div class="bank-brand-btn-logo">
+                <span style="font-weight: 900; font-size: 12px; color: #09090b; letter-spacing: -0.04em;">maya<span style="color: #00D563;">•</span></span>
+              </div>
+              <span class="bank-brand-btn-name">Maya</span>
+            </button>
+            <button type="button" class="bank-brand-btn modal-bank-brand-btn" data-brand="gcash" title="GCash">
+              <div class="bank-brand-btn-logo">
+                <span style="font-weight: 900; font-size: 12px; color: #005CEE;">GCash</span>
+              </div>
+              <span class="bank-brand-btn-name">GCash</span>
+            </button>
+            <button type="button" class="bank-brand-btn modal-bank-brand-btn" data-brand="bdo" title="BDO Unibank">
+              <div class="bank-brand-btn-logo">
+                <span style="font-weight: 900; font-size: 12px; color: #003087;">BDO</span>
+              </div>
+              <span class="bank-brand-btn-name">BDO</span>
+            </button>
+            <button type="button" class="bank-brand-btn modal-bank-brand-btn" data-brand="bpi" title="Bank of the Philippine Islands">
+              <div class="bank-brand-btn-logo">
+                <span style="font-weight: 900; font-size: 12px; color: #B70002;">BPI</span>
+              </div>
+              <span class="bank-brand-btn-name">BPI</span>
+            </button>
+            <button type="button" class="bank-brand-btn modal-bank-brand-btn" data-brand="unionbank" title="UnionBank of the Philippines">
+              <div class="bank-brand-btn-logo">
+                <span style="font-weight: 900; font-size: 11px; color: #FF6A00;">UB</span>
+              </div>
+              <span class="bank-brand-btn-name">UnionBank</span>
+            </button>
+            <button type="button" class="bank-brand-btn modal-bank-brand-btn" data-brand="gotyme" title="GoTyme Bank">
+              <div class="bank-brand-btn-logo">
+                <span style="font-weight: 900; font-size: 11px; color: #00E5FF;">GoTyme</span>
+              </div>
+              <span class="bank-brand-btn-name">GoTyme</span>
+            </button>
+            <button type="button" class="bank-brand-btn modal-bank-brand-btn" data-brand="metrobank" title="Metrobank">
+              <div class="bank-brand-btn-logo">
+                <span style="font-weight: 900; font-size: 11px; color: #0072CE;">Metro</span>
+              </div>
+              <span class="bank-brand-btn-name">Metrobank</span>
+            </button>
+            <button type="button" class="bank-brand-btn modal-bank-brand-btn" data-brand="rcbc" title="RCBC">
+              <div class="bank-brand-btn-logo">
+                <span style="font-weight: 900; font-size: 12px; color: #F4B223;">RCBC</span>
+              </div>
+              <span class="bank-brand-btn-name">RCBC</span>
+            </button>
+            <button type="button" class="bank-brand-btn modal-bank-brand-btn" data-brand="seabank" title="SeaBank">
+              <div class="bank-brand-btn-logo">
+                <span style="font-weight: 900; font-size: 11px; color: #EE4D2D;">SeaBank</span>
+              </div>
+              <span class="bank-brand-btn-name">SeaBank</span>
+            </button>
+            <button type="button" class="bank-brand-btn modal-bank-brand-btn" data-brand="generic" title="Standard Virtual Card">
+              <div class="bank-brand-btn-logo">
+                <span style="font-weight: 900; font-size: 11px; color: var(--mono-black);">BANK</span>
+              </div>
+              <span class="bank-brand-btn-name">Standard</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- BANK NAME -->
+        <div class="form-group">
+          <label for="new-bank-name">Bank / Card Nickname *</label>
+          <input type="text" id="new-bank-name" placeholder="e.g. Maya Virtual Visa, BDO Checking, Vault" required>
+        </div>
+
+        <!-- NETWORK SELECTION -->
+        <div class="form-group">
+          <label>Card Network</label>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn-pill btn-outline bank-network-btn selected" data-network="visa" style="flex: 1;">Visa</button>
+            <button type="button" class="btn-pill btn-outline bank-network-btn" data-network="mastercard" style="flex: 1;">Mastercard</button>
+          </div>
+        </div>
+
+        <!-- CLASSIFICATION -->
+        <div class="form-group">
+          <label>Classification</label>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn-pill btn-outline bank-class-btn selected" data-classification="business" style="flex: 1;">Business</button>
+            <button type="button" class="btn-pill btn-outline bank-class-btn" data-classification="personal" style="flex: 1;">Personal</button>
+          </div>
+        </div>
+
+        <!-- RADIANT GRADIENT PALETTE -->
+        <div class="form-group">
+          <label>Card Theme / Gradient</label>
+          <div class="gradient-swatch-grid">
+            <div class="gradient-swatch-item gradient-obsidian selected bank-swatch-btn" data-gradient="gradient-obsidian" title="Obsidian"></div>
+            <div class="gradient-swatch-item gradient-platinum bank-swatch-btn" data-gradient="gradient-platinum" title="Platinum"></div>
+            <div class="gradient-swatch-item gradient-midnight bank-swatch-btn" data-gradient="gradient-midnight" title="Midnight"></div>
+            <div class="gradient-swatch-item gradient-emerald bank-swatch-btn" data-gradient="gradient-emerald" title="Emerald"></div>
+            <div class="gradient-swatch-item gradient-amethyst bank-swatch-btn" data-gradient="gradient-amethyst" title="Amethyst"></div>
+          </div>
+        </div>
+
+        <!-- INITIAL BALANCE / CARD VALUE -->
+        <div class="form-group">
+          <label for="new-bank-balance" id="bank-modal-balance-label">Initial Balance (₱ PHP)</label>
+          <input type="number" id="new-bank-balance" placeholder="0.00" step="0.01" min="0">
+        </div>
+
+        <div class="modal-footer" style="margin-top: 6px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <button type="button" id="btn-delete-bank-modal" class="btn-pill btn-modal-delete" style="display: none;">Delete Card</button>
+          <div style="display: flex; gap: 8px; margin-left: auto;">
+            <button type="button" class="btn-pill btn-tonal bank-modal-close-trigger">Cancel</button>
+            <button type="submit" id="bank-modal-submit-btn" class="btn-pill btn-primary">Create Virtual Card ↵</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADD / EDIT BUDGET MODAL -->
+  <div class="modal-backdrop" id="budget-modal" role="dialog" aria-modal="true">
+    <div class="modal-container" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="budget-modal-title">Set Category Budget</h3>
+        <button class="modal-close-btn budget-modal-close-trigger" aria-label="Close modal">✕</button>
+      </div>
+
+      <form id="budget-form" class="modal-body">
+        <div class="form-group">
+          <label for="budget-category-select">Category</label>
+          <select id="budget-category-select" required>
+            <option value="Cloud & Tech">Cloud & Tech</option>
+            <option value="Client Revenue">Client Revenue</option>
+            <option value="Groceries">Groceries</option>
+            <option value="Meals & Meetings">Meals & Meetings</option>
+            <option value="Payroll & Salary">Payroll & Salary</option>
+            <option value="Commute & Travel">Commute & Travel</option>
+            <option value="Equipment & Office">Equipment & Office</option>
+            <option value="Education & Books">Education & Books</option>
+            <option value="General">General</option>
+            <option value="__custom__">+ Custom Category...</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="budget-custom-category-group" style="display: none;">
+          <label for="budget-custom-category">Custom Category Name</label>
+          <input type="text" id="budget-custom-category" placeholder="e.g. Subscriptions, Marketing">
+        </div>
+
+        <div class="amount-input-group">
+          <label for="budget-limit-input" style="font-size: 11px; font-weight: 700; text-transform: uppercase;">Monthly Limit (PHP)</label>
+          <div class="amount-field-wrapper">
+            <span class="currency-symbol" id="budget-currency-symbol">₱</span>
+            <input 
+              type="number" 
+              id="budget-limit-input" 
+              class="amount-number-input" 
+              placeholder="0.00" 
+              step="any" 
+              min="1" 
+              required
+            >
+          </div>
+        </div>
+
+        <div class="modal-footer" style="margin-top: 14px;">
+          <button type="button" class="btn-pill btn-tonal budget-modal-close-trigger">Cancel</button>
+          <button type="submit" class="btn-pill btn-primary" id="btn-save-budget">Save Budget Limit ↵</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN CONVERSATIONAL MULTI-STEP ONBOARDING -->
+  <div class="onboarding-overlay" id="onboarding-overlay" role="dialog" aria-modal="true">
+    <div class="onboarding-fullscreen-container">
+      <div class="onboarding-top-bar">
+        <div class="onboarding-brand">
+          <div class="brand-icon-mini">W</div>
+          <span>Workspace Setup</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <span class="step-counter" id="onboarding-step-counter">01 / 05</span>
+        </div>
+      </div>
+
+      <div class="onboarding-progress-line">
+        <div class="onboarding-progress-fill" id="onboarding-progress-fill"></div>
+      </div>
+
+      <div class="onboarding-center-stage">
+        <div class="onboarding-body">
+          <!-- STEP 1: IDENTITY -->
+          <div class="onboarding-step active" id="step-1">
+            <span class="step-question-badge">01</span>
+            <h2 class="step-question-title">Your name</h2>
+            <p class="step-question-sub">Personalize your financial profile.</p>
+
+            <div class="step-interactive-area">
+              <div class="conversational-name-box">
+                <div class="dynamic-avatar-preview" id="onboard-avatar-preview">—</div>
+                <input 
+                  type="text" 
+                  id="onboard-name-input" 
+                  class="conversational-input" 
+                  placeholder="Your name..." 
+                  value=""
+                  autocomplete="name"
+                >
+              </div>
+
+              <div class="sso-login-box">
+                <div style="font-size: 11px; color: var(--text-tertiary); margin: 4px 0;">— OR —</div>
+                <button type="button" class="sso-auth-btn" id="btn-sso-login">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 8v8M8 12h8"/>
+                  </svg>
+                  <span>Continue with SSO</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2: TRACKING INTENT -->
+          <div class="onboarding-step" id="step-2">
+            <span class="step-question-badge">02</span>
+            <h2 class="step-question-title">Structure</h2>
+            <p class="step-question-sub">Select your account setup.</p>
+
+            <div class="step-interactive-area">
+              <div class="choice-cards-grid">
+                <div class="choice-card mode-choice-card" data-mode="business">
+                  <svg class="choice-card-icon-svg" viewBox="0 0 24 24">
+                    <rect x="2" y="7" width="20" height="14" rx="2"/>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                  </svg>
+                  <span class="choice-card-title">Business</span>
+                  <span class="choice-card-desc">Revenue, client billings & write-offs.</span>
+                </div>
+
+                <div class="choice-card mode-choice-card" data-mode="personal">
+                  <svg class="choice-card-icon-svg" viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                  <span class="choice-card-title">Personal</span>
+                  <span class="choice-card-desc">Living expenses, rent & savings.</span>
+                </div>
+
+                <div class="choice-card mode-choice-card selected" data-mode="hybrid">
+                  <svg class="choice-card-icon-svg" viewBox="0 0 24 24">
+                    <line x1="12" y1="3" x2="12" y2="21"/>
+                    <path d="M3 9l9-6 9 6"/>
+                    <path d="M3 15l9 6 9-6"/>
+                  </svg>
+                  <span class="choice-card-title">Hybrid</span>
+                  <span class="choice-card-desc">Dual business & personal books.</span>
+                </div>
+
+                <div class="choice-card mode-choice-card" data-mode="freelance">
+                  <svg class="choice-card-icon-svg" viewBox="0 0 24 24">
+                    <rect x="2" y="3" width="20" height="14" rx="2"/>
+                    <line x1="8" y1="21" x2="16" y2="21"/>
+                    <line x1="12" y1="17" x2="12" y2="21"/>
+                  </svg>
+                  <span class="choice-card-title">Freelance</span>
+                  <span class="choice-card-desc">Independent contractor invoices.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3: CURRENCY -->
+          <div class="onboarding-step" id="step-3">
+            <span class="step-question-badge">03</span>
+            <h2 class="step-question-title">Currency</h2>
+            <p class="step-question-sub">Philippine Pesos (₱ PHP) default.</p>
+
+            <div class="step-interactive-area">
+              <div class="currency-chips-grid">
+                <button type="button" class="currency-chip-btn selected" data-symbol="₱" data-code="PHP">
+                  <span class="currency-symbol-large">₱</span>
+                  <span class="currency-code-small">PHP (₱)</span>
+                </button>
+                <button type="button" class="currency-chip-btn" data-symbol="$" data-code="USD">
+                  <span class="currency-symbol-large">$</span>
+                  <span class="currency-code-small">USD ($)</span>
+                </button>
+                <button type="button" class="currency-chip-btn" data-symbol="€" data-code="EUR">
+                  <span class="currency-symbol-large">€</span>
+                  <span class="currency-code-small">EUR (€)</span>
+                </button>
+                <button type="button" class="currency-chip-btn" data-symbol="£" data-code="GBP">
+                  <span class="currency-symbol-large">£</span>
+                  <span class="currency-code-small">GBP (£)</span>
+                </button>
+                <button type="button" class="currency-chip-btn" data-symbol="¥" data-code="JPY">
+                  <span class="currency-symbol-large">¥</span>
+                  <span class="currency-code-small">JPY (¥)</span>
+                </button>
+                <button type="button" class="currency-chip-btn" data-symbol="S$" data-code="SGD">
+                  <span class="currency-symbol-large">S$</span>
+                  <span class="currency-code-small">SGD (S$)</span>
+                </button>
+                <button type="button" class="currency-chip-btn" data-symbol="C$" data-code="CAD">
+                  <span class="currency-symbol-large">C$</span>
+                  <span class="currency-code-small">CAD (C$)</span>
+                </button>
+                <button type="button" class="currency-chip-btn" data-symbol="A$" data-code="AUD">
+                  <span class="currency-symbol-large">A$</span>
+                  <span class="currency-code-small">AUD (A$)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4: FIRST VIRTUAL BANK & DEBIT CARD -->
+          <div class="onboarding-step" id="step-4">
+            <span class="step-question-badge">04</span>
+            <h2 class="step-question-title">Virtual Bank</h2>
+            <p class="step-question-sub">Your starting virtual debit card.</p>
+
+            <div class="step-interactive-area" style="display: flex; flex-direction: column; gap: 16px;">
+              <!-- LIVE DEBIT CARD PREVIEW -->
+              <div style="display: flex; justify-content: center;">
+                <div class="debit-card onboard-preview-card gradient-emerald" id="onboard-card-preview">
+                  <div class="card-top-row">
+                    <div class="card-brand-header-left">
+                      <div class="card-brand-emblem" id="onboard-preview-brand-logo">
+                        <svg class="bank-brand-svg maya-logo" viewBox="0 0 90 28" fill="none" height="22"><rect width="90" height="28" rx="6" fill="#09090b" fill-opacity="0.5"/><text x="8" y="19" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="16" font-weight="900" fill="#ffffff" letter-spacing="-0.04em">maya</text><circle cx="56" cy="11" r="3" fill="#00D563"/><path d="M64 12L71 19M71 12L64 19" stroke="#00D563" stroke-width="2.5" stroke-linecap="round"/></svg>
+                      </div>
+                      <div class="card-bank-info">
+                        <span class="card-bank-name" id="onboard-preview-bank-name">Maya Virtual Visa</span>
+                        <span class="card-class-badge" id="onboard-preview-bank-badge">BIZ</span>
+                      </div>
+                    </div>
+                    <div class="card-network-logo" id="onboard-preview-network-logo">
+                      <svg class="visa-logo-svg" viewBox="0 0 50 16">
+                        <path d="M19.5 1.5L13.1 15.5H8.7L5.3 4.2C5.1 3.4 4.9 3.1 4.3 2.7C3.3 2.1 1.5 1.6 0 1.3L0.1 0.7H7.1C8.0 0.7 8.8 1.3 9.0 2.3L10.7 11.2L15.1 0.7H19.5ZM37.1 10.7C37.1 6.6 31.4 6.4 31.5 4.6C31.5 4.0 32.1 3.4 33.3 3.3C33.9 3.2 35.6 3.1 37.3 3.9L38.0 0.8C37.0 0.4 35.8 0.1 34.2 0.1C30.0 0.1 27.0 2.4 27.0 5.6C26.9 8.0 29.1 9.3 30.7 10.1C32.4 10.9 32.9 11.4 32.9 12.1C32.9 13.2 31.6 13.7 30.3 13.7C28.2 13.7 27.0 13.1 26.0 12.6L25.2 15.8C26.3 16.3 28.3 16.7 30.2 16.7C34.6 16.7 37.1 14.5 37.1 10.7ZM47.8 15.5H51.7L48.3 0.7H44.7C43.9 0.7 43.2 1.2 42.9 1.9L36.7 15.5H41.1L42.0 13.0H47.3L47.8 15.5ZM43.2 9.8L45.4 3.7L46.7 9.8H43.2ZM26.2 0.7L22.8 15.5H18.7L22.1 0.7H26.2Z"/>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div class="card-mid-row">
+                    <div class="card-emv-chip"></div>
+                    <svg class="card-contactless-icon" viewBox="0 0 24 24">
+                      <path d="M8.5 16.5a5 5 0 0 1 0-9M12 19a9 9 0 0 0 0-14M15.5 21.5a13 13 0 0 0 0-19"/>
+                    </svg>
+                    <span class="card-number-display">•••• •••• •••• 4829</span>
+                  </div>
+
+                  <div class="card-bottom-row">
+                    <div class="card-holder-area">
+                      <span class="card-holder-label">Cardholder</span>
+                      <span class="card-holder-name" id="onboard-preview-holder">User</span>
+                    </div>
+                    <div class="card-balance-box">
+                      <span class="card-balance-label">Live Balance</span>
+                      <span class="card-balance-value" id="onboard-preview-balance">₱0.00</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PHILIPPINE BANK / WALLET BRAND SELECTION -->
+              <div class="form-group" style="margin-top: 2px;">
+                <div class="bank-brand-selector-title">
+                  <span>Philippine Bank / Wallet Brand</span>
+                  <span style="font-size: 10px; color: var(--text-tertiary);">Tap to choose logo</span>
+                </div>
+                <div class="bank-brand-grid">
+                  <button type="button" class="bank-brand-btn selected onboard-bank-brand-btn" data-brand="maya" title="Maya (PayMaya)">
+                    <div class="bank-brand-btn-logo">
+                      <span style="font-weight: 900; font-size: 12px; color: #09090b; letter-spacing: -0.04em;">maya<span style="color: #00D563;">•</span></span>
+                    </div>
+                    <span class="bank-brand-btn-name">Maya</span>
+                  </button>
+                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="gcash" title="GCash">
+                    <div class="bank-brand-btn-logo">
+                      <span style="font-weight: 900; font-size: 12px; color: #005CEE;">GCash</span>
+                    </div>
+                    <span class="bank-brand-btn-name">GCash</span>
+                  </button>
+                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="bdo" title="BDO Unibank">
+                    <div class="bank-brand-btn-logo">
+                      <span style="font-weight: 900; font-size: 12px; color: #003087;">BDO</span>
+                    </div>
+                    <span class="bank-brand-btn-name">BDO</span>
+                  </button>
+                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="bpi" title="Bank of the Philippine Islands">
+                    <div class="bank-brand-btn-logo">
+                      <span style="font-weight: 900; font-size: 12px; color: #B70002;">BPI</span>
+                    </div>
+                    <span class="bank-brand-btn-name">BPI</span>
+                  </button>
+                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="unionbank" title="UnionBank of the Philippines">
+                    <div class="bank-brand-btn-logo">
+                      <span style="font-weight: 900; font-size: 11px; color: #FF6A00;">UB</span>
+                    </div>
+                    <span class="bank-brand-btn-name">UnionBank</span>
+                  </button>
+                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="gotyme" title="GoTyme Bank">
+                    <div class="bank-brand-btn-logo">
+                      <span style="font-weight: 900; font-size: 11px; color: #00E5FF;">GoTyme</span>
+                    </div>
+                    <span class="bank-brand-btn-name">GoTyme</span>
+                  </button>
+                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="metrobank" title="Metrobank">
+                    <div class="bank-brand-btn-logo">
+                      <span style="font-weight: 900; font-size: 11px; color: #0072CE;">Metro</span>
+                    </div>
+                    <span class="bank-brand-btn-name">Metrobank</span>
+                  </button>
+                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="rcbc" title="RCBC">
+                    <div class="bank-brand-btn-logo">
+                      <span style="font-weight: 900; font-size: 12px; color: #F4B223;">RCBC</span>
+                    </div>
+                    <span class="bank-brand-btn-name">RCBC</span>
+                  </button>
+                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="seabank" title="SeaBank">
+                    <div class="bank-brand-btn-logo">
+                      <span style="font-weight: 900; font-size: 11px; color: #EE4D2D;">SeaBank</span>
+                    </div>
+                    <span class="bank-brand-btn-name">SeaBank</span>
+                  </button>
+                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="generic" title="Standard Virtual Card">
+                    <div class="bank-brand-btn-logo">
+                      <span style="font-weight: 900; font-size: 11px; color: var(--mono-black);">BANK</span>
+                    </div>
+                    <span class="bank-brand-btn-name">Standard</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- CARD NAME INPUT -->
+              <div class="conversational-name-box">
+                <input 
+                  type="text" 
+                  id="onboard-bank-name-input" 
+                  class="conversational-input" 
+                  placeholder="Card nickname..." 
+                  value="Maya Virtual Visa"
+                >
+              </div>
+
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <span style="font-size: 11px; color: var(--text-tertiary); align-self: center;">Presets:</span>
+                <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" style="padding: 4px 10px; font-size: 11px;">Maya Virtual Visa</button>
+                <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" style="padding: 4px 10px; font-size: 11px;">BDO Digital Debit</button>
+                <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" style="padding: 4px 10px; font-size: 11px;">GCash Mastercard</button>
+                <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" style="padding: 4px 10px; font-size: 11px;">Vault</button>
+              </div>
+
+              <!-- NETWORK & GRADIENT SELECTOR ROW -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px;">
+                <!-- NETWORK TOGGLE -->
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">Network</label>
+                  <div style="display: flex; gap: 6px;">
+                    <button type="button" class="btn-pill btn-outline onboard-network-btn selected" data-network="visa" style="flex: 1; padding: 8px;">Visa</button>
+                    <button type="button" class="btn-pill btn-outline onboard-network-btn" data-network="mastercard" style="flex: 1; padding: 8px;">Mastercard</button>
+                  </div>
+                </div>
+
+                <!-- GRADIENT PALETTE -->
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">Theme</label>
+                  <div class="gradient-swatch-grid">
+                    <div class="gradient-swatch-item gradient-obsidian selected onboard-swatch-btn" data-gradient="gradient-obsidian" title="Obsidian"></div>
+                    <div class="gradient-swatch-item gradient-platinum onboard-swatch-btn" data-gradient="gradient-platinum" title="Platinum"></div>
+                    <div class="gradient-swatch-item gradient-midnight onboard-swatch-btn" data-gradient="gradient-midnight" title="Midnight"></div>
+                    <div class="gradient-swatch-item gradient-emerald onboard-swatch-btn" data-gradient="gradient-emerald" title="Emerald"></div>
+                    <div class="gradient-swatch-item gradient-amethyst onboard-swatch-btn" data-gradient="gradient-amethyst" title="Amethyst"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 5: OPENING BALANCE (PESOS) -->
+          <div class="onboarding-step" id="step-5">
+            <span class="step-question-badge">05</span>
+            <h2 class="step-question-title">Opening balance</h2>
+            <p class="step-question-sub">Starting liquidity reserve.</p>
+
+            <div class="step-interactive-area">
+              <div class="choice-cards-grid">
+                <div class="choice-card balance-choice-card selected" data-amount="0">
+                  <span class="choice-card-title">₱0 Slate</span>
+                  <span class="choice-card-desc">Track from today.</span>
+                </div>
+
+                <div class="choice-card balance-choice-card" data-amount="25000">
+                  <span class="choice-card-title">₱25,000 Buffer</span>
+                  <span class="choice-card-desc">Freelance starter buffer.</span>
+                </div>
+
+                <div class="choice-card balance-choice-card" data-amount="100000">
+                  <span class="choice-card-title">₱100,000 Reserve</span>
+                  <span class="choice-card-desc">Studio operating reserve.</span>
+                </div>
+
+                <div class="choice-card balance-choice-card" data-amount="250000">
+                  <span class="choice-card-title">₱250,000+ Capital</span>
+                  <span class="choice-card-desc">Venture liquidity reserve.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CENTER ACTIONS (SKIP & NEXT MAGKADIKIT DIRECTLY IN THE MIDDLE) -->
+          <div class="onboarding-center-actions">
+            <button type="button" class="onboard-back-btn" id="btn-onboard-back" style="visibility: hidden;">
+              ← Back
+            </button>
+            <div class="onboard-magkadikit-group">
+              <button type="button" class="onboard-magkadikit-btn btn-skip" id="btn-onboard-skip" title="Skip setup">
+                Skip
+              </button>
+              <button type="button" class="onboard-magkadikit-btn btn-next" id="btn-onboard-next">
+                Next →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Script -->
+</body>
+</html>

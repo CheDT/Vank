@@ -1,0 +1,170 @@
+/* BASE & RESET - PREMIUM BLACK & WHITE THEME */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  min-height: 100%;
+  width: 100%;
+  background-color: var(--surface-canvas);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 14.5px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Headings */
+h1, h2, h3, h4, .brand-title {
+  font-family: var(--font-main);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+}
+
+.tabular-stat, .mono-num, .amount {
+  font-family: var(--font-main);
+  font-feature-settings: "tnum" 1, "zero" 1;
+  letter-spacing: -0.015em;
+}
+
+/* Premium Black & White Pill Buttons */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 18px;
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--duration-fast) var(--ease-spring);
+  text-decoration: none;
+  line-height: 1.25;
+}
+
+.btn-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-xs);
+}
+
+.btn-pill:active {
+  transform: scale(0.97);
+}
+
+/* Primary Black Button */
+.btn-pill.btn-primary {
+  background: var(--mono-black);
+  color: var(--mono-white);
+  border: 1px solid var(--mono-black);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+
+.btn-pill.btn-primary:hover {
+  background: var(--mono-800);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+}
+
+/* Secondary / Tonal Button */
+.btn-pill.btn-tonal {
+  background: var(--mono-100);
+  color: var(--mono-black);
+  border: 1px solid var(--mono-200);
+}
+
+.btn-pill.btn-tonal:hover {
+  background: var(--mono-200);
+}
+
+/* Outlined White Button */
+.btn-pill.btn-outline {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-xs);
+}
+
+.btn-pill.btn-outline:hover {
+  background: var(--mono-50);
+  border-color: var(--mono-300);
+}
+
+/* Selected / active state for segmented toggle pills */
+.btn-pill.btn-outline.selected {
+  background: var(--mono-black);
+  color: #ffffff;
+  border-color: var(--mono-black);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.btn-pill.btn-outline.selected:hover {
+  background: var(--mono-800);
+  border-color: var(--mono-800);
+  transform: translateY(-1px);
+}
+
+/* Form Controls */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="search"],
+select,
+textarea {
+  font-family: var(--font-main);
+  font-size: 14px;
+  color: var(--text-primary);
+  background-color: var(--surface-container-low);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  outline: none;
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+input:hover, select:hover, textarea:hover {
+  background-color: #ffffff;
+  border-color: var(--mono-300);
+}
+
+input:focus, select:focus, textarea:focus {
+  background-color: #ffffff;
+  border-color: var(--mono-black);
+  box-shadow: 0 0 0 2px rgba(9, 9, 11, 0.12);
+}
+
+/* Minimal Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--mono-300);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--mono-500);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

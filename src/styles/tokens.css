@@ -1,0 +1,79 @@
+/* PREMIUM BLACK & WHITE LUXURY DESIGN TOKENS */
+:root {
+  /* Monochromatic Palette (Apple / Vercel / Linear Precision) */
+  --mono-black: #09090b;
+  --mono-900: #121215;
+  --mono-800: #18181b;
+  --mono-700: #27272a;
+  --mono-600: #3f3f46;
+  --mono-500: #71717a;
+  --mono-400: #a1a1aa;
+  --mono-300: #d4d4d8;
+  --mono-200: #e4e4e7;
+  --mono-100: #f4f4f5;
+  --mono-50: #fafafa;
+  --mono-white: #ffffff;
+
+  /* Theme Surfaces */
+  --surface-canvas: #fcfcfc;
+  --surface-container-low: #f4f4f5;
+  --surface-container: #ebecef;
+  --surface-container-high: #e2e4e8;
+  --surface-card: #ffffff;
+
+  /* Typography */
+  --text-primary: #09090b;
+  --text-secondary: #52525b;
+  --text-tertiary: #8e8e93;
+  --text-inverse: #ffffff;
+
+  /* Hairline Borders */
+  --border-subtle: #e4e4e7;
+  --border-light: #d4d4d8;
+  --border-focus: #09090b;
+
+  /* High-Contrast Monochrome Cash In / Cash Out */
+  --cash-in-text: #09090b;
+  --cash-in-bg: #f4f4f5;
+  --cash-in-border: #09090b;
+  --cash-in-badge: #18181b;
+
+  --cash-out-text: #52525b;
+  --cash-out-bg: #fafafa;
+  --cash-out-border: #d4d4d8;
+  --cash-out-badge: #71717a;
+
+  /* Business & Personal Classification (Monochrome Contrast) */
+  --biz-bg: #09090b;
+  --biz-text: #ffffff;
+  --biz-subtle-bg: #f4f4f5;
+
+  --pers-bg: #ffffff;
+  --pers-text: #09090b;
+  --pers-border: #d4d4d8;
+
+  /* Shadows (Subtle Ambient Diffusion) */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 6px 16px -2px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 12px 28px -4px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 20px 48px -8px rgba(0, 0, 0, 0.12);
+
+  /* Compact Radii */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+
+  /* Typography */
+  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Fluid Motion */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 140ms;
+  --duration-normal: 220ms;
+}

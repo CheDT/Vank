@@ -1,0 +1,730 @@
+/* VIRTUAL DEBIT CARDS - RADIANT GRADIENT THEMES & TACTILE DETAILS */
+
+/* VIRTUAL CARDS SHELF / RACK */
+.virtual-cards-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;  /* tighter — aligns with the pills below */
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.cards-shelf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cards-shelf-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cards-shelf-title {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+.cards-shelf-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mono-500);
+  background: var(--mono-100);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.btn-all-cards-view {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: var(--font-main);
+  background: var(--surface-container-low);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--duration-fast) var(--ease-spring);
+}
+
+.btn-all-cards-view:hover {
+  background: var(--mono-200);
+  color: var(--text-primary);
+}
+
+.btn-all-cards-view.active {
+  background: var(--mono-black);
+  color: #ffffff;
+  border-color: var(--mono-black);
+}
+
+.all-cards-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.btn-all-cards-view .active-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+}
+
+/* ──────────────────────────────────────────────────────────
+   STACKED CARD CAROUSEL — HORIZONTAL FAN (DESKTOP)
+   Cards are absolutely positioned, JS controls the X offset
+   so each card peeks out behind the one in front of it.
+   Centred in the rack via a calculated left-margin offset.
+   ────────────────────────────────────────────────────────── */
+.virtual-cards-rack {
+  position: relative;
+  height: 240px;       /* JS recalculates — snug around the card */
+  width: 100%;
+  overflow: visible;
+}
+
+/* THE DEBIT CARD — absolute inside the rack */
+.debit-card {
+  width: 345px;
+  height: 215px;
+  border-radius: 20px;
+  padding: 22px 26px;
+  color: #ffffff;
+  position: absolute;
+  top: 6px;             /* small breathing room for top shadow */
+  left: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  user-select: none;
+  cursor: pointer;
+  transition: transform 260ms ease,
+              filter 200ms ease,
+              opacity 180ms ease,
+              box-shadow 220ms ease;
+  transform-origin: top left;
+  box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.28),
+              0 2px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Front / active card */
+.debit-card.active {
+  cursor: default;
+  box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.45),
+              0 6px 16px -3px rgba(0, 0, 0, 0.22);
+}
+
+/* Stacked-behind cards — depth cues make them feel like separate physical cards */
+.debit-card.stacked-behind {
+  cursor: pointer;
+  /* Left-edge shadow separates the peeking strip from the front card */
+  box-shadow:
+    -6px 0 18px -2px rgba(0, 0, 0, 0.55),   /* left separation shadow */
+    0 10px 30px -8px rgba(0, 0, 0, 0.28),
+    0 2px 6px -1px rgba(0, 0, 0, 0.1);
+  /* Thin top highlight to read as a distinct card edge */
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+/* On hover, brighten the peeking strip */
+.debit-card.stacked-behind:hover {
+  filter: brightness(1.12) !important;
+}
+
+.add-debit-card-slot {
+  position: absolute;
+  top: 6px;
+  /* NO transition — this element must never animate its position */
+  transition: filter 200ms ease, box-shadow 200ms ease;
+}
+
+.add-debit-card-slot:hover {
+  filter: brightness(1.05);
+}
+
+
+
+/* CARD 3-DOTS CONTEXT ACTION (TOP-RIGHT) */
+.btn-card-menu {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.75;
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0;
+  margin-left: 2px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.debit-card:hover .btn-card-menu {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.55);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.btn-card-menu:hover {
+  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  transform: scale(1.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.btn-card-menu:active {
+  transform: scale(0.95);
+}
+
+/* REMOVE CARD BUTTON (FALLBACK) */
+.btn-card-remove {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 160ms var(--ease-spring);
+  line-height: 1;
+  padding: 0;
+  margin-left: 4px;
+}
+
+.debit-card:hover .btn-card-remove {
+  opacity: 0.75;
+}
+
+.btn-card-remove:hover {
+  opacity: 1 !important;
+  background: #ef4444 !important;
+  border-color: #ef4444 !important;
+  transform: scale(1.18);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.5);
+}
+
+/* MODAL DELETE BUTTON */
+.btn-modal-delete {
+  background: rgba(239, 68, 68, 0.12) !important;
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  padding: 8px 16px !important;
+  cursor: pointer !important;
+  transition: all 160ms ease !important;
+}
+
+.btn-modal-delete:hover {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4) !important;
+  transform: translateY(-1px);
+}
+
+/* RADIANT GRADIENTS */
+.gradient-obsidian {
+  background: linear-gradient(135deg, #27272a 0%, #18181b 45%, #09090b 100%);
+}
+
+.gradient-platinum {
+  background: linear-gradient(135deg, #52525b 0%, #3f3f46 45%, #18181b 100%);
+}
+
+.gradient-midnight {
+  background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 50%, #09090b 100%);
+}
+
+.gradient-emerald {
+  background: linear-gradient(135deg, #064e3b 0%, #022c22 55%, #09090b 100%);
+}
+
+.gradient-amethyst {
+  background: linear-gradient(135deg, #4c1d95 0%, #2e1065 50%, #09090b 100%);
+}
+
+.gradient-sunset {
+  background: linear-gradient(135deg, #7c2d12 0%, #431407 50%, #09090b 100%);
+}
+
+/* CARD GLASS SHEEN REFLECTION OVERLAY */
+.debit-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.16) 0%, transparent 60%),
+              linear-gradient(120deg, rgba(255, 255, 255, 0.08) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+/* CARD HEADER: BANK BRAND, NAME & NETWORK LOGO */
+.card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  z-index: 2;
+}
+
+.card-brand-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.card-brand-emblem {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.bank-brand-svg {
+  height: 24px;
+  max-width: 110px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+  border-radius: 5px;
+}
+
+.card-bank-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.card-bank-name {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 175px;
+}
+
+.card-class-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  padding: 2.5px 8px;
+  border-radius: 5px;
+  width: fit-content;
+  color: #ffffff;
+  border: 0.5px solid rgba(255, 255, 255, 0.2);
+}
+
+/* CARD NETWORK LOGOS & TOP ACTIONS */
+.card-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.card-network-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.visa-logo-svg {
+  height: 20px;
+  fill: #ffffff;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.mastercard-logo-svg {
+  height: 26px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+/* CARD MIDDLE ROW: CHIP & CONTACTLESS */
+.card-mid-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 2;
+}
+
+.card-emv-chip {
+  width: 40px;
+  height: 32px;
+  background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 50%, #d1d5db 100%);
+  border-radius: 7px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.card-emv-chip::after {
+  content: '';
+  position: absolute;
+  inset: 5px 7px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
+}
+
+.card-contactless-icon {
+  width: 20px;
+  height: 20px;
+  stroke: rgba(255, 255, 255, 0.85);
+  fill: none;
+  stroke-width: 2;
+}
+
+/* CARD NUMBER & BALANCE ROW */
+.card-number-display {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  margin-top: 4px;
+}
+
+/* CARD FOOTER: HOLDER & EXPIRY */
+.card-bottom-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.card-holder-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-holder-label {
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.card-holder-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.card-balance-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 5px 12px;
+  border-radius: 9px;
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+}
+
+.card-balance-label {
+  font-size: 8.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.card-balance-value {
+  font-family: var(--font-mono);
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* ADD NEW VIRTUAL CARD SLOT — absolute inside rack, JS positions via inline left */
+.add-debit-card-slot {
+  width: 130px;
+  height: 215px;
+  border-radius: 20px;
+  border: 1.5px dashed var(--mono-300);
+  background: var(--mono-50);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background 240ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+              color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--text-secondary);
+}
+
+.add-debit-card-slot:hover {
+  background: #ffffff;
+  border-color: var(--mono-black);
+  color: var(--mono-black);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.add-card-plus-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--mono-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--mono-black);
+  transition: transform 200ms ease;
+}
+
+.add-debit-card-slot:hover .add-card-plus-icon {
+  transform: scale(1.1);
+  background: var(--mono-black);
+  color: #ffffff;
+}
+
+.add-card-text {
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+
+/* GRADIENT PALETTE PICKER SWATCHES */
+.gradient-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.gradient-swatch-item {
+  height: 38px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 160ms ease;
+  position: relative;
+}
+
+.gradient-swatch-item:hover {
+  transform: scale(1.05);
+}
+
+.gradient-swatch-item.selected {
+  border-color: var(--mono-black);
+  box-shadow: 0 0 0 2px #ffffff inset, 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* MINI BANK CARD FOR NAV RAIL */
+.nav-bank-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  border: 1px solid transparent;
+}
+
+.nav-bank-item:hover {
+  background: var(--mono-100);
+}
+
+.nav-bank-item.active {
+  background: var(--mono-100);
+  border-color: var(--border-subtle);
+  font-weight: 700;
+}
+
+.nav-bank-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.nav-bank-pip {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.nav-bank-name {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-bank-balance {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+/* PHILIPPINE BANK BRAND PICKER GRID */
+.bank-brand-selector-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bank-brand-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.bank-brand-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 8px;
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 150ms var(--ease-spring);
+  user-select: none;
+  outline: none;
+}
+
+.bank-brand-btn:hover {
+  border-color: var(--mono-black);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-xs);
+}
+
+.bank-brand-btn.selected {
+  border-color: var(--mono-black);
+  background: var(--mono-100);
+  box-shadow: 0 0 0 1.5px var(--mono-black);
+}
+
+.bank-brand-btn-logo {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bank-brand-btn-logo svg {
+  height: 19px;
+  max-width: 64px;
+}
+
+.bank-brand-btn-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.bank-brand-btn.selected .bank-brand-btn-name {
+  color: var(--mono-black);
+}
+
+@media (max-width: 768px) {
+  .bank-brand-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+}
+
+/* ============================================================
+   MOBILE VERTICAL STACKED CAROUSEL
+   On small screens cards stack top-to-bottom (like the
+   Apple Wallet pass list), JS switches translateX → translateY
+   ============================================================ */
+/* ── MOBILE VERTICAL STACK ────────────────────────────────────── */
+@media (max-width: 640px) {
+  .virtual-cards-section {
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .cards-shelf-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .cards-shelf-title-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .virtual-cards-rack {
+    height: auto;
+    min-height: 290px;
+    overflow: visible;
+  }
+
+  /* Cards stretch to content column width on true mobile */
+  .debit-card {
+    width: min(calc(100vw - 24px), 360px);
+    max-width: none;
+  }
+
+  /* Add slot stretches to match */
+  .add-debit-card-slot {
+    width: min(calc(100vw - 24px), 360px);
+    max-width: none;
+    height: 68px;
+    flex-direction: row;
+    gap: 12px;
+  }
+}
+
