@@ -9,7 +9,7 @@ A browser-based **Expense Planner and Virtual Bank Ledger** designed for profess
 
 ---
 
-## 📸 Interface Preview
+## Interface Preview
 
 ### Main Workspace & Virtual Cards Rack
 ![Workspace Dashboard Overview](docs/images/dashboard-overview.png)
@@ -29,7 +29,7 @@ A browser-based **Expense Planner and Virtual Bank Ledger** designed for profess
 
 ---
 
-## 💡 What is this Project? (Is this an Expense Planner?)
+## What is this Project? (Is this an Expense Planner?)
 
 > **Yes! This application fits and expands upon the definition of an Expense Planner:**
 > 
@@ -49,9 +49,9 @@ A browser-based **Expense Planner and Virtual Bank Ledger** designed for profess
 
 ---
 
-## 🚀 Key Highlights & Features
+## Key Highlights & Features
 
-### 1. 💳 Virtual Debit Cards & Philippine Financial Brands
+### 1. Virtual Debit Cards & Philippine Financial Brands
 - **Tactile ID-1 Debit Cards (`345px × 215px`)**: Authentically styled debit cards complete with micro-detailed EMV chip, contactless waves, embossed typography, and live balance counters in Philippine Pesos (`₱`).
 - **Authentic Philippine Bank Logos**:
   - **Maya / PayMaya** (Neon lime monogram)
@@ -65,32 +65,32 @@ A browser-based **Expense Planner and Virtual Bank Ledger** designed for profess
 - **Whole Card / All Cards View**: A toggle pill (`#btn-all-cards-view`) allows switching between individual card focus and consolidated multi-card overview.
 - **Card Removal**: Discreet frosted glass `✕` button on hover to remove virtual banks (with confirmation safeguard to keep at least 1 card).
 
-### 2. ⚡ Accurate Live Balance Calculation
+### 2. Accurate Live Balance Calculation
 - Automated transaction reconciliation avoids double-counting opening liquidity buffers.
 - Dynamic balance tracking across income deposits, business expenses, and personal spending.
 
-### 3. 🎯 Monthly Category Budgets & Burn Limits
+### 3. Monthly Category Budgets & Burn Limits
 - Custom budget manager allowing users to establish monthly spending caps per category.
 - Real-time spend vs limit progress tracks (`₱ Spent / ₱ Limit`) with over-limit warnings.
 - One-click deletion trigger (`✕`) on budget cards to recalibrate limits anytime.
 
-### 4. 🖱️ iPad & Desktop Sizing (Mouse & Touch Ergonomics)
+### 4. iPad & Desktop Sizing (Mouse & Touch Ergonomics)
 - **Top Header (`64px`)**: Clean brand mark, workspace switcher with full name display, and quick search.
 - **Navigation Rail (`265px`)**: Roomy sidebar with smooth text ellipsis, balance badges, and zero horizontal overflow.
 - **Interactive Filtering**: Clicking any category chip in the ledger, category breakdown chart, or budget cards filters the workspace instantly.
 - **Clearable Filter Chips**: Search bar displays active filter pills with a `✕` dismiss button.
 
-### 5. 📱 Native Mobile Web App Experience
+### 5. Native Mobile Web App Experience
 - Full-width slide-up mobile menu sheet (`#mobile-app-menu-sheet`) with user profile card, 3-way workspace selector, and swipeable virtual bank shelf.
 - Elevated circular floating action button (`52px`) on the bottom dock for rapid expense logging on mobile.
 
-### 6. 💡 Interactive Typewriter Tutorial Guide
+### 6. Interactive Typewriter Tutorial Guide
 - Top banner with typewriter text animation walking users through virtual cards, quick entry, budgets, and smart filters.
 - Carousel navigation (`‹ 1/5 ›`) with direct action links and one-click dismissal.
 
 ---
 
-## 🛠️ Project Structure
+## Project Structure
 
 ```
 ExpenseTracker/
@@ -125,7 +125,7 @@ ExpenseTracker/
 
 ---
 
-## ⌨️ Keyboard Shortcuts
+## Keyboard Shortcuts
 
 | Key | Action |
 |---|---|
@@ -135,7 +135,7 @@ ExpenseTracker/
 
 ---
 
-## 🏃 Getting Started
+## Getting Started
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (version 18 or newer recommended)
@@ -167,7 +167,7 @@ Generates a static production bundle in `dist/`.
 
 ---
 
-## 🔮 Future Roadmap (Backend Integration)
+## Future Roadmap (Backend Integration)
 
 - [x] Full in-browser state persistence via `localStorage`
 - [x] Multi-card virtual banking & Philippine financial institution branding
