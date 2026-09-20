@@ -60,8 +60,8 @@ ExpenseTracker/
 ### Installation & Local Run
 ```bash
 # 1. Clone repository
-git clone https://github.com/Neon-Felix/ExpenseTracker.git
-cd ExpenseTracker
+git clone https://github.com/CheDT/Vank.git
+cd Vank
 
 # 2. Install dependencies
 npm install
