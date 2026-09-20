@@ -1,4 +1,4 @@
-# Workspace Capital Ledger (Expense Planner & Virtual Bank Tracker)
+# Vank
 
 [![Status: Active](https://img.shields.io/badge/Status-Production%20Ready-black?style=flat-square)](#)
 [![Stack: Vanilla JS / CSS3 / HTML5](https://img.shields.io/badge/Stack-HTML5%20%7C%20CSS3%20%7C%20Vanilla%20JS-black?style=flat-square)](#)
