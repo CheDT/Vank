@@ -225,15 +225,16 @@ class StateManager {
     };
   }
 
-  defaultVirtualBanks(name = 'Primary Digital Debit', network = 'visa', classification = 'business', gradient = 'gradient-obsidian', initialBalance = 0, brand = 'generic') {
+  defaultVirtualBanks(name = 'Maya', network = 'visa', classification = 'business', gradient = 'gradient-emerald', initialBalance = 0, brand = 'maya', cardHolder = '') {
     return [
       {
         id: 'bank-primary',
-        name: name || 'Primary Digital Debit',
+        name: name || 'Maya',
         network: network || 'visa',
         brand: brand || detectBankBrand(name),
         classification: classification || 'business',
-        gradient: gradient || 'gradient-obsidian',
+        gradient: gradient || 'gradient-emerald',
+        cardHolder: cardHolder || '',
         last4: '4829',
         initialBalance: parseFloat(initialBalance) || 0,
         balance: parseFloat(initialBalance) || 0,
@@ -266,10 +267,11 @@ class StateManager {
       onboardingComplete: true
     };
 
-    const initialBankName = profileData.bankName || 'Primary Digital Debit';
+    const initialBankName = profileData.bankName || 'Maya';
     const initialNetwork = profileData.bankNetwork || 'visa';
-    const initialGradient = profileData.bankGradient || 'gradient-obsidian';
+    const initialGradient = profileData.bankGradient || 'gradient-emerald';
     const initialBalance = parseFloat(profileData.openingBalance) || 0;
+    const cardHolder = profileData.cardHolder || profileData.name || 'User';
 
     // Single initial virtual bank
     const detectedBrand = profileData.bankBrand || detectBankBrand(initialBankName);
@@ -281,6 +283,7 @@ class StateManager {
         brand: detectedBrand,
         classification: profileData.workspaceMode === 'personal' ? 'personal' : 'business',
         gradient: initialGradient,
+        cardHolder: cardHolder,
         last4: Math.floor(1000 + Math.random() * 9000).toString(),
         initialBalance: initialBalance,
         balance: initialBalance,
@@ -321,11 +324,12 @@ class StateManager {
     const brand = bankData.brand || detectBankBrand(bankData.name);
     const newBank = {
       id: 'bank-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 3),
-      name: bankData.name.trim() || 'New Virtual Card',
+      name: bankData.name.trim() || 'Virtual Card',
       network: bankData.network || 'visa',
       brand: brand,
       classification: bankData.classification || 'business',
       gradient: bankData.gradient || 'gradient-obsidian',
+      cardHolder: bankData.cardHolder ? bankData.cardHolder.trim() : (this.userProfile.name || ''),
       last4: bankData.last4 || Math.floor(1000 + Math.random() * 9000).toString(),
       initialBalance: parseFloat(bankData.initialBalance) || 0,
       balance: parseFloat(bankData.initialBalance) || 0,
@@ -377,6 +381,9 @@ class StateManager {
     }
     if (updatedData.gradient !== undefined) {
       bank.gradient = updatedData.gradient;
+    }
+    if (updatedData.cardHolder !== undefined) {
+      bank.cardHolder = updatedData.cardHolder.trim();
     }
 
     // Sync transaction account names if the card nickname was updated
@@ -804,11 +811,12 @@ class StateManager {
     this.virtualBanks = [
       {
         id: 'bank-demo-1',
-        name: 'BDO Business Checking',
+        name: 'BDO',
         network: 'visa',
         brand: 'bdo',
         classification: 'business',
         gradient: 'gradient-obsidian',
+        cardHolder: 'Felix Vance',
         last4: '8821',
         initialBalance: 120000,
         balance: 184200.00,
@@ -816,11 +824,12 @@ class StateManager {
       },
       {
         id: 'bank-demo-2',
-        name: 'Maya Digital Savings',
+        name: 'Maya',
         network: 'mastercard',
         brand: 'maya',
         classification: 'personal',
         gradient: 'gradient-midnight',
+        cardHolder: 'Felix Vance',
         last4: '3419',
         initialBalance: 40000,
         balance: 65400.00,
@@ -828,11 +837,12 @@ class StateManager {
       },
       {
         id: 'bank-demo-3',
-        name: 'GCash Wallet',
+        name: 'GCash',
         network: 'visa',
         brand: 'gcash',
         classification: 'personal',
         gradient: 'gradient-platinum',
+        cardHolder: 'Felix Vance',
         last4: '6102',
         initialBalance: 15000,
         balance: 14500.00,

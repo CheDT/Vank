@@ -14,7 +14,7 @@ export class OnboardingWizard {
       workspaceMode: 'hybrid',
       currency: '₱',
       currencyCode: 'PHP',
-      bankName: 'Maya Virtual Visa',
+      bankName: 'Maya',
       bankBrand: 'maya',
       bankNetwork: 'visa',
       bankGradient: 'gradient-emerald',
@@ -42,11 +42,28 @@ export class OnboardingWizard {
     this.btnSkipFooter = document.getElementById('btn-onboard-skip-footer');
     this.btnClose = document.getElementById('btn-onboard-close');
     this.btnSsoLogin = document.getElementById('btn-sso-login');
+    this.btnGoogleLogin = document.getElementById('btn-google-login');
+
+    // SSO & Social Auth Modals
+    this.googleModal = document.getElementById('google-sso-modal');
+    this.enterpriseModal = document.getElementById('enterprise-sso-modal');
+    this.enterpriseForm = document.getElementById('enterprise-sso-form');
+    this.ssoEmailInput = document.getElementById('sso-email-input');
+    this.ssoProviderSelect = document.getElementById('sso-provider-select');
+    this.googleAccPrimary = document.getElementById('google-acc-primary');
+    this.googleAccSecondary = document.getElementById('google-acc-secondary');
+    this.googleAccCustom = document.getElementById('google-acc-custom');
+    this.googleAccName1 = document.getElementById('google-acc-name-1');
+    this.googleAccEmail1 = document.getElementById('google-acc-email-1');
+    this.googleAccAvatar1 = document.getElementById('google-acc-avatar-1');
+    this.googleCloseBtns = document.querySelectorAll('.google-modal-close');
+    this.ssoCloseBtns = document.querySelectorAll('.sso-modal-close');
 
     this.nameInput = document.getElementById('onboard-name-input');
     this.avatarPreview = document.getElementById('onboard-avatar-preview');
 
     // Step 4 Virtual Card elements
+    this.cardHolderInput = document.getElementById('onboard-card-holder-input');
     this.bankNameInput = document.getElementById('onboard-bank-name-input');
     this.networkBtns = document.querySelectorAll('.onboard-network-btn');
     this.swatchBtns = document.querySelectorAll('.onboard-swatch-btn');
@@ -60,21 +77,34 @@ export class OnboardingWizard {
     this.cardPreviewBalance = document.getElementById('onboard-preview-balance');
   }
 
+  updateCardHolderPreview() {
+    const val = (this.cardHolderInput ? this.cardHolderInput.value.trim() : '') || (this.nameInput ? this.nameInput.value.trim() : '') || this.formData.name || (this.state.userProfile ? this.state.userProfile.name : '') || '';
+    if (this.cardPreviewHolder) {
+      this.cardPreviewHolder.textContent = (val || 'USER').toUpperCase();
+    }
+    if (this.cardHolderInput && !this.cardHolderInput.matches(':focus')) {
+      this.cardHolderInput.value = val;
+    }
+    if (this.nameInput && !this.nameInput.matches(':focus') && val) {
+      this.nameInput.value = val;
+    }
+    if (this.avatarPreview) {
+      const initials = val.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase();
+      this.avatarPreview.textContent = initials || '—';
+    }
+  }
+
   bindEvents() {
     // Dynamic name input & avatar initials
     if (this.nameInput) {
-      this.nameInput.addEventListener('input', (e) => {
+      const handleNameInput = (e) => {
         const val = e.target.value.trim();
         this.formData.name = val;
-        if (val) {
-          const initials = val.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase();
-          if (this.avatarPreview) this.avatarPreview.textContent = initials || '—';
-          if (this.cardPreviewHolder) this.cardPreviewHolder.textContent = val.toUpperCase();
-        } else {
-          if (this.avatarPreview) this.avatarPreview.textContent = '—';
-          if (this.cardPreviewHolder) this.cardPreviewHolder.textContent = 'USER';
-        }
-      });
+        this.updateCardHolderPreview();
+      };
+
+      this.nameInput.addEventListener('input', handleNameInput);
+      this.nameInput.addEventListener('change', handleNameInput);
 
       this.nameInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
@@ -113,23 +143,20 @@ export class OnboardingWizard {
       });
     });
 
-    // Step 4: Virtual Bank Name & Debit Card
-    if (this.bankNameInput) {
-      this.bankNameInput.addEventListener('input', (e) => {
-        delete this.bankNameInput.dataset.autoFilled;
-        const val = e.target.value.trim();
-        this.formData.bankName = val || 'Maya Virtual Visa';
-        if (this.cardPreviewName) {
-          this.cardPreviewName.textContent = val || 'Maya Virtual Visa';
+    // Step 4: Cardholder Name Live Reflection
+    if (this.cardHolderInput) {
+      const handleHolderInput = (e) => {
+        const val = e.target.value;
+        this.formData.name = val.trim();
+        if (this.nameInput && !this.nameInput.matches(':focus')) {
+          this.nameInput.value = val;
         }
-        // Auto detect brand
-        const detected = detectBankBrand(val);
-        if (detected !== 'generic' && detected !== this.formData.bankBrand) {
-          this.setBrand(detected, false);
-        }
-      });
+        this.updateCardHolderPreview();
+      };
 
-      this.bankNameInput.addEventListener('keydown', (e) => {
+      this.cardHolderInput.addEventListener('input', handleHolderInput);
+      this.cardHolderInput.addEventListener('change', handleHolderInput);
+      this.cardHolderInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
           this.nextStep();
@@ -137,7 +164,7 @@ export class OnboardingWizard {
       });
     }
 
-    // Step 4: Brand selector buttons
+    // Step 4: Brand selector buttons (automatically sets card nickname to company name)
     this.brandBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const brandId = btn.dataset.brand;
@@ -148,15 +175,8 @@ export class OnboardingWizard {
     const bankSuggestions = document.querySelectorAll('.onboard-bank-suggestion');
     bankSuggestions.forEach(tag => {
       tag.addEventListener('click', () => {
-        if (this.bankNameInput) {
-          this.bankNameInput.value = tag.textContent.trim();
-          this.formData.bankName = this.bankNameInput.value;
-          if (this.cardPreviewName) {
-            this.cardPreviewName.textContent = this.formData.bankName;
-          }
-          const detected = detectBankBrand(this.formData.bankName);
-          this.setBrand(detected, false);
-        }
+        const brandId = tag.dataset.brand || detectBankBrand(tag.textContent.trim());
+        this.setBrand(brandId, true);
       });
     });
 
@@ -214,26 +234,169 @@ export class OnboardingWizard {
     if (this.btnSkipFooter) this.btnSkipFooter.addEventListener('click', handleSkip);
     if (this.btnClose) this.btnClose.addEventListener('click', handleSkip);
 
-    // Escape key to dismiss if active
+    // Escape key to dismiss modals first, or setup if active
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && this.overlayEl && this.overlayEl.classList.contains('active')) {
-        this.hide();
+      if (e.key === 'Escape') {
+        if (this.googleModal && this.googleModal.classList.contains('active')) {
+          this.closeAuthModals();
+          return;
+        }
+        if (this.enterpriseModal && this.enterpriseModal.classList.contains('active')) {
+          this.closeAuthModals();
+          return;
+        }
+        if (this.overlayEl && this.overlayEl.classList.contains('active')) {
+          this.hide();
+        }
       }
     });
 
-    // Enterprise SSO simulator
+    // Google Sign-In with Official Modal Chooser
+    if (this.btnGoogleLogin) {
+      this.btnGoogleLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.openGoogleModal();
+      });
+    }
+
+    if (this.googleAccPrimary) {
+      this.googleAccPrimary.addEventListener('click', () => {
+        const name = (this.googleAccName1 ? this.googleAccName1.textContent.trim() : '') || 'Neon Felix Cruz';
+        const email = (this.googleAccEmail1 ? this.googleAccEmail1.textContent.trim() : '') || 'neonfelix.cruz@gmail.com';
+        this.applyAuthentication(name, email, 'personal');
+      });
+    }
+
+    if (this.googleAccSecondary) {
+      this.googleAccSecondary.addEventListener('click', () => {
+        this.applyAuthentication('Felix Vance', 'felix@apexstudio.ph', 'hybrid');
+      });
+    }
+
+    if (this.googleAccCustom) {
+      this.googleAccCustom.addEventListener('click', () => {
+        const inputName = prompt('Enter your name for Google Account:', 'Alex Vance');
+        if (inputName && inputName.trim()) {
+          const cleanName = inputName.trim();
+          const cleanEmail = `${cleanName.toLowerCase().replace(/[^a-z0-9]/g, '.').replace(/\.+/g, '.')}@gmail.com`;
+          this.applyAuthentication(cleanName, cleanEmail, 'personal');
+        }
+      });
+    }
+
+    // Enterprise SSO Modal & Form Flow
     if (this.btnSsoLogin) {
-      this.btnSsoLogin.addEventListener('click', () => {
-        this.formData.name = 'Vank User';
-        this.formData.email = 'user@vank.app';
-        if (this.nameInput) this.nameInput.value = 'Vank User';
-        if (this.avatarPreview) this.avatarPreview.textContent = 'VU';
-        this.nextStep();
+      this.btnSsoLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.openEnterpriseModal();
+      });
+    }
+
+    if (this.enterpriseForm) {
+      this.enterpriseForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = (this.ssoEmailInput ? this.ssoEmailInput.value.trim() : '') || 'user@company.com';
+        const currentName = (this.nameInput ? this.nameInput.value.trim() : '');
+        let name = currentName;
+        if (!name) {
+          const localPart = email.split('@')[0] || 'User';
+          name = localPart.split(/[._-]/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Enterprise User';
+        }
+        this.applyAuthentication(name, email, 'business');
+      });
+    }
+
+    // Modal Close Buttons & Backdrop Clicks
+    if (this.googleCloseBtns) {
+      this.googleCloseBtns.forEach(btn => {
+        btn.addEventListener('click', () => this.closeAuthModals());
+      });
+    }
+    if (this.ssoCloseBtns) {
+      this.ssoCloseBtns.forEach(btn => {
+        btn.addEventListener('click', () => this.closeAuthModals());
+      });
+    }
+
+    if (this.googleModal) {
+      this.googleModal.addEventListener('click', (e) => {
+        if (e.target === this.googleModal) this.closeAuthModals();
+      });
+    }
+    if (this.enterpriseModal) {
+      this.enterpriseModal.addEventListener('click', (e) => {
+        if (e.target === this.enterpriseModal) this.closeAuthModals();
       });
     }
   }
 
-  setBrand(brandId, autoFillName = false) {
+  applyAuthentication(name, email, workspaceMode = 'hybrid') {
+    if (name) {
+      this.formData.name = name;
+      if (this.nameInput) this.nameInput.value = name;
+    }
+    if (email) {
+      this.formData.email = email;
+    }
+    if (workspaceMode) {
+      this.formData.workspaceMode = workspaceMode;
+      const modeCards = document.querySelectorAll('.mode-choice-card');
+      modeCards.forEach(c => {
+        if (c.dataset.mode === workspaceMode) c.classList.add('selected');
+        else c.classList.remove('selected');
+      });
+      if (this.cardPreviewBadge) {
+        this.cardPreviewBadge.textContent = workspaceMode === 'personal' ? 'PERS' : 'BIZ';
+      }
+    }
+
+    this.updateCardHolderPreview();
+    this.closeAuthModals();
+    this.nextStep();
+  }
+
+  openGoogleModal() {
+    const currentName = (this.nameInput ? this.nameInput.value.trim() : '') || 'Neon Felix Cruz';
+    const emailPrefix = currentName.toLowerCase().replace(/[^a-z0-9]/g, '.').replace(/\.+/g, '.');
+    const primaryEmail = `${emailPrefix || 'user'}@gmail.com`;
+
+    if (this.googleAccName1) this.googleAccName1.textContent = currentName;
+    if (this.googleAccEmail1) this.googleAccEmail1.textContent = primaryEmail;
+    if (this.googleAccAvatar1) {
+      const initials = currentName.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'NF';
+      this.googleAccAvatar1.textContent = initials;
+    }
+
+    if (this.googleModal) {
+      this.googleModal.classList.add('active');
+    }
+  }
+
+  openEnterpriseModal() {
+    if (this.ssoEmailInput) {
+      const currentName = (this.nameInput ? this.nameInput.value.trim() : '');
+      if (currentName) {
+        const handle = currentName.toLowerCase().split(' ')[0].replace(/[^a-z0-9]/g, '');
+        this.ssoEmailInput.value = `${handle || 'user'}@acmestudios.com`;
+      } else if (!this.ssoEmailInput.value) {
+        this.ssoEmailInput.value = 'neon@apexgroup.ph';
+      }
+    }
+
+    if (this.enterpriseModal) {
+      this.enterpriseModal.classList.add('active');
+      if (this.ssoEmailInput) {
+        setTimeout(() => this.ssoEmailInput.focus(), 100);
+      }
+    }
+  }
+
+  closeAuthModals() {
+    if (this.googleModal) this.googleModal.classList.remove('active');
+    if (this.enterpriseModal) this.enterpriseModal.classList.remove('active');
+  }
+
+  setBrand(brandId, autoFillName = true) {
     this.formData.bankBrand = brandId;
     this.brandBtns.forEach(b => {
       if (b.dataset.brand === brandId) b.classList.add('selected');
@@ -244,12 +407,11 @@ export class OnboardingWizard {
 
     const bankInfo = PHILIPPINE_BANKS.find(b => b.id === brandId);
     if (bankInfo) {
-      if (autoFillName && (!this.bankNameInput.value || this.bankNameInput.dataset.autoFilled)) {
-        this.bankNameInput.value = bankInfo.presetName;
-        this.bankNameInput.dataset.autoFilled = 'true';
-        this.formData.bankName = bankInfo.presetName;
-        if (this.cardPreviewName) this.cardPreviewName.textContent = bankInfo.presetName;
-      }
+      // Automatically set card nickname to company name!
+      const companyName = bankInfo.name || bankInfo.presetName;
+      this.formData.bankName = companyName;
+      if (this.cardPreviewName) this.cardPreviewName.textContent = companyName;
+      if (this.bankNameInput) this.bankNameInput.value = companyName;
 
       if (bankInfo.defaultNetwork) {
         this.formData.bankNetwork = bankInfo.defaultNetwork;
@@ -311,28 +473,28 @@ export class OnboardingWizard {
         workspaceMode: 'hybrid',
         currency: '₱',
         currencyCode: 'PHP',
-        bankName: 'Maya Virtual Visa',
+        bankName: 'Maya',
         bankBrand: 'maya',
         bankNetwork: 'visa',
         bankGradient: 'gradient-emerald',
         openingBalance: 0
       };
       if (this.nameInput) this.nameInput.value = '';
-      if (this.avatarPreview) this.avatarPreview.textContent = '—';
+      if (this.cardHolderInput) this.cardHolderInput.value = '';
       if (this.bankNameInput) {
-        this.bankNameInput.value = 'Maya Virtual Visa';
+        this.bankNameInput.value = 'Maya';
         this.bankNameInput.dataset.autoFilled = 'true';
       }
 
-      if (this.cardPreviewName) this.cardPreviewName.textContent = 'Maya Virtual Visa';
-      if (this.cardPreviewHolder) this.cardPreviewHolder.textContent = 'USER';
+      if (this.cardPreviewName) this.cardPreviewName.textContent = 'Maya';
       if (this.cardPreviewBalance) this.cardPreviewBalance.textContent = '₱0.00';
 
-      this.setBrand('maya', false);
+      this.setBrand('maya', true);
 
       this.updateCardPreviewLogo();
       this.updateCardPreviewGradient();
       this.updateCardPreviewBrandLogo();
+      this.updateCardHolderPreview();
 
       const balanceCards = document.querySelectorAll('.balance-choice-card');
       balanceCards.forEach(c => {
@@ -340,12 +502,18 @@ export class OnboardingWizard {
         else c.classList.remove('selected');
       });
     } else {
-      if (this.nameInput && !this.nameInput.value && this.state.userProfile.name) {
-        this.nameInput.value = this.state.userProfile.name;
-        const initials = this.state.userProfile.name.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase();
-        if (this.avatarPreview) this.avatarPreview.textContent = initials || '—';
-        if (this.cardPreviewHolder) this.cardPreviewHolder.textContent = this.state.userProfile.name.toUpperCase();
+      const existingName = (this.cardHolderInput && this.cardHolderInput.value.trim()) || (this.nameInput && this.nameInput.value.trim()) || (this.state.userProfile ? this.state.userProfile.name : '') || '';
+      if (this.nameInput && existingName) {
+        this.nameInput.value = existingName;
       }
+      if (this.cardHolderInput && existingName) {
+        this.cardHolderInput.value = existingName;
+      }
+      if (existingName) {
+        this.formData.name = existingName;
+      }
+      this.updateCardHolderPreview();
+
       if (this.bankNameInput && !this.bankNameInput.value && this.state.virtualBanks && this.state.virtualBanks[0]) {
         this.bankNameInput.value = this.state.virtualBanks[0].name;
         if (this.cardPreviewName) this.cardPreviewName.textContent = this.state.virtualBanks[0].name;
@@ -395,6 +563,8 @@ export class OnboardingWizard {
     if (this.progressFill) this.progressFill.style.width = `${pct}%`;
     if (this.stepCounter) this.stepCounter.textContent = `0${this.currentStep} / 0${this.totalSteps}`;
 
+    this.updateCardHolderPreview();
+
     const slideClass = this.direction === 'backward' ? 'slide-backward' : 'slide-forward';
 
     this.stepEls.forEach((el, idx) => {
@@ -418,20 +588,19 @@ export class OnboardingWizard {
 
     if (this.currentStep === 1 && this.nameInput) {
       setTimeout(() => this.nameInput.focus(), 120);
-    } else if (this.currentStep === 4 && this.bankNameInput) {
-      setTimeout(() => this.bankNameInput.focus(), 120);
+    } else if (this.currentStep === 4 && this.cardHolderInput) {
+      setTimeout(() => this.cardHolderInput.focus(), 120);
     }
   }
 
   completeOnboarding() {
-    const rawName = this.nameInput ? this.nameInput.value.trim() : '';
-    const rawBankName = this.bankNameInput ? this.bankNameInput.value.trim() : '';
-
+    const rawName = (this.cardHolderInput ? this.cardHolderInput.value.trim() : '') || (this.nameInput ? this.nameInput.value.trim() : '');
     const name = rawName || this.formData.name || 'User';
-    const bankName = rawBankName || this.formData.bankName || 'Primary Digital Debit';
+    const bankName = this.formData.bankName || 'Maya';
 
     this.state.createNewProfile({
       name,
+      cardHolder: name,
       email: this.formData.email || '',
       workspaceName: `${bankName} Ledger`,
       workspaceMode: this.formData.workspaceMode || 'hybrid',
@@ -440,7 +609,7 @@ export class OnboardingWizard {
       bankName: bankName,
       bankBrand: this.formData.bankBrand || detectBankBrand(bankName),
       bankNetwork: this.formData.bankNetwork || 'visa',
-      bankGradient: this.formData.bankGradient || 'gradient-obsidian',
+      bankGradient: this.formData.bankGradient || 'gradient-emerald',
       openingBalance: this.formData.openingBalance || 0
     });
 

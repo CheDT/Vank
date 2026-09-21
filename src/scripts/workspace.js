@@ -551,7 +551,7 @@ export class WorkspaceController {
 
     // ── Signature: changes when bank list / content changes (not just active bank) ──
     const bankSig = banks.map(b =>
-      `${b.id}:${b.name}:${b.gradient}:${b.brand}:${b.network}:${b.classification}:${b.last4}:${Math.round(b.balance * 100)}`
+      `${b.id}:${b.name}:${b.gradient}:${b.brand}:${b.network}:${b.classification}:${b.last4}:${b.cardHolder || ''}:${Math.round(b.balance * 100)}`
     ).join('|') + `|h:${holderName}|c:${currency}`;
 
     const needsRebuild = bankSig !== this._bankSig;
@@ -567,6 +567,7 @@ export class WorkspaceController {
           : `<svg class="visa-logo-svg" viewBox="0 0 50 16"><path d="M19.5 1.5L13.1 15.5H8.7L5.3 4.2C5.1 3.4 4.9 3.1 4.3 2.7C3.3 2.1 1.5 1.6 0 1.3L0.1 0.7H7.1C8.0 0.7 8.8 1.3 9.0 2.3L10.7 11.2L15.1 0.7H19.5ZM37.1 10.7C37.1 6.6 31.4 6.4 31.5 4.6C31.5 4.0 32.1 3.4 33.3 3.3C33.9 3.2 35.6 3.1 37.3 3.9L38.0 0.8C37.0 0.4 35.8 0.1 34.2 0.1C30.0 0.1 27.0 2.4 27.0 5.6C26.9 8.0 29.1 9.3 30.7 10.1C32.4 10.9 32.9 11.4 32.9 12.1C32.9 13.2 31.6 13.7 30.3 13.7C28.2 13.7 27.0 13.1 26.0 12.6L25.2 15.8C26.3 16.3 28.3 16.7 30.2 16.7C34.6 16.7 37.1 14.5 37.1 10.7ZM47.8 15.5H51.7L48.3 0.7H44.7C43.9 0.7 43.2 1.2 42.9 1.9L36.7 15.5H41.1L42.0 13.0H47.3L47.8 15.5ZM43.2 9.8L45.4 3.7L46.7 9.8H43.2ZM26.2 0.7L22.8 15.5H18.7L22.1 0.7H26.2Z"/></svg>`;
         const brand = bank.brand || detectBankBrand(bank.name);
         const brandSvg = getBankLogoSvg(brand);
+        const cardHolderDisplay = (bank.cardHolder || holderName || 'CARD MEMBER').toUpperCase();
 
         return `
           <div class="debit-card ${bank.gradient || 'gradient-obsidian'} stacked-behind"
@@ -599,7 +600,7 @@ export class WorkspaceController {
             <div class="card-bottom-row">
               <div class="card-holder-area">
                 <span class="card-holder-label">Cardholder</span>
-                <span class="card-holder-name">${holderName}</span>
+                <span class="card-holder-name">${cardHolderDisplay}</span>
               </div>
               <div class="card-balance-box">
                 <span class="card-balance-label">Live Balance</span>

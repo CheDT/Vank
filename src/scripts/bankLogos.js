@@ -7,7 +7,7 @@ export const PHILIPPINE_BANKS = [
     fullName: 'Maya (PayMaya)',
     defaultNetwork: 'visa',
     defaultGradient: 'gradient-emerald',
-    presetName: 'Maya Virtual Visa'
+    presetName: 'Maya'
   },
   {
     id: 'gcash',
@@ -15,7 +15,7 @@ export const PHILIPPINE_BANKS = [
     fullName: 'GCash Digital Wallet',
     defaultNetwork: 'mastercard',
     defaultGradient: 'gradient-midnight',
-    presetName: 'GCash Mastercard'
+    presetName: 'GCash'
   },
   {
     id: 'bdo',
@@ -23,7 +23,7 @@ export const PHILIPPINE_BANKS = [
     fullName: 'BDO Unibank',
     defaultNetwork: 'visa',
     defaultGradient: 'gradient-midnight',
-    presetName: 'BDO Debit Visa'
+    presetName: 'BDO'
   },
   {
     id: 'bpi',
@@ -31,7 +31,7 @@ export const PHILIPPINE_BANKS = [
     fullName: 'Bank of the Philippine Islands',
     defaultNetwork: 'mastercard',
     defaultGradient: 'gradient-sunset',
-    presetName: 'BPI Debit Mastercard'
+    presetName: 'BPI'
   },
   {
     id: 'unionbank',
@@ -39,7 +39,7 @@ export const PHILIPPINE_BANKS = [
     fullName: 'UnionBank of the Philippines',
     defaultNetwork: 'visa',
     defaultGradient: 'gradient-obsidian',
-    presetName: 'UnionBank Digital Visa'
+    presetName: 'UnionBank'
   },
   {
     id: 'gotyme',
@@ -47,7 +47,7 @@ export const PHILIPPINE_BANKS = [
     fullName: 'GoTyme Bank',
     defaultNetwork: 'visa',
     defaultGradient: 'gradient-platinum',
-    presetName: 'GoTyme Visa Debit'
+    presetName: 'GoTyme'
   },
   {
     id: 'metrobank',
@@ -55,7 +55,7 @@ export const PHILIPPINE_BANKS = [
     fullName: 'Metropolitan Bank & Trust Co.',
     defaultNetwork: 'mastercard',
     defaultGradient: 'gradient-midnight',
-    presetName: 'Metrobank Mastercard'
+    presetName: 'Metrobank'
   },
   {
     id: 'rcbc',
@@ -63,7 +63,7 @@ export const PHILIPPINE_BANKS = [
     fullName: 'Rizal Commercial Banking Corp',
     defaultNetwork: 'mastercard',
     defaultGradient: 'gradient-midnight',
-    presetName: 'RCBC MyDebit Card'
+    presetName: 'RCBC'
   },
   {
     id: 'seabank',
@@ -71,15 +71,15 @@ export const PHILIPPINE_BANKS = [
     fullName: 'SeaBank Philippines',
     defaultNetwork: 'mastercard',
     defaultGradient: 'gradient-sunset',
-    presetName: 'SeaBank Debit'
+    presetName: 'SeaBank'
   },
   {
     id: 'generic',
-    name: 'Digital Card',
+    name: 'Standard Card',
     fullName: 'Standard Virtual Debit',
     defaultNetwork: 'visa',
     defaultGradient: 'gradient-obsidian',
-    presetName: 'Primary Digital Debit'
+    presetName: 'Standard Card'
   }
 ];
 

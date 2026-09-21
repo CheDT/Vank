@@ -11,6 +11,7 @@ export class BankModal {
     if (!this.modalEl) return;
 
     // Form inputs
+    this.holderInput = document.getElementById('new-bank-holder');
     this.nameInput = document.getElementById('new-bank-name');
     this.balanceInput = document.getElementById('new-bank-balance');
     this.networkBtns = this.modalEl.querySelectorAll('.bank-network-btn');
@@ -32,9 +33,11 @@ export class BankModal {
     this.previewBalance = document.getElementById('preview-card-balance');
     this.previewLogo = document.getElementById('preview-card-logo');
     this.previewBrandLogo = document.getElementById('modal-preview-brand-logo');
+    this.previewHolder = document.getElementById('preview-card-holder');
 
     this.currentData = {
       name: '',
+      cardHolder: '',
       brand: 'maya',
       network: 'visa',
       classification: 'business',
@@ -66,6 +69,17 @@ export class BankModal {
         }
       });
     }
+    // Cardholder Name live reflection
+    if (this.holderInput) {
+      this.holderInput.addEventListener('input', (e) => {
+        const val = e.target.value;
+        this.currentData.cardHolder = val;
+        if (this.previewHolder) {
+          this.previewHolder.textContent = (val.trim() || this.state.userProfile.name || 'CARD MEMBER').toUpperCase();
+        }
+      });
+    }
+
     // Name input live reflection & auto brand detection
     if (this.nameInput) {
       this.nameInput.addEventListener('input', (e) => {
@@ -78,7 +92,7 @@ export class BankModal {
         // Auto-detect brand from name if user types
         const detected = detectBankBrand(val);
         if (detected !== 'generic' && detected !== this.currentData.brand) {
-          this.setBrand(detected);
+          this.setBrand(detected, false);
         }
       });
     }
@@ -168,11 +182,12 @@ export class BankModal {
 
     const bankInfo = PHILIPPINE_BANKS.find(b => b.id === brandId);
     if (bankInfo) {
-      if (autoFillName && (!this.nameInput.value || this.nameInput.dataset.autoFilled)) {
-        this.nameInput.value = bankInfo.presetName;
+      const companyName = bankInfo.name || bankInfo.presetName;
+      if (autoFillName || !this.nameInput.value || this.nameInput.dataset.autoFilled) {
+        this.nameInput.value = companyName;
         this.nameInput.dataset.autoFilled = 'true';
-        this.currentData.name = bankInfo.presetName;
-        if (this.previewName) this.previewName.textContent = bankInfo.presetName;
+        this.currentData.name = companyName;
+        if (this.previewName) this.previewName.textContent = companyName;
       }
 
       // Sync recommended network
@@ -241,15 +256,24 @@ export class BankModal {
       if (this.deleteBtn) this.deleteBtn.style.display = 'inline-flex';
 
       const initialBal = bank.initialBalance !== undefined ? bank.initialBalance : (bank.balance || 0);
+      const holderName = bank.cardHolder || this.state.userProfile.name || '';
 
       this.currentData = {
         name: bank.name,
+        cardHolder: holderName,
         brand: bank.brand || detectBankBrand(bank.name),
         network: bank.network || 'visa',
         classification: bank.classification || 'business',
         gradient: bank.gradient || 'gradient-obsidian',
         initialBalance: initialBal
       };
+
+      if (this.holderInput) {
+        this.holderInput.value = holderName;
+      }
+      if (this.previewHolder) {
+        this.previewHolder.textContent = (holderName || 'CARD MEMBER').toUpperCase();
+      }
 
       if (this.nameInput) {
         this.nameInput.value = bank.name;
@@ -295,8 +319,10 @@ export class BankModal {
       if (this.balanceLabel) this.balanceLabel.textContent = 'Initial Balance (₱ PHP)';
       if (this.deleteBtn) this.deleteBtn.style.display = 'none';
 
+      const defaultHolder = this.state.userProfile.name || '';
       this.currentData = {
-        name: 'Maya Virtual Visa',
+        name: 'Maya',
+        cardHolder: defaultHolder,
         brand: 'maya',
         network: 'visa',
         classification: 'business',
@@ -304,8 +330,15 @@ export class BankModal {
         initialBalance: 0
       };
 
+      if (this.holderInput) {
+        this.holderInput.value = defaultHolder;
+      }
+      if (this.previewHolder) {
+        this.previewHolder.textContent = (defaultHolder || 'CARD MEMBER').toUpperCase();
+      }
+
       if (this.nameInput) {
-        this.nameInput.value = 'Maya Virtual Visa';
+        this.nameInput.value = 'Maya';
         this.nameInput.dataset.autoFilled = 'true';
       }
       if (this.balanceInput) this.balanceInput.value = '';
@@ -317,7 +350,7 @@ export class BankModal {
         else b.classList.remove('selected');
       });
 
-      if (this.previewName) this.previewName.textContent = 'Maya Virtual Visa';
+      if (this.previewName) this.previewName.textContent = 'Maya';
       if (this.previewBadge) this.previewBadge.textContent = 'BIZ';
       if (this.previewBalance) this.previewBalance.textContent = `${cur}0.00`;
 
@@ -328,7 +361,8 @@ export class BankModal {
 
     this.modalEl.classList.add('active');
     setTimeout(() => {
-      if (this.nameInput) this.nameInput.focus();
+      if (this.holderInput) this.holderInput.focus();
+      else if (this.nameInput) this.nameInput.focus();
     }, 100);
   }
 
@@ -338,15 +372,12 @@ export class BankModal {
   }
 
   handleSubmit() {
-    const name = this.nameInput ? this.nameInput.value.trim() : '';
-    if (!name) {
-      alert('Please enter a Bank / Card nickname.');
-      if (this.nameInput) this.nameInput.focus();
-      return;
-    }
+    const name = (this.nameInput ? this.nameInput.value.trim() : '') || (this.currentData.name || 'Virtual Card');
+    const cardHolder = this.holderInput ? this.holderInput.value.trim() : (this.currentData.cardHolder || '');
 
     const payload = {
       name: name,
+      cardHolder: cardHolder,
       brand: this.currentData.brand || detectBankBrand(name),
       network: this.currentData.network,
       classification: this.currentData.classification,
@@ -360,6 +391,10 @@ export class BankModal {
       const newBank = this.state.addVirtualBank(payload);
       // Automatically select the new bank
       this.state.setActiveVirtualBank(newBank.id);
+    }
+
+    if (cardHolder && (!this.state.userProfile.name || this.state.virtualBanks.length === 1)) {
+      this.state.updateProfile({ name: cardHolder });
     }
 
     this.close();

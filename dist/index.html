@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enterprise Capital | Finance & Expense Ledger</title>
+  <title>Vank | Finance & Expense Planner</title>
   <meta name="description" content="Tactical expense & income tracker in Philippine Pesos with Business vs Personal allocation.">
   
   <!-- Modern Monochromatic Typography -->
@@ -11,8 +11,8 @@
   <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800|jetbrains-mono:400,500,600,700" rel="stylesheet">
 
   <!-- Stylesheets -->
-  <script type="module" crossorigin src="/assets/index-CE-eMe_4.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-awbFulX6.css">
+  <script type="module" crossorigin src="/assets/index-DCLEQaHc.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-eVGkS2yQ.css">
 </head>
 <body>
   <div class="app-container">
@@ -26,7 +26,7 @@
               <path d="M3 9h18M9 21V9"/>
             </svg>
           </div>
-          <span class="brand-name">Workspace</span>
+          <span class="brand-name">Vank</span>
         </a>
 
         <!-- WORKSPACE SWITCHER DROPDOWN -->
@@ -40,7 +40,7 @@
           </button>
 
           <div class="workspace-dropdown-menu" id="workspace-dropdown-menu">
-            <div class="dropdown-header-label">Switch Workspace</div>
+            <div class="dropdown-header-label">Switch View</div>
             <div class="workspace-option-item selected" data-workspace="all">
               <strong>Consolidated</strong>
               <span class="mono-num" style="font-size: 10px; color: var(--text-tertiary);">ALL</span>
@@ -297,8 +297,13 @@
           </div>
 
           <!-- ASYMMETRIC ANALYTICS & BUDGETS COLUMN -->
-          <div class="analytics-column" id="analytics-container">
-            <!-- Injected by charts.js -->
+          <div class="analytics-column">
+            <div id="analytics-container">
+              <!-- Injected by charts.js -->
+            </div>
+            <section class="planner-dashboard" id="planner-dashboard">
+              <!-- Rendered by planner.js -->
+            </section>
           </div>
         </section>
       </main>
@@ -358,8 +363,8 @@
 
         <div class="mobile-sheet-header">
           <div class="mobile-sheet-title-group">
-            <span class="mobile-sheet-title">Workspace Menu</span>
-            <span class="mobile-sheet-badge">Enterprise PWA</span>
+            <span class="mobile-sheet-title">Vank Menu</span>
+            <span class="mobile-sheet-badge">Vank PWA</span>
           </div>
           <button type="button" class="mobile-sheet-close-btn" id="btn-close-mobile-menu" aria-label="Close menu">✕</button>
         </div>
@@ -382,7 +387,7 @@
 
           <!-- LARGE WORKSPACE SWITCHER -->
           <div class="mobile-menu-section">
-            <div class="mobile-menu-section-label">Switch Workspace View</div>
+            <div class="mobile-menu-section-label">Switch Vank View</div>
             <div class="mobile-workspace-switcher">
               <button type="button" class="mobile-ws-btn active" data-mobile-ws="all">
                 <span class="mobile-ws-dot"></span>
@@ -804,10 +809,16 @@
           </div>
         </div>
 
+        <!-- CARDHOLDER NAME -->
+        <div class="form-group">
+          <label for="new-bank-holder">Cardholder Name</label>
+          <input type="text" id="new-bank-holder" placeholder="e.g. Neon Felix Cruz" autocomplete="name">
+        </div>
+
         <!-- BANK NAME -->
         <div class="form-group">
           <label for="new-bank-name">Bank / Card Nickname *</label>
-          <input type="text" id="new-bank-name" placeholder="e.g. Maya Virtual Visa, BDO Checking, Vault" required>
+          <input type="text" id="new-bank-name" placeholder="e.g. GCash, Maya, BDO" required>
         </div>
 
         <!-- NETWORK SELECTION -->
@@ -911,13 +922,106 @@
     </div>
   </div>
 
+  <!-- GOOGLE AUTHENTICATION MODAL -->
+  <div class="modal-backdrop" id="google-sso-modal" role="dialog" aria-modal="true">
+    <div class="modal-container google-sso-container" style="max-width: 420px; padding: 0; overflow: hidden; border-radius: 20px;">
+      <div class="google-modal-header">
+        <div class="google-logo-row">
+          <svg class="google-wordmark-svg" viewBox="0 0 74 24" height="24">
+            <path fill="#4285F4" d="M9.24 8.19v2.46h5.88c-.18 1.34-.64 2.33-1.37 3.06-.87.87-2.22 1.83-4.51 1.83-3.61 0-6.43-2.93-6.43-6.54s2.82-6.54 6.43-6.54c1.95 0 3.38.77 4.43 1.76l1.74-1.74C13.97 1.05 11.97 0 9.24 0 4.28 0 .22 4.04.22 9s4.06 9 9.02 9c2.68 0 4.7-.88 6.28-2.52 1.62-1.62 2.13-3.91 2.13-5.75 0-.57-.05-1.1-.14-1.54H9.24z"/>
+            <path fill="#EA4335" d="M25 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.33 2.62 5.81 5.83 5.81s5.83-2.48 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.35c-1.76 0-3.28-1.45-3.28-3.54 0-2.13 1.52-3.54 3.28-3.54s3.28 1.41 3.28 3.54c0 2.09-1.52 3.54-3.28 3.54z"/>
+            <path fill="#FBBC05" d="M38 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.33 2.62 5.81 5.83 5.81s5.83-2.48 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.35c-1.76 0-3.28-1.45-3.28-3.54 0-2.13 1.52-3.54 3.28-3.54s3.28 1.41 3.28 3.54c0 2.09-1.52 3.54-3.28 3.54z"/>
+            <path fill="#4285F4" d="M50.42 6.19c-3.08 0-5.42 2.7-5.42 5.81 0 3.29 2.34 5.81 5.42 5.81 1.76 0 2.9-.78 3.56-1.58v1.23c0 2.22-1.19 3.41-3.1 3.41-1.63 0-2.64-1.17-3.06-2.15l-2.22.92c.64 1.54 2.33 3.5 5.28 3.5 3.06 0 5.65-1.8 5.65-6.05V6.52h-2.4v1.01c-.68-.8-1.83-1.34-3.71-1.34zm.24 9.35c-1.63 0-3.1-1.39-3.1-3.54 0-2.18 1.47-3.54 3.1-3.54 1.6 0 2.87 1.41 2.87 3.56 0 2.13-1.27 3.52-2.87 3.52z"/>
+            <path fill="#34A853" d="M58 0h2.55v17.44H58z"/>
+            <path fill="#EA4335" d="M68.32 15.54c-1.43 0-2.44-.66-3.1-1.96l8.52-3.52-.29-.73c-.53-1.43-2.15-3.14-4.86-3.14-2.68 0-4.93 2.11-4.93 5.81 0 3.26 2.22 5.81 5.66 5.81 2.77 0 4.38-1.7 5.04-2.69l-2.07-1.38c-.68.99-1.61 1.8-3.97 1.8zm-.18-7.25c1.14 0 2.11.59 2.44 1.43l-5.83 2.42c0-2.73 1.95-3.85 3.39-3.85z"/>
+          </svg>
+          <button class="modal-close-btn google-modal-close" aria-label="Close Google sign-in">✕</button>
+        </div>
+        <h3 class="google-title">Choose an account</h3>
+        <p class="google-sub">to continue to <strong style="color: var(--text-primary);">Vank Finance OS</strong></p>
+      </div>
+
+      <div class="google-modal-body">
+        <div class="google-account-list">
+          <!-- ACCOUNT 1 (DYNAMIC) -->
+          <div class="google-account-item" id="google-acc-primary" role="button" tabindex="0">
+            <div class="google-acc-avatar" id="google-acc-avatar-1">NF</div>
+            <div class="google-acc-info">
+              <span class="google-acc-name" id="google-acc-name-1">Neon Felix Cruz</span>
+              <span class="google-acc-email" id="google-acc-email-1">neonfelix.cruz@gmail.com</span>
+            </div>
+            <div class="google-acc-badge">Personal</div>
+          </div>
+
+          <!-- ACCOUNT 2 (SECONDARY) -->
+          <div class="google-account-item" id="google-acc-secondary" role="button" tabindex="0">
+            <div class="google-acc-avatar" style="background: #0284c7;">FV</div>
+            <div class="google-acc-info">
+              <span class="google-acc-name">Felix Vance</span>
+              <span class="google-acc-email">felix@apexstudio.ph</span>
+            </div>
+            <div class="google-acc-badge">Studio</div>
+          </div>
+
+          <!-- USE ANOTHER ACCOUNT -->
+          <div class="google-account-item google-acc-other" id="google-acc-custom" role="button" tabindex="0">
+            <div class="google-acc-avatar other">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="google-acc-info">
+              <span class="google-acc-name" style="font-weight: 500;">Use another account</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="google-footer-disclaimer">
+          To continue, Google will share your name, email address, language preference, and profile picture with Vank. See Vank's <a href="#" onclick="return false;">Privacy Policy</a> and <a href="#" onclick="return false;">Terms of Service</a>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENTERPRISE SSO MODAL -->
+  <div class="modal-backdrop" id="enterprise-sso-modal" role="dialog" aria-modal="true">
+    <div class="modal-container" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Enterprise Single Sign-On</h3>
+        <button class="modal-close-btn sso-modal-close" aria-label="Close SSO login">✕</button>
+      </div>
+      <form id="enterprise-sso-form" class="modal-body" style="gap: 16px;">
+        <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.45;">
+          Sign in via your organization's SAML 2.0 / Okta identity provider to automatically link corporate workspaces and debit cards.
+        </div>
+        <div class="form-group">
+          <label style="font-size: 11px; font-weight: 700; text-transform: uppercase;">Corporate Work Email</label>
+          <input type="email" id="sso-email-input" class="sso-work-input" placeholder="name@company.com" required>
+        </div>
+        <div class="form-group">
+          <label style="font-size: 11px; font-weight: 700; text-transform: uppercase;">Identity Provider (IdP)</label>
+          <select id="sso-provider-select" style="width: 100%;">
+            <option value="okta">Okta Verify SSO</option>
+            <option value="azure">Microsoft Entra ID (Azure AD)</option>
+            <option value="google_workspace">Google Workspace Enterprise</option>
+            <option value="ping">PingIdentity / OneLogin</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-pill btn-primary" style="width: 100%; height: 42px; font-size: 14px;">
+          Authenticate with SSO ↵
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- FULLSCREEN CONVERSATIONAL MULTI-STEP ONBOARDING -->
   <div class="onboarding-overlay" id="onboarding-overlay" role="dialog" aria-modal="true">
     <div class="onboarding-fullscreen-container">
       <div class="onboarding-top-bar">
         <div class="onboarding-brand">
-          <div class="brand-icon-mini">W</div>
-          <span>Workspace Setup</span>
+          <div class="brand-icon-mini">V</div>
+          <span>Vank Setup</span>
         </div>
         <div style="display: flex; align-items: center; gap: 14px;">
           <span class="step-counter" id="onboarding-step-counter">01 / 05</span>
@@ -950,14 +1054,34 @@
               </div>
 
               <div class="sso-login-box">
-                <div style="font-size: 11px; color: var(--text-tertiary); margin: 4px 0;">— OR —</div>
-                <button type="button" class="sso-auth-btn" id="btn-sso-login">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="M12 8v8M8 12h8"/>
-                  </svg>
-                  <span>Continue with SSO</span>
-                </button>
+                <div class="sso-divider-row">
+                  <span class="sso-divider-line"></span>
+                  <span class="sso-divider-text">OR SIGN IN WITH</span>
+                  <span class="sso-divider-line"></span>
+                </div>
+
+                <div class="sso-buttons-row">
+                  <!-- GOOGLE SIGN-IN WITH OFFICIAL LOGO -->
+                  <button type="button" class="sso-auth-btn google-auth-btn" id="btn-google-login">
+                    <svg class="google-icon-svg" width="18" height="18" viewBox="0 0 48 48">
+                      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.79l7.97-6.2z"/>
+                      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                      <path fill="none" d="M0 0h48v48H0z"/>
+                    </svg>
+                    <span>Continue with Google</span>
+                  </button>
+
+                  <!-- ENTERPRISE WORKSPACE SSO -->
+                  <button type="button" class="sso-auth-btn enterprise-auth-btn" id="btn-sso-login">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <span>Enterprise SSO</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1061,157 +1185,169 @@
             <h2 class="step-question-title">Virtual Bank</h2>
             <p class="step-question-sub">Your starting virtual debit card.</p>
 
-            <div class="step-interactive-area" style="display: flex; flex-direction: column; gap: 16px;">
-              <!-- LIVE DEBIT CARD PREVIEW -->
-              <div style="display: flex; justify-content: center;">
-                <div class="debit-card onboard-preview-card gradient-emerald" id="onboard-card-preview">
-                  <div class="card-top-row">
-                    <div class="card-brand-header-left">
-                      <div class="card-brand-emblem" id="onboard-preview-brand-logo">
-                        <svg class="bank-brand-svg maya-logo" viewBox="0 0 90 28" fill="none" height="22"><rect width="90" height="28" rx="6" fill="#09090b" fill-opacity="0.5"/><text x="8" y="19" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="16" font-weight="900" fill="#ffffff" letter-spacing="-0.04em">maya</text><circle cx="56" cy="11" r="3" fill="#00D563"/><path d="M64 12L71 19M71 12L64 19" stroke="#00D563" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <div class="step-interactive-area">
+              <div class="onboard-step-card-layout">
+                <!-- LEFT COLUMN: LIVE CARD PREVIEW & CARD STYLING -->
+                <div class="onboard-card-stage">
+                  <div class="onboard-card-wrapper">
+                    <div class="debit-card onboard-preview-card gradient-emerald" id="onboard-card-preview">
+                      <div class="card-top-row">
+                        <div class="card-brand-header-left">
+                          <div class="card-brand-emblem" id="onboard-preview-brand-logo">
+                            <svg class="bank-brand-svg maya-logo" viewBox="0 0 90 28" fill="none" height="22"><rect width="90" height="28" rx="6" fill="#09090b" fill-opacity="0.5"/><text x="8" y="19" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="16" font-weight="900" fill="#ffffff" letter-spacing="-0.04em">maya</text><circle cx="56" cy="11" r="3" fill="#00D563"/><path d="M64 12L71 19M71 12L64 19" stroke="#00D563" stroke-width="2.5" stroke-linecap="round"/></svg>
+                          </div>
+                          <div class="card-bank-info">
+                            <span class="card-bank-name" id="onboard-preview-bank-name">Maya Virtual Visa</span>
+                            <span class="card-class-badge" id="onboard-preview-bank-badge">BIZ</span>
+                          </div>
+                        </div>
+                        <div class="card-network-logo" id="onboard-preview-network-logo">
+                          <svg class="visa-logo-svg" viewBox="0 0 50 16">
+                            <path d="M19.5 1.5L13.1 15.5H8.7L5.3 4.2C5.1 3.4 4.9 3.1 4.3 2.7C3.3 2.1 1.5 1.6 0 1.3L0.1 0.7H7.1C8.0 0.7 8.8 1.3 9.0 2.3L10.7 11.2L15.1 0.7H19.5ZM37.1 10.7C37.1 6.6 31.4 6.4 31.5 4.6C31.5 4.0 32.1 3.4 33.3 3.3C33.9 3.2 35.6 3.1 37.3 3.9L38.0 0.8C37.0 0.4 35.8 0.1 34.2 0.1C30.0 0.1 27.0 2.4 27.0 5.6C26.9 8.0 29.1 9.3 30.7 10.1C32.4 10.9 32.9 11.4 32.9 12.1C32.9 13.2 31.6 13.7 30.3 13.7C28.2 13.7 27.0 13.1 26.0 12.6L25.2 15.8C26.3 16.3 28.3 16.7 30.2 16.7C34.6 16.7 37.1 14.5 37.1 10.7ZM47.8 15.5H51.7L48.3 0.7H44.7C43.9 0.7 43.2 1.2 42.9 1.9L36.7 15.5H41.1L42.0 13.0H47.3L47.8 15.5ZM43.2 9.8L45.4 3.7L46.7 9.8H43.2ZM26.2 0.7L22.8 15.5H18.7L22.1 0.7H26.2Z"/>
+                          </svg>
+                        </div>
                       </div>
-                      <div class="card-bank-info">
-                        <span class="card-bank-name" id="onboard-preview-bank-name">Maya Virtual Visa</span>
-                        <span class="card-class-badge" id="onboard-preview-bank-badge">BIZ</span>
+
+                      <div class="card-mid-row">
+                        <div class="card-emv-chip"></div>
+                        <svg class="card-contactless-icon" viewBox="0 0 24 24">
+                          <path d="M8.5 16.5a5 5 0 0 1 0-9M12 19a9 9 0 0 0 0-14M15.5 21.5a13 13 0 0 0 0-19"/>
+                        </svg>
+                        <span class="card-number-display">•••• •••• •••• 4829</span>
+                      </div>
+
+                      <div class="card-bottom-row">
+                        <div class="card-holder-area">
+                          <span class="card-holder-label">Cardholder</span>
+                          <span class="card-holder-name" id="onboard-preview-holder">User</span>
+                        </div>
+                        <div class="card-balance-box">
+                          <span class="card-balance-label">Live Balance</span>
+                          <span class="card-balance-value" id="onboard-preview-balance">₱0.00</span>
+                        </div>
                       </div>
                     </div>
-                    <div class="card-network-logo" id="onboard-preview-network-logo">
-                      <svg class="visa-logo-svg" viewBox="0 0 50 16">
-                        <path d="M19.5 1.5L13.1 15.5H8.7L5.3 4.2C5.1 3.4 4.9 3.1 4.3 2.7C3.3 2.1 1.5 1.6 0 1.3L0.1 0.7H7.1C8.0 0.7 8.8 1.3 9.0 2.3L10.7 11.2L15.1 0.7H19.5ZM37.1 10.7C37.1 6.6 31.4 6.4 31.5 4.6C31.5 4.0 32.1 3.4 33.3 3.3C33.9 3.2 35.6 3.1 37.3 3.9L38.0 0.8C37.0 0.4 35.8 0.1 34.2 0.1C30.0 0.1 27.0 2.4 27.0 5.6C26.9 8.0 29.1 9.3 30.7 10.1C32.4 10.9 32.9 11.4 32.9 12.1C32.9 13.2 31.6 13.7 30.3 13.7C28.2 13.7 27.0 13.1 26.0 12.6L25.2 15.8C26.3 16.3 28.3 16.7 30.2 16.7C34.6 16.7 37.1 14.5 37.1 10.7ZM47.8 15.5H51.7L48.3 0.7H44.7C43.9 0.7 43.2 1.2 42.9 1.9L36.7 15.5H41.1L42.0 13.0H47.3L47.8 15.5ZM43.2 9.8L45.4 3.7L46.7 9.8H43.2ZM26.2 0.7L22.8 15.5H18.7L22.1 0.7H26.2Z"/>
-                      </svg>
-                    </div>
                   </div>
 
-                  <div class="card-mid-row">
-                    <div class="card-emv-chip"></div>
-                    <svg class="card-contactless-icon" viewBox="0 0 24 24">
-                      <path d="M8.5 16.5a5 5 0 0 1 0-9M12 19a9 9 0 0 0 0-14M15.5 21.5a13 13 0 0 0 0-19"/>
-                    </svg>
-                    <span class="card-number-display">•••• •••• •••• 4829</span>
-                  </div>
+                  <!-- CARD APPEARANCE (NETWORK & GRADIENT THEME) -->
+                  <div class="onboard-card-styling-panel">
+                    <!-- Network Toggle -->
+                    <div class="onboard-card-field-group">
+                      <label class="onboard-field-label">Network</label>
+                      <div class="onboard-network-pill-group">
+                        <button type="button" class="btn-pill btn-outline onboard-network-btn selected" data-network="visa">Visa</button>
+                        <button type="button" class="btn-pill btn-outline onboard-network-btn" data-network="mastercard">Mastercard</button>
+                      </div>
+                    </div>
 
-                  <div class="card-bottom-row">
-                    <div class="card-holder-area">
-                      <span class="card-holder-label">Cardholder</span>
-                      <span class="card-holder-name" id="onboard-preview-holder">User</span>
+                    <!-- Gradient Theme Palette -->
+                    <div class="onboard-card-field-group">
+                      <label class="onboard-field-label">Theme</label>
+                      <div class="gradient-swatch-grid">
+                        <div class="gradient-swatch-item gradient-obsidian onboard-swatch-btn" data-gradient="gradient-obsidian" title="Obsidian"></div>
+                        <div class="gradient-swatch-item gradient-platinum onboard-swatch-btn" data-gradient="gradient-platinum" title="Platinum"></div>
+                        <div class="gradient-swatch-item gradient-midnight onboard-swatch-btn" data-gradient="gradient-midnight" title="Midnight"></div>
+                        <div class="gradient-swatch-item gradient-emerald selected onboard-swatch-btn" data-gradient="gradient-emerald" title="Emerald"></div>
+                        <div class="gradient-swatch-item gradient-amethyst onboard-swatch-btn" data-gradient="gradient-amethyst" title="Amethyst"></div>
+                      </div>
                     </div>
-                    <div class="card-balance-box">
-                      <span class="card-balance-label">Live Balance</span>
-                      <span class="card-balance-value" id="onboard-preview-balance">₱0.00</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- PHILIPPINE BANK / WALLET BRAND SELECTION -->
-              <div class="form-group" style="margin-top: 2px;">
-                <div class="bank-brand-selector-title">
-                  <span>Philippine Bank / Wallet Brand</span>
-                  <span style="font-size: 10px; color: var(--text-tertiary);">Tap to choose logo</span>
-                </div>
-                <div class="bank-brand-grid">
-                  <button type="button" class="bank-brand-btn selected onboard-bank-brand-btn" data-brand="maya" title="Maya (PayMaya)">
-                    <div class="bank-brand-btn-logo">
-                      <span style="font-weight: 900; font-size: 12px; color: #09090b; letter-spacing: -0.04em;">maya<span style="color: #00D563;">•</span></span>
-                    </div>
-                    <span class="bank-brand-btn-name">Maya</span>
-                  </button>
-                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="gcash" title="GCash">
-                    <div class="bank-brand-btn-logo">
-                      <span style="font-weight: 900; font-size: 12px; color: #005CEE;">GCash</span>
-                    </div>
-                    <span class="bank-brand-btn-name">GCash</span>
-                  </button>
-                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="bdo" title="BDO Unibank">
-                    <div class="bank-brand-btn-logo">
-                      <span style="font-weight: 900; font-size: 12px; color: #003087;">BDO</span>
-                    </div>
-                    <span class="bank-brand-btn-name">BDO</span>
-                  </button>
-                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="bpi" title="Bank of the Philippine Islands">
-                    <div class="bank-brand-btn-logo">
-                      <span style="font-weight: 900; font-size: 12px; color: #B70002;">BPI</span>
-                    </div>
-                    <span class="bank-brand-btn-name">BPI</span>
-                  </button>
-                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="unionbank" title="UnionBank of the Philippines">
-                    <div class="bank-brand-btn-logo">
-                      <span style="font-weight: 900; font-size: 11px; color: #FF6A00;">UB</span>
-                    </div>
-                    <span class="bank-brand-btn-name">UnionBank</span>
-                  </button>
-                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="gotyme" title="GoTyme Bank">
-                    <div class="bank-brand-btn-logo">
-                      <span style="font-weight: 900; font-size: 11px; color: #00E5FF;">GoTyme</span>
-                    </div>
-                    <span class="bank-brand-btn-name">GoTyme</span>
-                  </button>
-                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="metrobank" title="Metrobank">
-                    <div class="bank-brand-btn-logo">
-                      <span style="font-weight: 900; font-size: 11px; color: #0072CE;">Metro</span>
-                    </div>
-                    <span class="bank-brand-btn-name">Metrobank</span>
-                  </button>
-                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="rcbc" title="RCBC">
-                    <div class="bank-brand-btn-logo">
-                      <span style="font-weight: 900; font-size: 12px; color: #F4B223;">RCBC</span>
-                    </div>
-                    <span class="bank-brand-btn-name">RCBC</span>
-                  </button>
-                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="seabank" title="SeaBank">
-                    <div class="bank-brand-btn-logo">
-                      <span style="font-weight: 900; font-size: 11px; color: #EE4D2D;">SeaBank</span>
-                    </div>
-                    <span class="bank-brand-btn-name">SeaBank</span>
-                  </button>
-                  <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="generic" title="Standard Virtual Card">
-                    <div class="bank-brand-btn-logo">
-                      <span style="font-weight: 900; font-size: 11px; color: var(--mono-black);">BANK</span>
-                    </div>
-                    <span class="bank-brand-btn-name">Standard</span>
-                  </button>
-                </div>
-              </div>
-
-              <!-- CARD NAME INPUT -->
-              <div class="conversational-name-box">
-                <input 
-                  type="text" 
-                  id="onboard-bank-name-input" 
-                  class="conversational-input" 
-                  placeholder="Card nickname..." 
-                  value="Maya Virtual Visa"
-                >
-              </div>
-
-              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <span style="font-size: 11px; color: var(--text-tertiary); align-self: center;">Presets:</span>
-                <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" style="padding: 4px 10px; font-size: 11px;">Maya Virtual Visa</button>
-                <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" style="padding: 4px 10px; font-size: 11px;">BDO Digital Debit</button>
-                <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" style="padding: 4px 10px; font-size: 11px;">GCash Mastercard</button>
-                <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" style="padding: 4px 10px; font-size: 11px;">Vault</button>
-              </div>
-
-              <!-- NETWORK & GRADIENT SELECTOR ROW -->
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px;">
-                <!-- NETWORK TOGGLE -->
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                  <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">Network</label>
-                  <div style="display: flex; gap: 6px;">
-                    <button type="button" class="btn-pill btn-outline onboard-network-btn selected" data-network="visa" style="flex: 1; padding: 8px;">Visa</button>
-                    <button type="button" class="btn-pill btn-outline onboard-network-btn" data-network="mastercard" style="flex: 1; padding: 8px;">Mastercard</button>
                   </div>
                 </div>
 
-                <!-- GRADIENT PALETTE -->
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                  <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">Theme</label>
-                  <div class="gradient-swatch-grid">
-                    <div class="gradient-swatch-item gradient-obsidian selected onboard-swatch-btn" data-gradient="gradient-obsidian" title="Obsidian"></div>
-                    <div class="gradient-swatch-item gradient-platinum onboard-swatch-btn" data-gradient="gradient-platinum" title="Platinum"></div>
-                    <div class="gradient-swatch-item gradient-midnight onboard-swatch-btn" data-gradient="gradient-midnight" title="Midnight"></div>
-                    <div class="gradient-swatch-item gradient-emerald onboard-swatch-btn" data-gradient="gradient-emerald" title="Emerald"></div>
-                    <div class="gradient-swatch-item gradient-amethyst onboard-swatch-btn" data-gradient="gradient-amethyst" title="Amethyst"></div>
+                <!-- RIGHT COLUMN: CARD BRAND & NICKNAME CONFIG -->
+                <div class="onboard-card-config-panel">
+                  <!-- Philippine Bank / Wallet Brand Selection -->
+                  <div class="onboard-card-field-group">
+                    <div class="bank-brand-selector-title">
+                      <span>Philippine Bank / Wallet Brand</span>
+                      <span style="font-size: 10px; color: var(--text-tertiary);">Tap to choose logo</span>
+                    </div>
+                    <div class="bank-brand-grid">
+                      <button type="button" class="bank-brand-btn selected onboard-bank-brand-btn" data-brand="maya" title="Maya (PayMaya)">
+                        <div class="bank-brand-btn-logo">
+                          <span style="font-weight: 900; font-size: 12px; color: #09090b; letter-spacing: -0.04em;">maya<span style="color: #00D563;">•</span></span>
+                        </div>
+                        <span class="bank-brand-btn-name">Maya</span>
+                      </button>
+                      <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="gcash" title="GCash">
+                        <div class="bank-brand-btn-logo">
+                          <span style="font-weight: 900; font-size: 12px; color: #005CEE;">GCash</span>
+                        </div>
+                        <span class="bank-brand-btn-name">GCash</span>
+                      </button>
+                      <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="bdo" title="BDO Unibank">
+                        <div class="bank-brand-btn-logo">
+                          <span style="font-weight: 900; font-size: 12px; color: #003087;">BDO</span>
+                        </div>
+                        <span class="bank-brand-btn-name">BDO</span>
+                      </button>
+                      <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="bpi" title="Bank of the Philippine Islands">
+                        <div class="bank-brand-btn-logo">
+                          <span style="font-weight: 900; font-size: 12px; color: #B70002;">BPI</span>
+                        </div>
+                        <span class="bank-brand-btn-name">BPI</span>
+                      </button>
+                      <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="unionbank" title="UnionBank of the Philippines">
+                        <div class="bank-brand-btn-logo">
+                          <span style="font-weight: 900; font-size: 11px; color: #FF6A00;">UB</span>
+                        </div>
+                        <span class="bank-brand-btn-name">UnionBank</span>
+                      </button>
+                      <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="gotyme" title="GoTyme Bank">
+                        <div class="bank-brand-btn-logo">
+                          <span style="font-weight: 900; font-size: 11px; color: #00E5FF;">GoTyme</span>
+                        </div>
+                        <span class="bank-brand-btn-name">GoTyme</span>
+                      </button>
+                      <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="metrobank" title="Metrobank">
+                        <div class="bank-brand-btn-logo">
+                          <span style="font-weight: 900; font-size: 11px; color: #0072CE;">Metro</span>
+                        </div>
+                        <span class="bank-brand-btn-name">Metrobank</span>
+                      </button>
+                      <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="rcbc" title="RCBC">
+                        <div class="bank-brand-btn-logo">
+                          <span style="font-weight: 900; font-size: 12px; color: #F4B223;">RCBC</span>
+                        </div>
+                        <span class="bank-brand-btn-name">RCBC</span>
+                      </button>
+                      <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="seabank" title="SeaBank">
+                        <div class="bank-brand-btn-logo">
+                          <span style="font-weight: 900; font-size: 11px; color: #EE4D2D;">SeaBank</span>
+                        </div>
+                        <span class="bank-brand-btn-name">SeaBank</span>
+                      </button>
+                      <button type="button" class="bank-brand-btn onboard-bank-brand-btn" data-brand="generic" title="Standard Virtual Card">
+                        <div class="bank-brand-btn-logo">
+                          <span style="font-weight: 900; font-size: 11px; color: var(--mono-black);">BANK</span>
+                        </div>
+                        <span class="bank-brand-btn-name">Standard</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Cardholder Name Input -->
+                  <div class="onboard-card-field-group">
+                    <label class="onboard-field-label" for="onboard-card-holder-input">Cardholder Name</label>
+                    <div class="onboard-bank-input-box">
+                      <input 
+                        type="text" 
+                        id="onboard-card-holder-input" 
+                        class="onboard-bank-input" 
+                        placeholder="e.g. Neon Felix Cruz" 
+                        value=""
+                        autocomplete="name"
+                      >
+                    </div>
+                  </div>
+
+                  <!-- Quick Presets -->
+                  <div class="onboard-presets-row">
+                    <span class="onboard-presets-label">Presets:</span>
+                    <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" data-brand="maya">Maya</button>
+                    <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" data-brand="bdo">BDO</button>
+                    <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" data-brand="gcash">GCash</button>
+                    <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" data-brand="unionbank">UnionBank</button>
                   </div>
                 </div>
               </div>

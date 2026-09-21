@@ -179,7 +179,7 @@
 
 .onboarding-body {
   width: 100%;
-  max-width: 780px;
+  max-width: 840px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -461,69 +461,477 @@
   outline: none;
 }
 
-/* STEP 4: HERO DEBIT CARD PREVIEW - ROOMY & PROMINENT */
-.onboard-preview-card {
+/* STEP 4: HERO DEBIT CARD PREVIEW & 2-COLUMN SETUP LAYOUT */
+#step-4 {
+  gap: 20px;
+}
+
+.onboard-step-card-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 24px;
+  align-items: start;
   width: 100%;
-  max-width: 380px;
-  height: 232px;
-  border-radius: 20px;
-  padding: 22px 24px;
-  box-shadow: 0 18px 45px -10px rgba(0, 0, 0, 0.35),
-              0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.onboard-card-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+.onboard-card-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+/* Fix debit card absolute overlap bug */
+.onboard-preview-card {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  width: 340px !important;
+  max-width: 100% !important;
+  height: 215px !important;
+  border-radius: 20px !important;
+  padding: 22px 24px !important;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.35),
+              0 2px 10px rgba(0, 0, 0, 0.12) !important;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .onboard-preview-card .card-bank-name {
-  font-size: 17px;
+  font-size: 16px;
+  font-weight: 800;
 }
 
 .onboard-preview-card .card-number-display {
-  font-size: 17px;
+  font-size: 16px;
   letter-spacing: 0.18em;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .onboard-preview-card .card-balance-value {
-  font-size: 15px;
+  font-size: 14.5px;
 }
 
 .onboard-preview-card .card-holder-name {
   font-size: 13px;
+  font-weight: 700;
 }
 
-/* SSO AUTHENTICATION CARD */
+.onboard-card-styling-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 340px;
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-xs);
+  box-sizing: border-box;
+}
+
+.onboard-card-config-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-xs);
+  box-sizing: border-box;
+}
+
+.onboard-card-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.onboard-field-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.onboard-network-pill-group {
+  display: flex;
+  gap: 6px;
+}
+
+.onboard-network-pill-group .onboard-network-btn {
+  flex: 1;
+  padding: 7px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  justify-content: center;
+}
+
+.onboard-bank-input-box {
+  display: flex;
+  align-items: center;
+  background-color: var(--surface-container-low);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.onboard-bank-input-box:focus-within {
+  background-color: #ffffff;
+  border-color: var(--mono-black);
+  box-shadow: 0 0 0 3px rgba(9, 9, 11, 0.08);
+}
+
+.onboard-bank-input {
+  width: 100%;
+  font-family: var(--font-main);
+  font-size: 14.5px !important;
+  font-weight: 600 !important;
+  color: var(--text-primary);
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  outline: none;
+}
+
+.onboard-presets-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.onboard-presets-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  margin-right: 2px;
+}
+
+.onboard-bank-suggestion {
+  padding: 4px 10px !important;
+  font-size: 11.5px !important;
+  border-radius: var(--radius-pill);
+}
+
+/* SSO & SOCIAL AUTHENTICATION IN SETUP */
 .sso-login-box {
   display: flex;
   flex-direction: column;
   gap: 14px;
   align-items: center;
   text-align: center;
-  margin-top: 14px;
+  margin-top: 16px;
+  width: 100%;
 }
 
-.sso-auth-btn {
+.sso-divider-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
-  max-width: 380px;
-  padding: 13px 24px;
+  max-width: 420px;
+}
+
+.sso-divider-line {
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-subtle);
+}
+
+.sso-divider-text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sso-buttons-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 460px;
+}
+
+.sso-auth-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 18px;
   background-color: #ffffff;
   border: 1.5px solid var(--border-subtle);
   border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-xs);
-  font-size: 13.5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  font-family: var(--font-main);
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
   cursor: pointer;
   transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  user-select: none;
 }
 
 .sso-auth-btn:hover {
-  background-color: var(--mono-50);
+  background-color: #ffffff;
   border-color: var(--mono-black);
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.sso-auth-btn:active {
+  transform: scale(0.98);
+}
+
+.google-auth-btn {
+  background-color: #ffffff;
+}
+
+.google-auth-btn:hover {
+  border-color: #4285F4;
+  box-shadow: 0 6px 18px rgba(66, 133, 244, 0.12);
+}
+
+.google-icon-svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.enterprise-auth-btn svg {
+  color: var(--text-secondary);
+  transition: color 160ms ease;
+}
+
+.enterprise-auth-btn:hover svg {
+  color: var(--mono-black);
+}
+
+/* MODALS DISPLAYED ON TOP OF ONBOARDING OVERLAY (z-index: 300) */
+#google-sso-modal,
+#enterprise-sso-modal {
+  z-index: 300 !important;
+}
+
+/* GOOGLE ACCOUNT CHOOSER MODAL STYLING */
+.google-sso-container {
+  background: #ffffff !important;
+  border-radius: 24px !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.24) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  max-width: 420px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  animation: modalSpring 240ms var(--ease-spring);
+}
+
+.google-modal-header {
+  padding: 24px 28px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: #ffffff;
+}
+
+.google-logo-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.google-wordmark-svg {
+  height: 24px;
+  width: auto;
+}
+
+.google-modal-close,
+.sso-modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface-container-low);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 160ms ease;
+}
+
+.google-modal-close:hover,
+.sso-modal-close:hover {
+  background: var(--surface-container);
+  color: var(--mono-black);
+}
+
+.google-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin: 0 0 4px 0;
+}
+
+.google-sub {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.google-modal-body {
+  padding: 14px 20px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.google-account-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.google-account-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: all 160ms ease;
+  background: transparent;
+  user-select: none;
+}
+
+.google-account-item:hover {
+  background: #f8f9fa;
+  border-color: var(--border-subtle);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+}
+
+.google-account-item:active {
+  background: #f1f3f4;
+  transform: scale(0.99);
+}
+
+.google-acc-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #1a73e8;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(26, 115, 232, 0.25);
+}
+
+.google-acc-avatar.other {
+  background: #f1f3f4;
+  color: #5f6368;
+  border: 1.5px dashed #dadce0;
+  box-shadow: none;
+}
+
+.google-acc-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  min-width: 0;
+}
+
+.google-acc-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.google-acc-email {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+
+.google-acc-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 9999px;
+  background: var(--surface-container-low);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.google-footer-disclaimer {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+  text-align: left;
+}
+
+.google-footer-disclaimer a {
+  color: #1a73e8;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.google-footer-disclaimer a:hover {
+  text-decoration: underline;
+}
+
+.sso-work-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-subtle);
+  font-family: var(--font-main);
+  font-size: 14px;
+  background: var(--surface-container-low);
+  color: var(--text-primary);
+  transition: all 160ms ease;
+  box-sizing: border-box;
+}
+
+.sso-work-input:focus {
+  background: #ffffff;
+  border-color: var(--mono-black);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
 }
 
 /* CENTER ACTIONS (SKIP & NEXT MAGKADIKIT DIRECTLY IN THE MIDDLE) */
@@ -678,6 +1086,23 @@
     font-size: 20px !important;
   }
 
+  .onboard-step-card-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .onboard-card-stage {
+    width: 100%;
+  }
+
+  .onboard-card-styling-panel {
+    max-width: 100%;
+  }
+
+  .onboard-card-config-panel {
+    padding: 16px;
+  }
+
   .onboard-preview-card {
     max-width: 100%;
     height: 205px;
@@ -714,4 +1139,19 @@
     flex: 1.4;
     padding: 12px 18px;
   }
+
+  .sso-buttons-row {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .sso-auth-btn {
+    width: 100%;
+  }
+
+  .google-sso-container {
+    max-width: 94vw !important;
+    border-radius: 20px !important;
+  }
 }
+
