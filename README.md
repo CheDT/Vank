@@ -1,7 +1,4 @@
-# Vank
----
-
-## 🛠️ Project Structure
+## Project Structure
 
 ```
 ExpenseTracker/
