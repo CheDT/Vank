@@ -9,7 +9,8 @@ import { PlannerPanel } from './planner.js';
 import { renderLedger } from './ledger.js';
 import { renderAnalytics } from './charts.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await state.ready;
   // 1. Initialize Subsystems
   const onboarding = new OnboardingWizard(state);
   const modal = new TransactionModal(state);

@@ -1,8 +1,5 @@
 import { detectBankBrand } from './bankLogos.js';
-
-// STATE MANAGEMENT & LOCAL STORAGE PERSISTENCE (PESOS & MONOCHROME)
-
-const STORAGE_KEY = 'gworkspace_tracker_state_v4_virtual_banks';
+import { api } from './api.js';
 
 // Authentic human transactions in Philippine Pesos (₱)
 const INITIAL_TRANSACTIONS = [
@@ -153,7 +150,13 @@ class StateManager {
     this.plannerSettings = this.defaultPlannerSettings();
     this.recurringPlans = [];
     this.plannerGoals = [];
-    this.loadState();
+    this.userProfile = this.defaultProfile(true);
+    this.activeWorkspace = 'all';
+    this.virtualBanks = this.defaultVirtualBanks();
+    this.transactions = [];
+    this.budgets = [];
+    this.filter = { search: '', category: 'all', account: 'all', classification: 'all', type: 'all' };
+    this.ready = this.loadState();
   }
 
   defaultPlannerSettings() {
@@ -165,49 +168,54 @@ class StateManager {
     };
   }
 
-  loadState() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        this.userProfile = parsed.userProfile || this.defaultProfile();
-        this.activeWorkspace = parsed.activeWorkspace || 'all';
-        this.activeVirtualBankId = parsed.activeVirtualBankId || 'all';
-        this.transactions = parsed.transactions || [];
-        this.budgets = parsed.budgets || [];
-        this.virtualBanks = parsed.virtualBanks || this.defaultVirtualBanks();
-        this.plannerSettings = { ...this.defaultPlannerSettings(), ...(parsed.plannerSettings || {}) };
-        this.recurringPlans = parsed.recurringPlans || [];
-        this.plannerGoals = parsed.plannerGoals || [];
-        this.filter = {
-          search: '',
-          category: 'all',
-          account: 'all',
-          classification: 'all',
-          type: 'all'
-        };
+  async loadState() {
+    this.filter = { search: '', category: 'all', account: 'all', classification: 'all', type: 'all' };
+    try {
+      const saved = await api.loadState();
+      if (saved && saved.userProfile) {
+        this.userProfile = saved.userProfile;
+        this.activeWorkspace = saved.activeWorkspace || 'all';
+        this.activeVirtualBankId = saved.activeVirtualBankId || 'all';
+        this.transactions = saved.transactions || [];
+        this.budgets = saved.budgets || [];
+        this.virtualBanks = saved.virtualBanks || this.defaultVirtualBanks();
+        this.plannerSettings = { ...this.defaultPlannerSettings(), ...(saved.plannerSettings || {}) };
+        this.recurringPlans = saved.recurringPlans || [];
+        this.plannerGoals = saved.plannerGoals || [];
         this.recalculateBankBalances();
         this.recalculateBudgets();
+        this.notify();
         return;
-      } catch (e) {
-        console.error('Failed to parse saved state, resetting', e);
+      }
+    } catch (e) {
+      console.error('API unavailable, falling back to localStorage', e);
+      const saved = localStorage.getItem('gworkspace_tracker_state_v4_virtual_banks');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          this.userProfile = parsed.userProfile || this.defaultProfile();
+          this.activeWorkspace = parsed.activeWorkspace || 'all';
+          this.activeVirtualBankId = parsed.activeVirtualBankId || 'all';
+          this.transactions = parsed.transactions || [];
+          this.budgets = parsed.budgets || [];
+          this.virtualBanks = parsed.virtualBanks || this.defaultVirtualBanks();
+          this.plannerSettings = { ...this.defaultPlannerSettings(), ...(parsed.plannerSettings || {}) };
+          this.recurringPlans = parsed.recurringPlans || [];
+          this.plannerGoals = parsed.plannerGoals || [];
+          this.recalculateBankBalances();
+          this.recalculateBudgets();
+          this.notify();
+          return;
+        } catch {}
       }
     }
-    
-    // Default initial state (Clean Blank for New Profile with exactly 1 Virtual Bank and NO built-in budgets)
+    // Fresh state
     this.userProfile = this.defaultProfile(true);
     this.activeWorkspace = 'all';
     this.activeVirtualBankId = 'all';
     this.virtualBanks = this.defaultVirtualBanks();
-    this.transactions = []; // Completely blank ledger
-    this.budgets = []; // Zero built-in budgets (user adds their own)
-    this.filter = {
-      search: '',
-      category: 'all',
-      account: 'all',
-      classification: 'all',
-      type: 'all'
-    };
+    this.transactions = [];
+    this.budgets = [];
     this.recalculateBankBalances();
     this.saveState();
   }
@@ -517,7 +525,9 @@ class StateManager {
       recurringPlans: this.recurringPlans,
       plannerGoals: this.plannerGoals
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    api.saveState(toSave).catch(() => {
+      localStorage.setItem('gworkspace_tracker_state_v4_virtual_banks', JSON.stringify(toSave));
+    });
     this.notify();
   }
 

@@ -1,0 +1,61 @@
+{
+  "userProfile": {
+    "name": "S",
+    "email": "",
+    "workspaceName": "Maya Ledger",
+    "workspaceMode": "hybrid",
+    "currency": "₱",
+    "currencyCode": "PHP",
+    "onboardingComplete": true
+  },
+  "activeWorkspace": "all",
+  "activeVirtualBankId": "all",
+  "transactions": [
+    {
+      "id": "tx-test",
+      "description": "Test",
+      "type": "expense",
+      "amount": 100,
+      "category": "General",
+      "date": "2026-01-01"
+    },
+    {
+      "id": "tx-muwquebwnx6x",
+      "date": "2026-10-06",
+      "description": "Client",
+      "memo": "",
+      "type": "expense",
+      "amount": 200,
+      "category": "Cloud & Tech",
+      "account": "Maya",
+      "bankId": "bank-muwqu4rz",
+      "classification": "personal",
+      "taxDeductible": false,
+      "client": null
+    }
+  ],
+  "budgets": [],
+  "virtualBanks": [
+    {
+      "id": "bank-muwqu4rz",
+      "name": "Maya",
+      "network": "visa",
+      "brand": "maya",
+      "classification": "business",
+      "gradient": "gradient-emerald",
+      "cardHolder": "S",
+      "last4": "4857",
+      "initialBalance": 0,
+      "balance": -200,
+      "isPrimary": true
+    }
+  ],
+  "plannerSettings": {
+    "monthlyIncomeTarget": 0,
+    "monthlyExpenseTarget": 0,
+    "savingsTarget": 0,
+    "alertThreshold": 80
+  },
+  "recurringPlans": [],
+  "plannerGoals": []
+}
