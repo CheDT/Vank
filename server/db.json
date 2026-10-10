@@ -1,52 +1,70 @@
 {
   "userProfile": {
-    "name": "S",
+    "name": "",
     "email": "",
-    "workspaceName": "Maya Ledger",
+    "workspaceName": "Vank",
     "workspaceMode": "hybrid",
     "currency": "₱",
     "currencyCode": "PHP",
-    "onboardingComplete": true
+    "onboardingComplete": true,
+    "tutorialDismissed": false
   },
   "activeWorkspace": "all",
   "activeVirtualBankId": "all",
   "transactions": [
     {
-      "id": "tx-test",
-      "description": "Test",
+      "id": "tx-mv25j5q81dhe",
+      "date": "2026-10-10",
+      "description": "Office lunch",
+      "memo": "team lunch",
       "type": "expense",
-      "amount": 100,
+      "amount": 250,
       "category": "General",
-      "date": "2026-01-01"
-    },
-    {
-      "id": "tx-muwquebwnx6x",
-      "date": "2026-10-06",
-      "description": "Client",
-      "memo": "",
-      "type": "expense",
-      "amount": 200,
-      "category": "Cloud & Tech",
       "account": "Maya",
-      "bankId": "bank-muwqu4rz",
+      "bankId": "bank-1",
       "classification": "personal",
       "taxDeductible": false,
       "client": null
+    },
+    {
+      "id": "tx-mv257vl08nc6",
+      "date": "2026-10-10",
+      "description": "AWS",
+      "memo": "monthly hosting",
+      "type": "expense",
+      "amount": 2500,
+      "category": "Cloud & Tech",
+      "account": "Maya",
+      "bankId": "bank-1",
+      "classification": "business",
+      "taxDeductible": true,
+      "client": "Internal Infra"
     }
   ],
-  "budgets": [],
+  "budgets": [
+    {
+      "category": "Cloud & Tech",
+      "limit": 12000,
+      "spent": 2500
+    },
+    {
+      "category": "General",
+      "limit": 5000,
+      "spent": 250
+    }
+  ],
   "virtualBanks": [
     {
-      "id": "bank-muwqu4rz",
+      "id": "bank-1",
       "name": "Maya",
       "network": "visa",
       "brand": "maya",
       "classification": "business",
       "gradient": "gradient-emerald",
-      "cardHolder": "S",
-      "last4": "4857",
+      "cardHolder": "User",
+      "last4": "1234",
       "initialBalance": 0,
-      "balance": -200,
+      "balance": -2750,
       "isPrimary": true
     }
   ],

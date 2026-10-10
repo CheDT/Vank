@@ -143,7 +143,7 @@ export const DEMO_BUDGETS = [
   { category: 'Equipment & Office', limit: 12000, spent: 0 }
 ];
 
-class StateManager {
+export class StateManager {
   constructor() {
     this.listeners = [];
     this.activeVirtualBankId = 'all';
