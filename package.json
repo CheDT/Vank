@@ -8,14 +8,19 @@
     "server": "node server/index.js",
     "start": "concurrently \"npm run server\" \"npm run dev\"",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run --environment jsdom",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.0",
     "concurrently": "^8.2.2",
-    "vite": "^6.2.0"
+    "jsdom": "^26.0.0",
+    "vite": "^6.2.0",
+    "vitest": "^3.2.4"
   }
 }
