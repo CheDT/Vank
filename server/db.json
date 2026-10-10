@@ -1,6 +1,6 @@
 {
   "userProfile": {
-    "name": "",
+    "name": "Neon",
     "email": "",
     "workspaceName": "Vank",
     "workspaceMode": "hybrid",
@@ -10,8 +10,22 @@
     "tutorialDismissed": false
   },
   "activeWorkspace": "all",
-  "activeVirtualBankId": "all",
+  "activeVirtualBankId": "bank-mv2mezz2lbe",
   "transactions": [
+    {
+      "id": "tx-init-mv2mezz2",
+      "date": "2026-10-10",
+      "description": "Opening Deposit - GoTyme",
+      "memo": "Virtual Card Setup [•••• 4163]",
+      "type": "income",
+      "amount": 6050,
+      "category": "General",
+      "account": "GoTyme",
+      "bankId": "bank-mv2mezz2lbe",
+      "classification": "business",
+      "taxDeductible": false,
+      "client": null
+    },
     {
       "id": "tx-mv25j5q81dhe",
       "date": "2026-10-10",
@@ -66,6 +80,19 @@
       "initialBalance": 0,
       "balance": -2750,
       "isPrimary": true
+    },
+    {
+      "id": "bank-mv2mezz2lbe",
+      "name": "GoTyme",
+      "network": "visa",
+      "brand": "gotyme",
+      "classification": "business",
+      "gradient": "gradient-platinum",
+      "cardHolder": "Neon",
+      "last4": "4163",
+      "initialBalance": 6050,
+      "balance": 6050,
+      "isPrimary": false
     }
   ],
   "plannerSettings": {

@@ -1,11 +1,7 @@
-/* CASHEW TRANSACTION MODAL - PREMIUM BLACK & WHITE */
-
 .modal-backdrop {
   position: fixed;
   inset: 0;
   background-color: rgba(9, 9, 11, 0.6);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   display: none;
   align-items: center;
   justify-content: center;
@@ -15,6 +11,7 @@
 
 .modal-backdrop.active {
   display: flex;
+  animation: fade-enter 160ms ease;
 }
 
 .modal-container {
@@ -24,15 +21,17 @@
   box-shadow: var(--shadow-xl);
   width: 100%;
   max-width: 530px;
-  max-height: 90vh;
+  max-height: calc(100dvh - 32px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: modalSpring 240ms var(--ease-spring);
+  animation: surface-enter 200ms var(--ease-smooth);
 }
 
+
 .modal-header {
-  padding: 18px 24px;
+  flex-shrink: 0;
+  padding: var(--space-4) var(--space-6);
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
@@ -41,16 +40,17 @@
 }
 
 .modal-title {
-  font-size: 18px;
-  font-weight: 800;
+  font-size: var(--type-section);
+  line-height: var(--line-section);
+  font-weight: 650;
   letter-spacing: -0.02em;
 }
 
 .modal-close-btn {
   background: var(--surface-container-low);
   border: none;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   cursor: pointer;
   color: var(--text-secondary);
@@ -68,11 +68,13 @@
 }
 
 .modal-body {
-  padding: 22px 24px;
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-6);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--space-6);
 }
 
 /* MONOCHROME SEGMENTED CASH IN / CASH OUT SWITCH */
@@ -90,10 +92,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 10px;
+  gap: var(--space-2);
+  padding: 8px 12px;
+  min-height: 40px;
   font-family: var(--font-main);
-  font-size: 13.5px;
+  font-size: var(--type-body);
   font-weight: 700;
   background: transparent;
   border: none;
@@ -119,7 +122,7 @@
 .amount-input-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-2);
 }
 
 .amount-input-wrapper {
@@ -127,21 +130,26 @@
   align-items: center;
   background-color: var(--surface-container-low);
   border-radius: var(--radius-sm);
-  padding: 8px 18px;
-  border: 1px solid var(--border-subtle);
+  padding: 8px 16px;
+  border: 1px solid #888;
   transition: all var(--duration-fast) var(--ease-smooth);
 }
 
 .amount-input-wrapper:focus-within {
   background-color: #ffffff;
   border-color: var(--mono-black);
-  box-shadow: 0 0 0 2px rgba(9, 9, 11, 0.1);
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
 }
+.amount-field:focus-visible { outline: none; }
+.amount-field { appearance: textfield; }
+.amount-field::-webkit-inner-spin-button, .amount-field::-webkit-outer-spin-button { appearance: none; margin: 0; }
+.field-label { font-size: var(--type-label); line-height: var(--line-label); font-weight: 600; color: var(--text-secondary); }
 
 .amount-currency-symbol {
   font-size: 30px;
   font-weight: 700;
-  color: var(--mono-400);
+  color: var(--text-secondary);
   margin-right: 6px;
 }
 
@@ -167,7 +175,7 @@
 .classification-options {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .classification-option-card {
@@ -208,12 +216,13 @@
 }
 
 .classification-label {
-  font-size: 13px;
+  font-size: var(--type-body);
   font-weight: 700;
 }
 
 .classification-sub {
-  font-size: 11px;
+  font-size: var(--type-label);
+  line-height: var(--line-label);
   color: var(--text-tertiary);
 }
 
@@ -246,27 +255,49 @@
 .form-row-dual {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: var(--space-4);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-2);
+  min-width: 0;
 }
 
 .form-group label {
-  font-size: 11px;
-  font-weight: 700;
+  font-size: var(--type-label);
+  line-height: var(--line-label);
+  font-weight: 600;
   color: var(--text-secondary);
 }
 
 .modal-footer {
-  padding: 12px 20px;
+  flex-shrink: 0;
+  padding: var(--space-4) var(--space-6);
   border-top: 1px solid var(--border-subtle);
-  background-color: #fafbfc;
+  background-color: var(--surface-card);
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
+}
+.modal-footer .btn-primary, .planner-form-actions .btn-primary { min-width: 120px; }
+
+@media (max-width: 760px) {
+  .modal-backdrop { padding: 0; background: white; }
+  .modal-container { width: 100%; max-width: none !important; height: 100dvh; max-height: none; border: 0; border-radius: 0 !important; box-shadow: none; }
+  .modal-header { padding: calc(12px + env(safe-area-inset-top)) 16px 12px; }
+  .modal-title { font-size: 18px; font-weight: 650; }
+  .modal-body { padding: 24px 16px; gap: 24px; scroll-padding-block: 24px; }
+  .modal-footer { padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: white; }
+  .modal-footer .btn-primary { flex: 1; }
+  .modal-footer > div { flex: 1; }
+  .modal-footer .btn-modal-delete { padding: 8px; font-size: 12px; }
+  .modal-close-btn { width: var(--touch-target); height: var(--touch-target); }
+  .form-row-dual { grid-template-columns: minmax(0, 1fr); }
+  .flow-toggle-btn { min-height: var(--touch-target); }
+  .classification-option-card { min-height: 48px; padding: 12px; gap: 8px; }
+  .form-group label { font-size: 12px; font-weight: 600; }
+  .classification-sub { display: none; }
 }

@@ -3,14 +3,13 @@ import { OnboardingWizard } from './onboarding.js';
 import { TransactionModal } from './modal.js';
 import { BankModal } from './bankModal.js';
 import { BudgetModal } from './budgetModal.js';
-import { TutorialGuide } from './tutorial.js';
 import { WorkspaceController } from './workspace.js';
 import { PlannerPanel } from './planner.js';
 import { renderLedger } from './ledger.js';
 import { renderAnalytics } from './charts.js';
+import { WorkspaceFeedback } from './feedback.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  await state.ready;
   // 1. Initialize Subsystems
   const onboarding = new OnboardingWizard(state);
   const modal = new TransactionModal(state);
@@ -18,12 +17,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const budgetModal = new BudgetModal(state);
   const workspace = new WorkspaceController(state, onboarding, bankModal);
   const planner = new PlannerPanel(state, budgetModal);
-  const tutorial = new TutorialGuide(state, modal, bankModal, budgetModal);
+  new WorkspaceFeedback(state);
 
   // Auto-launch conversational onboarding for fresh users
-  if (!state.userProfile.onboardingComplete) {
-    setTimeout(() => onboarding.show(1), 300);
-  }
+  state.ready.then(() => {
+    if (!state.userProfile.onboardingComplete) setTimeout(() => onboarding.show(1), 300);
+  });
 
   // 2. Elements Cache
   const ledgerTableBody = document.getElementById('ledger-table-body');
@@ -173,19 +172,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Re-open Tutorial Guide trigger in Account Popover
-  const showGuideBtn = document.getElementById('btn-show-guide');
-  if (showGuideBtn) {
-    showGuideBtn.addEventListener('click', () => {
-      const popover = document.getElementById('account-popover');
-      if (popover) popover.classList.remove('active');
-      tutorial.show();
-    });
-  }
-
   // Keyboard Shortcuts: 'n' for new transaction
   window.addEventListener('keydown', (e) => {
-    const isModalOpen = document.querySelector('.modal-backdrop.active') || document.querySelector('.onboarding-overlay.active');
+    const isModalOpen = document.querySelector('.modal-backdrop.active, .onboarding-overlay.active, .mobile-menu-sheet-backdrop.active');
     const isInputActive = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
     
     if (e.key.toLowerCase() === 'n' && !isModalOpen && !isInputActive) {
@@ -195,7 +184,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // 3. Central Render Loop
-  function updateUI() {
+  function updateUI(_state, reason) {
+    if (reason === 'sync' || !state.hasLoadedData) return;
     const metrics = state.getMetrics();
     const currency = state.userProfile.currency || '₱';
 
@@ -227,6 +217,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Subscribe to state updates
   state.subscribe(updateUI);
+
+  document.querySelectorAll('.choice-card, .classification-option-card, .bank-brand-btn, .onboard-brand-btn, .gradient-swatch-item').forEach(control => {
+    control.setAttribute('role', 'button');
+    control.tabIndex = 0;
+    if (!control.hasAttribute('aria-label') && control.title) control.setAttribute('aria-label', control.title);
+  });
+  const overlays = [...document.querySelectorAll('.modal-backdrop, .onboarding-overlay')];
+  let activeDialog = null;
+  let dialogTrigger = null;
+  let lastBackgroundFocus = document.activeElement;
+  document.addEventListener('focusin', event => {
+    if (!overlays.some(overlay => overlay.contains(event.target))) lastBackgroundFocus = event.target;
+  });
+  const updateDialogFocus = () => {
+    const next = overlays.find(overlay => overlay.classList.contains('active')) || null;
+    if (next === activeDialog) return;
+    if (next && !activeDialog) dialogTrigger = lastBackgroundFocus;
+    activeDialog = next;
+    document.querySelector('.app-container').inert = Boolean(next);
+    if (!next) dialogTrigger?.isConnected && dialogTrigger.focus();
+  };
+  const dialogObserver = new MutationObserver(updateDialogFocus);
+  overlays.forEach(overlay => dialogObserver.observe(overlay, { attributes: true, attributeFilter: ['class'] }));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Tab' && activeDialog) workspace.trapFocus(event, activeDialog);
+  });
 
   // Initial render
   updateUI();

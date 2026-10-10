@@ -1,6 +1,7 @@
 // ADD VIRTUAL BANK CONTROLLER (DEBIT CARD THEME & PHILIPPINE BANK LOGOS)
 
 import { PHILIPPINE_BANKS, getBankLogoSvg, detectBankBrand } from './bankLogos.js';
+import { saveWithFeedback } from './feedback.js';
 
 export class BankModal {
   constructor(state) {
@@ -243,6 +244,7 @@ export class BankModal {
   }
 
   open(bankId = null) {
+    if (this.saving) return;
     this.editingBankId = bankId;
     const cur = this.state.userProfile.currency || '₱';
 
@@ -250,8 +252,8 @@ export class BankModal {
       const bank = (this.state.virtualBanks || []).find(b => b.id === bankId);
       if (!bank) return;
 
-      if (this.modalTitle) this.modalTitle.textContent = 'Manage Virtual Card';
-      if (this.submitBtn) this.submitBtn.textContent = 'Save Changes ↵';
+      if (this.modalTitle) this.modalTitle.textContent = 'Edit bank';
+      if (this.submitBtn) this.submitBtn.textContent = 'Save changes';
       if (this.balanceLabel) this.balanceLabel.textContent = 'Card Balance / Starting Value (₱ PHP)';
       if (this.deleteBtn) this.deleteBtn.style.display = 'inline-flex';
 
@@ -314,8 +316,8 @@ export class BankModal {
       this.updatePreviewGradient();
       this.updatePreviewBrandLogo();
     } else {
-      if (this.modalTitle) this.modalTitle.textContent = 'New Virtual Bank Card';
-      if (this.submitBtn) this.submitBtn.textContent = 'Create Virtual Card ↵';
+      if (this.modalTitle) this.modalTitle.textContent = 'Add bank';
+      if (this.submitBtn) this.submitBtn.textContent = 'Add bank';
       if (this.balanceLabel) this.balanceLabel.textContent = 'Initial Balance (₱ PHP)';
       if (this.deleteBtn) this.deleteBtn.style.display = 'none';
 
@@ -360,10 +362,8 @@ export class BankModal {
     }
 
     this.modalEl.classList.add('active');
-    setTimeout(() => {
-      if (this.holderInput) this.holderInput.focus();
-      else if (this.nameInput) this.nameInput.focus();
-    }, 100);
+    if (this.holderInput) this.holderInput.focus();
+    else if (this.nameInput) this.nameInput.focus();
   }
 
   close() {
@@ -371,7 +371,8 @@ export class BankModal {
     this.editingBankId = null;
   }
 
-  handleSubmit() {
+  async handleSubmit() {
+    if (this.saving) return;
     const name = (this.nameInput ? this.nameInput.value.trim() : '') || (this.currentData.name || 'Virtual Card');
     const cardHolder = this.holderInput ? this.holderInput.value.trim() : (this.currentData.cardHolder || '');
 
@@ -385,18 +386,22 @@ export class BankModal {
       initialBalance: this.currentData.initialBalance
     };
 
-    if (this.editingBankId) {
-      this.state.updateVirtualBank(this.editingBankId, payload);
-    } else {
-      const newBank = this.state.addVirtualBank(payload);
-      // Automatically select the new bank
-      this.state.setActiveVirtualBank(newBank.id);
+    this.saving = true;
+    try {
+      await saveWithFeedback(this.state, this.submitBtn, () => {
+        if (this.editingBankId) {
+          this.state.updateVirtualBank(this.editingBankId, payload);
+        } else {
+          const newBank = this.state.addVirtualBank(payload);
+          this.state.setActiveVirtualBank(newBank.id);
+        }
+        if (cardHolder && (!this.state.userProfile.name || this.state.virtualBanks.length === 1)) {
+          this.state.updateProfile({ name: cardHolder });
+        }
+      });
+      this.close();
+    } finally {
+      this.saving = false;
     }
-
-    if (cardHolder && (!this.state.userProfile.name || this.state.virtualBanks.length === 1)) {
-      this.state.updateProfile({ name: cardHolder });
-    }
-
-    this.close();
   }
 }

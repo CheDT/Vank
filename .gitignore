@@ -1,0 +1,11 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+coverage/
+server/db.json
+server/db.json.tmp
+.env
+.env.local
+*.log
+

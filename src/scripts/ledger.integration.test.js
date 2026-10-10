@@ -1,71 +1,51 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest';
 import { renderLedger } from './ledger.js';
-import { StateManager } from './state.js';
+import { StateManager, state } from './state.js';
+import { api } from './api.js';
+import { seededState, transaction } from '../../tests/helpers/fixtures.js';
+
+vi.mock('./api.js', () => ({
+  api: { loadState: vi.fn(async () => null), saveState: vi.fn(async () => ({ ok: true })) }
+}));
+
+let manager;
+beforeAll(async () => { await state.ready; await state.pendingSave; });
+beforeEach(async () => {
+  localStorage.clear();
+  document.body.innerHTML = '<table><tbody id="ledger-table-body"></tbody></table><div id="ledger-empty-state"></div><span id="ledger-count-tag"></span>';
+  api.loadState.mockResolvedValue(seededState());
+  manager = new StateManager();
+  await manager.ready;
+});
+afterEach(async () => { await manager.pendingSave; });
+
+function render() {
+  renderLedger(manager, document.getElementById('ledger-table-body'), document.getElementById('ledger-count-tag'));
+}
 
 describe('Ledger UI rendering', () => {
-  beforeEach(() => {
-    document.body.innerHTML = `
-      <div>
-        <table><tbody id="ledger-table-body"></tbody></table>
-        <div id="ledger-empty-state" style="display:none"></div>
-        <span id="ledger-count-tag"></span>
-      </div>
-    `;
-    localStorage.clear();
+  it('renders transaction descriptions, amounts and the row count', () => {
+    manager.transactions = [transaction()];
+    render();
+    expect(document.getElementById('ledger-count-tag').textContent).toBe('1 entries');
+    expect(document.getElementById('ledger-table-body').textContent).toContain('+₱5,000.00');
+    expect(document.querySelector('.description-title').textContent.trim()).toBe('Client payment');
+    expect(document.getElementById('ledger-empty-state').style.display).toBe('none');
   });
 
-  it('renders transaction rows and count for the active ledger state', () => {
-    const state = new StateManager();
-    state.userProfile = { ...state.userProfile, currency: '₱' };
-    state.virtualBanks = [{
-      id: 'bank-1',
-      name: 'Maya',
-      network: 'visa',
-      brand: 'maya',
-      classification: 'business',
-      gradient: 'gradient-emerald',
-      cardHolder: 'User',
-      last4: '1234',
-      initialBalance: 0,
-      balance: 0,
-      isPrimary: true
-    }];
-    state.transactions = [{
-      id: 'tx-1',
-      date: '2026-10-10',
-      description: 'Client payment',
-      memo: 'invoice #104',
-      type: 'income',
-      amount: 5000,
-      category: 'Client Revenue',
-      account: 'Maya',
-      bankId: 'bank-1',
-      classification: 'business',
-      taxDeductible: false,
-      client: 'Acme Studio'
-    }];
-
-    const tableBody = document.getElementById('ledger-table-body');
-    const countEl = document.getElementById('ledger-count-tag');
-
-    renderLedger(state, tableBody, countEl);
-
-    expect(countEl.textContent).toBe('1 entries');
-    expect(tableBody.innerHTML).toContain('Client payment');
-    expect(tableBody.innerHTML).toContain('+₱5,000.00');
+  it('shows the empty state when a filter excludes all transactions', () => {
+    manager.transactions = [transaction()];
+    manager.setFilter({ type: 'expense' });
+    render();
+    expect(document.getElementById('ledger-count-tag').textContent).toBe('0 entries');
+    expect(document.getElementById('ledger-table-body').innerHTML).toBe('');
+    expect(document.getElementById('ledger-empty-state').style.display).toBe('flex');
   });
 
-  it('renders empty state when ledger is filtered to no transactions', () => {
-    const state = new StateManager();
-    state.transactions = [];
-    state.filter = { ...state.filter, classification: 'business' };
-
-    const tableBody = document.getElementById('ledger-table-body');
-    const countEl = document.getElementById('ledger-count-tag');
-
-    renderLedger(state, tableBody, countEl);
-
-    expect(countEl.textContent).toBe('0 entries');
-    expect(tableBody.innerHTML).toBe('');
+  it('renders user descriptions as text instead of executable HTML', () => {
+    manager.transactions = [transaction({ description: '<img src=x onerror=alert(1)>' })];
+    render();
+    expect(document.querySelector('.description-title').textContent.trim()).toBe('<img src=x onerror=alert(1)>');
+    expect(document.querySelector('#ledger-table-body img')).toBeNull();
   });
 });

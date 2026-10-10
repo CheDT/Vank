@@ -1,4 +1,5 @@
 import { PHILIPPINE_BANKS, getBankLogoSvg, detectBankBrand } from './bankLogos.js';
+import { saveWithFeedback } from './feedback.js';
 
 // CONVERSATIONAL MULTI-STEP ONBOARDING CONTROLLER (PESOS & MONOCHROME)
 
@@ -90,7 +91,7 @@ export class OnboardingWizard {
     }
     if (this.avatarPreview) {
       const initials = val.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase();
-      this.avatarPreview.textContent = initials || '—';
+      this.avatarPreview.textContent = initials || 'U';
     }
   }
 
@@ -124,7 +125,6 @@ export class OnboardingWizard {
         if (this.cardPreviewBadge) {
           this.cardPreviewBadge.textContent = card.dataset.mode === 'personal' ? 'PERS' : 'BIZ';
         }
-        setTimeout(() => this.nextStep(), 150);
       });
     });
 
@@ -139,7 +139,6 @@ export class OnboardingWizard {
         if (this.cardPreviewBalance) {
           this.cardPreviewBalance.textContent = `${this.formData.currency}0.00`;
         }
-        setTimeout(() => this.nextStep(), 150);
       });
     });
 
@@ -537,10 +536,11 @@ export class OnboardingWizard {
     this.overlayEl.classList.add('closing');
     setTimeout(() => {
       this.overlayEl.classList.remove('active', 'closing');
-    }, 250);
+    }, 150);
   }
 
   nextStep() {
+    if (this.completing) return;
     if (this.currentStep < this.totalSteps) {
       this.direction = 'forward';
       this.currentStep++;
@@ -551,6 +551,7 @@ export class OnboardingWizard {
   }
 
   prevStep() {
+    if (this.completing) return;
     if (this.currentStep > 1) {
       this.direction = 'backward';
       this.currentStep--;
@@ -583,7 +584,7 @@ export class OnboardingWizard {
     }
 
     if (this.btnNext) {
-      this.btnNext.textContent = this.currentStep === this.totalSteps ? 'Finish Setup ↵' : 'Next →';
+      this.btnNext.textContent = this.currentStep === this.totalSteps ? 'Finish setup' : 'Next';
     }
 
     if (this.currentStep === 1 && this.nameInput) {
@@ -593,26 +594,31 @@ export class OnboardingWizard {
     }
   }
 
-  completeOnboarding() {
+  async completeOnboarding() {
+    if (this.completing) return;
     const rawName = (this.cardHolderInput ? this.cardHolderInput.value.trim() : '') || (this.nameInput ? this.nameInput.value.trim() : '');
     const name = rawName || this.formData.name || 'User';
     const bankName = this.formData.bankName || 'Maya';
 
-    this.state.createNewProfile({
-      name,
-      cardHolder: name,
-      email: this.formData.email || '',
-      workspaceName: `${bankName} Ledger`,
-      workspaceMode: this.formData.workspaceMode || 'hybrid',
-      currency: this.formData.currency || '₱',
-      currencyCode: this.formData.currencyCode || 'PHP',
-      bankName: bankName,
-      bankBrand: this.formData.bankBrand || detectBankBrand(bankName),
-      bankNetwork: this.formData.bankNetwork || 'visa',
-      bankGradient: this.formData.bankGradient || 'gradient-emerald',
-      openingBalance: this.formData.openingBalance || 0
-    });
-
-    this.hide();
+    this.completing = true;
+    try {
+      await saveWithFeedback(this.state, this.btnNext, () => this.state.createNewProfile({
+        name,
+        cardHolder: name,
+        email: this.formData.email || '',
+        workspaceName: `${bankName} Ledger`,
+        workspaceMode: this.formData.workspaceMode || 'hybrid',
+        currency: this.formData.currency || '₱',
+        currencyCode: this.formData.currencyCode || 'PHP',
+        bankName,
+        bankBrand: this.formData.bankBrand || detectBankBrand(bankName),
+        bankNetwork: this.formData.bankNetwork || 'visa',
+        bankGradient: this.formData.bankGradient || 'gradient-emerald',
+        openingBalance: this.formData.openingBalance || 0
+      }));
+      this.hide();
+    } finally {
+      this.completing = false;
+    }
   }
 }

@@ -1,3 +1,5 @@
+import { saveWithFeedback } from './feedback.js';
+
 function formatCurrency(currency, value) {
   return `${currency}${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
@@ -21,48 +23,48 @@ export class PlannerPanel {
     this.state = state;
     this.budgetModal = budgetModal;
     this.container = document.getElementById('planner-dashboard');
+    this.pendingForms = new Set();
 
     this.bindEvents();
   }
 
   bindEvents() {
-    document.addEventListener('submit', (e) => {
-      if (e.target.id === 'planner-settings-form') {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        this.state.setPlannerSettings({
-          monthlyIncomeTarget: parseFloat(formData.get('monthlyIncomeTarget')) || 0,
-          monthlyExpenseTarget: parseFloat(formData.get('monthlyExpenseTarget')) || 0,
-          savingsTarget: parseFloat(formData.get('savingsTarget')) || 0,
-          alertThreshold: Math.max(0, Math.min(100, parseFloat(formData.get('alertThreshold')) || 80))
+    document.addEventListener('submit', async (e) => {
+      const form = e.target;
+      if (!['planner-settings-form', 'planner-recurring-form', 'planner-goal-form'].includes(form.id)) return;
+      e.preventDefault();
+      if (this.pendingForms.has(form.id)) return;
+      const formData = new FormData(form);
+      let created = true;
+      this.pendingForms.add(form.id);
+      try {
+        await saveWithFeedback(this.state, form.querySelector('[type="submit"]'), () => {
+          if (form.id === 'planner-settings-form') this.state.setPlannerSettings({
+            monthlyIncomeTarget: parseFloat(formData.get('monthlyIncomeTarget')) || 0,
+            monthlyExpenseTarget: parseFloat(formData.get('monthlyExpenseTarget')) || 0,
+            savingsTarget: parseFloat(formData.get('savingsTarget')) || 0,
+            alertThreshold: Math.max(0, Math.min(100, parseFloat(formData.get('alertThreshold')) || 80))
+          });
+          if (form.id === 'planner-recurring-form') created = this.state.addRecurringPlan({
+            name: formData.get('name'),
+            amount: formData.get('amount'),
+            category: formData.get('category'),
+            kind: formData.get('kind'),
+            frequency: formData.get('frequency'),
+            nextDue: formData.get('nextDue')
+          });
+          if (form.id === 'planner-goal-form') created = this.state.addPlannerGoal({
+            name: formData.get('name'),
+            targetAmount: formData.get('targetAmount'),
+            currentAmount: formData.get('currentAmount'),
+            dueDate: formData.get('dueDate'),
+            category: formData.get('category')
+          });
         });
-      }
-
-      if (e.target.id === 'planner-recurring-form') {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const created = this.state.addRecurringPlan({
-          name: formData.get('name'),
-          amount: formData.get('amount'),
-          category: formData.get('category'),
-          kind: formData.get('kind'),
-          frequency: formData.get('frequency'),
-          nextDue: formData.get('nextDue')
-        });
-        if (created) e.target.reset();
-      }
-
-      if (e.target.id === 'planner-goal-form') {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const created = this.state.addPlannerGoal({
-          name: formData.get('name'),
-          targetAmount: formData.get('targetAmount'),
-          currentAmount: formData.get('currentAmount'),
-          dueDate: formData.get('dueDate'),
-          category: formData.get('category')
-        });
-        if (created) e.target.reset();
+        if (created && form.id !== 'planner-settings-form') form.reset();
+      } finally {
+        this.pendingForms.delete(form.id);
+        this.render();
       }
     });
 
@@ -94,7 +96,14 @@ export class PlannerPanel {
   }
 
   render(container = this.container) {
-    if (!container) return;
+    if (!container || this.pendingForms.size) return;
+    const focused = document.activeElement;
+    const preservedForms = [...container.querySelectorAll('form')].filter(form =>
+      form.contains(focused) || [...form.elements].some(field =>
+        field.tagName === 'INPUT' ? field.value !== field.defaultValue :
+        field.tagName === 'SELECT' && [...field.options].some(option => option.selected !== option.defaultSelected)
+      )
+    );
 
     const currency = this.state.userProfile.currency || '₱';
     const transactions = this.state.transactions || [];
@@ -180,13 +189,10 @@ export class PlannerPanel {
       <article class="planner-hero">
         <div class="planner-hero-head">
           <div>
-            <div class="planner-kicker">Planner mode</div>
-            <h2 class="planner-title">Vank planning dashboard</h2>
-            <p class="planner-subtitle">Set monthly targets, track recurring bills, map goals, and watch the next 30 days before they hit your ledger.</p>
+            <h2 class="planner-title">Planning</h2>
           </div>
           <div class="planner-hero-actions">
-            <button type="button" class="btn-pill btn-outline" data-planner-budget>Budgets</button>
-            <button type="button" class="btn-pill btn-primary" data-planner-budget>Set Budget</button>
+            <button type="button" class="btn-pill btn-outline" data-planner-budget>Set budget</button>
           </div>
         </div>
 
@@ -217,7 +223,6 @@ export class PlannerPanel {
       <div class="planner-grid">
         <article class="planner-card planner-overview-card">
           <h3>Plan this month</h3>
-          <p>Set the numbers you want Vank to plan against.</p>
           <form id="planner-settings-form">
             <div class="planner-form-grid">
               <div class="planner-field">
@@ -245,16 +250,15 @@ export class PlannerPanel {
 
         <article class="planner-card planner-recurring-card">
           <h3>Recurring bills & income</h3>
-          <p>Add the items that should repeat in your plan.</p>
           <form id="planner-recurring-form">
             <div class="planner-form-grid">
               <div class="planner-field">
                 <label for="planner-recurring-name">Name</label>
-                <input id="planner-recurring-name" name="name" type="text" placeholder="Internet bill">
+                <input id="planner-recurring-name" name="name" type="text" placeholder="Internet bill" required>
               </div>
               <div class="planner-field">
                 <label for="planner-recurring-amount">Amount</label>
-                <input id="planner-recurring-amount" name="amount" type="number" min="0" step="0.01" placeholder="0.00">
+                <input id="planner-recurring-amount" name="amount" type="number" min="0.01" step="0.01" placeholder="0.00" required>
               </div>
               <div class="planner-field">
                 <label for="planner-recurring-kind">Type</label>
@@ -292,16 +296,15 @@ export class PlannerPanel {
 
         <article class="planner-card planner-goals-card">
           <h3>Goals</h3>
-          <p>Track savings goals and short-term targets.</p>
           <form id="planner-goal-form">
             <div class="planner-form-grid">
               <div class="planner-field">
                 <label for="planner-goal-name">Goal name</label>
-                <input id="planner-goal-name" name="name" type="text" placeholder="Emergency fund">
+                <input id="planner-goal-name" name="name" type="text" placeholder="Emergency fund" required>
               </div>
               <div class="planner-field">
                 <label for="planner-goal-target">Target amount</label>
-                <input id="planner-goal-target" name="targetAmount" type="number" min="0" step="0.01" placeholder="0.00">
+                <input id="planner-goal-target" name="targetAmount" type="number" min="0.01" step="0.01" placeholder="0.00" required>
               </div>
               <div class="planner-field">
                 <label for="planner-goal-current">Current saved</label>
@@ -327,7 +330,6 @@ export class PlannerPanel {
 
         <article class="planner-card planner-alerts-card">
           <h3>Upcoming & alerts</h3>
-          <p>Watch due dates, risks, and planning gaps.</p>
           <div class="planner-alert-list">
             ${dueSoon.length ? dueSoon.map(item => `
               <div class="planner-alert">
@@ -344,5 +346,7 @@ export class PlannerPanel {
         </article>
       </div>
     `;
+    preservedForms.forEach(form => container.querySelector(`#${form.id}`)?.replaceWith(form));
+    if (focused?.isConnected && container.contains(focused)) focused.focus({ preventScroll: true });
   }
 }
