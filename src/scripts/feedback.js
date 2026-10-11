@@ -85,9 +85,10 @@ export class WorkspaceFeedback {
       local: 'Saved on this device',
       error: 'Couldn’t save'
     }[state.saveStatus];
-    this.feedbackRetry.hidden = state.saveStatus === 'saved';
+    const savedOnDevice = state.browserOnly && state.saveStatus === 'local';
+    this.feedbackRetry.hidden = state.saveStatus === 'saved' || savedOnDevice;
     this.feedback.hidden = false;
-    if (state.saveStatus === 'saved') {
+    if (state.saveStatus === 'saved' || savedOnDevice) {
       this.hideTimer = setTimeout(() => { this.feedback.hidden = true; }, 2500);
     }
   }

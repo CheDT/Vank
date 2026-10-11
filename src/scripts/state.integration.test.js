@@ -24,9 +24,45 @@ beforeEach(() => {
 });
 afterEach(async () => {
   await Promise.all(managers.splice(0).map(manager => manager.pendingSave));
+  vi.unstubAllEnvs();
 });
 
 describe('StateManager integration', () => {
+  it('loads and saves browser-only state without sending API requests', async () => {
+    vi.stubEnv('VITE_STORAGE_MODE', 'browser');
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(seededState()));
+    const manager = await createManager();
+    manager.addTransaction(transaction({ description: 'Pages expense' }));
+    await manager.pendingSave;
+    expect(manager.connectionStatus).toBe('browser');
+    expect(manager.saveStatus).toBe('local');
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)).transactions[0].description).toBe('Pages expense');
+    await manager.retrySync();
+    expect(api.loadState).not.toHaveBeenCalled();
+    expect(api.saveState).not.toHaveBeenCalled();
+  });
+
+  it('starts browser-only onboarding with no saved workspace', async () => {
+    vi.stubEnv('VITE_STORAGE_MODE', 'browser');
+    const manager = await createManager();
+    expect(manager.hasLoadedData).toBe(true);
+    expect(manager.dataStatus).toBe('ready');
+    expect(manager.userProfile.onboardingComplete).toBe(false);
+    expect(api.loadState).not.toHaveBeenCalled();
+    expect(api.saveState).not.toHaveBeenCalled();
+  });
+
+  it('reports a browser-only save error when device storage is blocked', async () => {
+    vi.stubEnv('VITE_STORAGE_MODE', 'browser');
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('blocked'); });
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('blocked'); });
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const manager = await createManager();
+    expect(manager.saveStatus).toBe('error');
+    expect(manager.browserSaveAvailable).toBe(false);
+    expect(api.saveState).not.toHaveBeenCalled();
+  });
+
   it('loads server data and caches it for offline use', async () => {
     const saved = seededState();
     saved.transactions = [transaction()];

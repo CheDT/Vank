@@ -147,6 +147,7 @@ export const DEMO_BUDGETS = [
 
 export class StateManager {
   constructor() {
+    this.browserOnly = import.meta.env?.VITE_STORAGE_MODE === 'browser';
     this.listeners = [];
     this.activeVirtualBankId = 'all';
     this.plannerSettings = this.defaultPlannerSettings();
@@ -207,6 +208,17 @@ export class StateManager {
         console.warn('Browser cache unavailable', error);
       }
     }
+    if (this.browserOnly) {
+      this.connectionStatus = 'browser';
+      if (!this.hasLoadedData) {
+        await this.saveState();
+        this.hasLoadedData = true;
+      }
+      this.unsyncedChanges = false;
+      this.dataStatus = 'ready';
+      this.notify('sync');
+      return;
+    }
     const revision = this.saveRevision;
     this.notify('sync');
     try {
@@ -261,6 +273,7 @@ export class StateManager {
   }
 
   async retrySync() {
+    if (this.browserOnly) return this.saveState();
     if (this.dataStatus === 'loading') return this.ready;
     if (this.saveStatus === 'saving') return this.pendingSave;
     if (this.unsyncedChanges) return this.saveState();
@@ -581,6 +594,14 @@ export class StateManager {
     this.unsyncedChanges = true;
     this.saveStatus = 'saving';
     this.browserSaveAvailable = this.cacheState(snapshot);
+    if (this.browserOnly) {
+      this.connectionStatus = 'browser';
+      this.unsyncedChanges = false;
+      this.saveStatus = this.browserSaveAvailable ? 'local' : 'error';
+      this.pendingSave = Promise.resolve();
+      this.notify();
+      return this.pendingSave;
+    }
     try { localStorage.setItem(`${STORAGE_KEY}_pending`, '1'); } catch {}
     this.pendingSave = this.pendingSave.then(() => api.saveState(snapshot)).then(() => {
       this.connectionStatus = 'connected';
@@ -606,7 +627,7 @@ export class StateManager {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       return true;
     } catch (error) {
-      console.warn('Browser storage unavailable; backend saving remains enabled', error);
+      console.warn('Browser storage unavailable', error);
       return false;
     }
   }

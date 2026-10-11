@@ -47,9 +47,11 @@ The browser storage key is `gworkspace_tracker_state_v4_virtual_banks`, retained
 
 If the API cannot load state, the app attempts browser storage and then starts a fresh profile. Failed writes retain the browser snapshot. API requests have a five-second timeout. If browser storage is blocked but the backend works, backend saving can still proceed.
 
-`StateManager.connectionStatus` tracks loading, connected and offline status. The interface displays an offline message with Retry when state cannot reach the API. Retry reloads the page and repeats the normal load; it does not merge offline edits into backend data.
+`StateManager.connectionStatus` tracks loading, connected, offline and browser status. In backend mode, the interface displays an offline message with Retry when state cannot reach the API. Retry saves pending local edits or refreshes the server state while preserving edits made during that request.
 
-**Offline data is not automatically merged with server data.** When the backend is reachable on a subsequent page load, its workspace takes precedence. Export important offline transactions before switching back to the backend. Different origins such as `localhost:5173` and `127.0.0.1:5173` have different browser storage; use one address consistently.
+**Concurrent workspaces are not merged.** In backend mode, pending browser edits are sent as a complete snapshot when the server becomes reachable; otherwise server data takes precedence. Different origins such as `localhost:5173` and `127.0.0.1:5173` have different browser storage; use one address consistently.
+
+The Pages build sets `VITE_STORAGE_MODE=browser`. It reads and writes browser storage directly, never calls the API, and displays “Saved on this device” after a successful save. See [DEPLOYMENT.md](DEPLOYMENT.md) for setup and limitations.
 
 ## Configuration and commands
 
@@ -58,6 +60,9 @@ If the API cannot load state, the app attempts browser storage and then starts a
 | `PORT` | `3001` | Backend port; Vite uses the same value as its proxy target |
 | `VANK_DB_FILE` | `server/db.json` | Alternate local database file |
 | `VITE_API_BASE_URL` | `/api` | Optional API URL, baked into the frontend at build time |
+| `VITE_STORAGE_MODE` | Unset (backend mode) | Set to `browser` for device-only saving; `.env.pages` sets this for Pages builds |
+| `VANK_BASE_PATH` | `./` | Asset base path; Pages workflow uses the repository path |
+| `VANK_PAGES_TEST_PORT` | `4347` | Production Pages browser test preview port |
 | `VANK_FRONTEND_PORT` | `5173` | Frontend port; an occupied port fails rather than silently using another |
 | `VANK_TEST_FRONTEND_PORT` | `4317` | Browser test frontend port when testing concurrent checkouts |
 | `VANK_TEST_BACKEND_PORT` | `4318` | Browser test API port; uses its isolated test database |
@@ -96,7 +101,7 @@ npm run build
 
 In one terminal run `npm run server`; in a second run `npm run preview`. Open the address Vite prints (normally http://127.0.0.1:4173). Preview also proxies `/api` to the local backend. `dist/` is generated output and is not committed.
 
-A static host such as GitHub Pages cannot run the Express backend. The static frontend may use browser storage when `/api` is unavailable. A complete hosted deployment needs a backend and a matching API/proxy configuration; this integration does not deploy one.
+A static host such as GitHub Pages cannot run the Express backend. `npm run build:pages` produces a frontend that saves directly in browser storage; no server is required. Shared server persistence would require a separately hosted API and matching configuration.
 
 ## API reference
 
