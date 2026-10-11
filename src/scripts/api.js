@@ -1,10 +1,11 @@
-const BASE = 'http://localhost:3001/api';
+const BASE = (import.meta.env?.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
 
 async function req(method, path, body) {
   const res = await fetch(`${BASE}${path}`, {
     method,
     headers: body ? { 'Content-Type': 'application/json' } : {},
-    body: body ? JSON.stringify(body) : undefined
+    body: body ? JSON.stringify(body) : undefined,
+    signal: AbortSignal.timeout(5000)
   });
   if (!res.ok) throw new Error(`API ${method} ${path} failed: ${res.status}`);
   return res.json();

@@ -1,4 +1,4 @@
-// CASHEW-STYLE ADD / EDIT TRANSACTION CONTROLLER
+import { saveWithFeedback } from './feedback.js';
 
 export class TransactionModal {
   constructor(state) {
@@ -101,6 +101,7 @@ export class TransactionModal {
   }
 
   open(editId = null) {
+    if (this.saving) return;
     this.editingId = editId;
     this.currencySymbolEl.textContent = this.state.userProfile.currency || '₱';
 
@@ -142,7 +143,8 @@ export class TransactionModal {
     }
 
     this.modalEl.classList.add('active');
-    setTimeout(() => this.amountInput.focus(), 80);
+    // Focus before typing starts; a delayed focus can steal a later field's input.
+    this.amountInput.focus();
   }
 
   close() {
@@ -150,7 +152,8 @@ export class TransactionModal {
     this.editingId = null;
   }
 
-  handleSubmit() {
+  async handleSubmit() {
+    if (this.saving) return;
     const amountVal = parseFloat(this.amountInput.value);
     if (!amountVal || amountVal <= 0) {
       alert('Please enter a valid transaction amount.');
@@ -182,12 +185,15 @@ export class TransactionModal {
       memo: this.memoInput.value
     };
 
-    if (this.editingId) {
-      this.state.updateTransaction(this.editingId, txData);
-    } else {
-      this.state.addTransaction(txData);
+    this.saving = true;
+    try {
+      await saveWithFeedback(this.state, this.modalEl.querySelector('[type="submit"]'), () => {
+        if (this.editingId) this.state.updateTransaction(this.editingId, txData);
+        else this.state.addTransaction(txData);
+      });
+      this.close();
+    } finally {
+      this.saving = false;
     }
-
-    this.close();
   }
 }

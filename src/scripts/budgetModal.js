@@ -1,4 +1,4 @@
-// BUDGET SETTING & MANAGEMENT MODAL CONTROLLER
+import { saveWithFeedback } from './feedback.js';
 
 export class BudgetModal {
   constructor(state) {
@@ -58,7 +58,7 @@ export class BudgetModal {
   }
 
   open(prefilledCategory = null) {
-    if (!this.modalEl) return;
+    if (!this.modalEl || this.saving) return;
 
     const cur = this.state.userProfile.currency || '₱';
     if (this.currencySymbolEl) {
@@ -102,11 +102,9 @@ export class BudgetModal {
     }
 
     this.modalEl.classList.add('active');
-    setTimeout(() => {
-      if (this.limitInput && !this.limitInput.value) {
-        this.limitInput.focus();
-      }
-    }, 100);
+    if (this.limitInput && !this.limitInput.value) {
+      this.limitInput.focus();
+    }
   }
 
   close() {
@@ -115,7 +113,8 @@ export class BudgetModal {
     }
   }
 
-  handleSubmit() {
+  async handleSubmit() {
+    if (this.saving) return;
     let category = this.categorySelect ? this.categorySelect.value : '';
     if (category === '__custom__') {
       category = this.customInput ? this.customInput.value.trim() : '';
@@ -133,7 +132,14 @@ export class BudgetModal {
       return;
     }
 
-    this.state.setBudget({ category, limit });
-    this.close();
+    this.saving = true;
+    try {
+      await saveWithFeedback(this.state, document.getElementById('btn-save-budget'), () => {
+        this.state.setBudget({ category, limit });
+      });
+      this.close();
+    } finally {
+      this.saving = false;
+    }
   }
 }

@@ -4,22 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vank | Finance & Expense Planner</title>
-  <meta name="description" content="Tactical expense & income tracker in Philippine Pesos with Business vs Personal allocation.">
-  
-  <!-- Modern Monochromatic Typography -->
+  <meta name="description" content="Track income, expenses, bank balances, and savings in Vank.">
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800|jetbrains-mono:400,500,600,700" rel="stylesheet">
-
-  <!-- Stylesheets -->
-  <script type="module" crossorigin src="/assets/index-BiV5SMCG.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-eVGkS2yQ.css">
+  <!-- Stylesheets -->
+  <script type="module" crossorigin src="./assets/index-xpu1Ed-i.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-FIH8dyke.css">
 </head>
 <body>
-  <div class="app-container">
+  <a class="skip-link" href="#ledger" data-page="ledger">Skip to ledger</a>
+  <div class="app-container is-loading-data" data-view="overview">
     <!-- TOP APP BAR -->
     <header class="workspace-header">
       <div class="header-left">
-        <a href="#" class="brand-badge" id="brand-home-link">
+        <a href="#overview" data-page="overview" class="brand-badge" id="brand-home-link">
           <div class="workspace-icon-box">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <rect x="3" y="3" width="18" height="18" rx="3"/>
@@ -32,27 +30,16 @@
         <!-- WORKSPACE SWITCHER DROPDOWN -->
         <div class="workspace-switcher">
           <button class="btn-workspace-select" id="btn-workspace-dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="workspace-indicator-dot"></span>
-            <span id="current-workspace-label">Consolidated</span>
+            <span id="current-workspace-label">All accounts</span>
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="opacity: 0.6;">
               <path d="m6 9 6 6 6-6"/>
             </svg>
           </button>
 
           <div class="workspace-dropdown-menu" id="workspace-dropdown-menu">
-            <div class="dropdown-header-label">Switch View</div>
-            <div class="workspace-option-item selected" data-workspace="all">
-              <strong>Consolidated</strong>
-              <span class="mono-num" style="font-size: 10px; color: var(--text-tertiary);">ALL</span>
-            </div>
-            <div class="workspace-option-item" data-workspace="business">
-              <strong>Business</strong>
-              <span class="badge-classification business" style="font-size: 9px;">BIZ</span>
-            </div>
-            <div class="workspace-option-item" data-workspace="personal">
-              <strong>Personal</strong>
-              <span class="badge-classification personal" style="font-size: 9px;">PERS</span>
-            </div>
+            <button type="button" class="workspace-option-item selected" data-workspace="all">All accounts</button>
+            <button type="button" class="workspace-option-item" data-workspace="business">Business</button>
+            <button type="button" class="workspace-option-item" data-workspace="personal">Personal</button>
           </div>
         </div>
       </div>
@@ -64,12 +51,11 @@
             <circle cx="11" cy="11" r="8"/>
             <line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
-          <div class="search-chips-wrapper" id="search-chips-container"></div>
           <input 
             type="search" 
             id="global-search-input" 
             class="workspace-search-input" 
-            placeholder="Search... (/ to focus)"
+            placeholder="Search transactions"
             aria-label="Search ledger"
           >
           <span class="search-shortcut-badge">/</span>
@@ -78,113 +64,90 @@
 
       <!-- HEADER RIGHT ACTIONS -->
       <div class="header-right">
-        <button class="btn-pill btn-primary open-add-modal-btn" title="Add Entry (Press N)">
-          <span style="font-size: 14px; font-weight: 700;">+</span>
-          <span>Entry</span>
+        <button class="btn-pill btn-primary open-add-modal-btn" title="Add entry (N)" aria-label="Add entry">
+          <svg class="add-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          <span class="add-entry-label">Add entry</span>
         </button>
-
-        <!-- USER PROFILE POPOVER -->
-        <div style="position: relative;">
-          <button class="user-account-btn" id="user-avatar-btn" title="Account Settings">
-            —
-          </button>
-
-          <div class="workspace-dropdown-menu" id="account-popover" style="right: 0; left: auto; width: 250px;">
-            <div style="padding: 10px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 8px;">
-              <div class="dynamic-avatar-preview" id="popover-avatar-preview" style="width: 32px; height: 32px; font-size: 12px;">—</div>
-              <div>
-                <strong id="popover-user-name" style="font-size: 12px;">New Profile</strong>
-                <div id="popover-user-email" style="font-size: 10px; color: var(--text-tertiary);">Click Personalize to setup</div>
-              </div>
-            </div>
-            <div class="workspace-option-item" id="btn-repersonalize">
-              <span>Setup Wizard</span>
-              <span style="font-size: 11px; opacity: 0.6;">→</span>
-            </div>
-            <div class="workspace-option-item" id="btn-show-guide">
-              <span>Tutorial Guide</span>
-              <span style="font-size: 10px; color: var(--text-tertiary);">Guide</span>
-            </div>
-            <div class="workspace-option-item" id="btn-new-profile">
-              <span>New Blank Profile</span>
-              <span style="font-size: 10px; color: var(--text-tertiary);">Blank</span>
-            </div>
-            <div class="workspace-option-item" id="btn-reset-demo">
-              <span>Load Demo Data</span>
-              <span style="font-size: 10px; color: var(--text-tertiary);">Demo</span>
-            </div>
-            <div class="workspace-option-item" id="btn-clear-transactions">
-              <span>Clear Ledger</span>
-              <span style="font-size: 10px; color: var(--text-tertiary);">Reset</span>
-            </div>
-          </div>
-        </div>
       </div>
+      <div class="workspace-progress" id="workspace-progress" role="progressbar" aria-label="Loading workspace"></div>
     </header>
 
     <!-- WORKSPACE MAIN BODY -->
     <div class="workspace-body">
       <!-- SIDE NAVIGATION RAIL (MINIMALIST & CLEAN) -->
-      <aside class="nav-rail">
-        <div class="nav-section">
-          <div class="nav-section-title" style="display: flex; justify-content: space-between; align-items: center;">
-            <span>Virtual Banks</span>
-            <button type="button" class="btn-icon-subtle open-add-bank-trigger" title="Add Virtual Bank" style="font-size: 14px; padding: 0 6px; cursor: pointer; color: var(--mono-black); font-weight: 800;">+</button>
-          </div>
-          <div class="nav-item active" data-bank-nav="all">
-            <div class="nav-item-content">
-              <svg class="nav-item-icon-svg" viewBox="0 0 24 24">
-                <rect x="2" y="5" width="20" height="14" rx="2"/>
-                <line x1="2" y1="10" x2="22" y2="10"/>
-              </svg>
-              <span>All Cards</span>
+      <aside class="nav-rail" aria-label="Sidebar">
+        <a class="rail-brand" href="#overview" data-page="overview" aria-label="Vank home">V</a>
+        <nav class="rail-navigation" aria-label="Main navigation">
+          <a class="rail-link active" href="#overview" data-page="overview" aria-label="Overview" aria-current="page" title="Overview">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v11h5v-7h4v7h5V9"/></svg>
+            <span class="rail-tooltip">Overview</span>
+          </a>
+          <a class="rail-link" href="#banks" data-page="banks" aria-label="Banks" title="Banks">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></svg>
+            <span class="rail-tooltip">Banks</span>
+          </a>
+          <a class="rail-link" href="#ledger" data-page="ledger" aria-label="Ledger" title="Ledger">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+            <span class="rail-tooltip">Ledger</span>
+          </a>
+          <a class="rail-link" href="#planning" data-page="planning" aria-label="Planning" title="Planning">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 16V9M12 16V4M17 16v-5"/></svg>
+            <span class="rail-tooltip">Planning</span>
+          </a>
+        </nav>
+        <div class="rail-account">
+          <button class="user-account-btn" id="user-avatar-btn" aria-label="Account" title="Account" aria-haspopup="true" aria-expanded="false" aria-controls="account-popover">U</button>
+          <div class="workspace-dropdown-menu" id="account-popover">
+            <div class="account-profile">
+              <div class="dynamic-avatar-preview" id="popover-avatar-preview">U</div>
+              <div class="account-profile-details">
+                <strong id="popover-user-name">Your profile</strong>
+                <div id="popover-user-email"></div>
+              </div>
             </div>
-            <span class="nav-counter" id="nav-count-all">0</span>
-          </div>
-          <div id="rail-banks-list" style="display: flex; flex-direction: column; gap: 2px;">
-            <!-- Injected by workspace.js -->
+            <button type="button" class="workspace-option-item" id="btn-repersonalize">Edit profile</button>
+            <button type="button" class="workspace-option-item refresh-data-trigger">Refresh data</button>
+            <button type="button" class="workspace-option-item" id="btn-new-profile">New profile</button>
+            <button type="button" class="workspace-option-item" id="btn-reset-demo">Load demo data</button>
+            <button type="button" class="workspace-option-item" id="btn-clear-transactions">Clear ledger</button>
           </div>
         </div>
       </aside>
 
       <!-- MAIN VIEWPORT -->
       <main class="workspace-viewport">
-        <!-- INTERACTIVE TUTORIAL / GUIDE BANNER WITH TEXT LINE ANIMATION -->
-        <div class="tutorial-banner hidden" id="tutorial-banner">
-          <div class="tutorial-left">
-            <div class="tutorial-badge">
-              <span class="tutorial-pulse-dot"></span>
-              <span>GUIDE</span>
-            </div>
-            <div class="tutorial-text-wrapper">
-              <span class="tutorial-text-prefix" id="tutorial-topic">Virtual Banks:</span>
-              <span class="tutorial-text-line" id="tutorial-text-line">Tap cards above to filter transactions, or press + Bank to add Visa/Mastercard.</span>
-              <span class="tutorial-cursor">|</span>
-            </div>
+        <div class="app-status" id="app-status" role="status" aria-live="polite">
+          <span id="app-status-text">Loading workspace…</span>
+          <button type="button" class="btn-pill btn-outline" id="retry-sync" hidden>Retry</button>
+        </div>
+        <div id="workspace-loading" aria-hidden="true">
+          <div class="loading-placeholder loading-heading"></div>
+          <div class="loading-placeholder loading-bank"></div>
+          <div class="loading-metrics">
+            <div class="loading-placeholder loading-metric"></div><div class="loading-placeholder loading-metric"></div>
+            <div class="loading-placeholder loading-metric"></div><div class="loading-placeholder loading-metric"></div>
           </div>
-          <div class="tutorial-controls">
-            <div class="tutorial-nav-pills">
-              <button type="button" class="btn-tutorial-nav" id="btn-tutorial-prev" title="Previous tip">‹</button>
-              <span class="tutorial-counter" id="tutorial-counter">1/5</span>
-              <button type="button" class="btn-tutorial-nav" id="btn-tutorial-next" title="Next tip">›</button>
-            </div>
-            <button type="button" class="tutorial-action-link" id="tutorial-action-btn">+ Bank</button>
-            <button type="button" class="tutorial-dismiss-btn" id="btn-tutorial-dismiss" title="Dismiss guide">Got it</button>
+          <div class="loading-rows">
+            <div class="loading-placeholder loading-row"></div><div class="loading-placeholder loading-row"></div>
+            <div class="loading-placeholder loading-row"></div>
           </div>
         </div>
+        <section class="workspace-page" id="overview" aria-label="Overview">
+          <h1 class="page-heading">Overview</h1>
+          <div id="overview-banks-slot">
 
         <!-- VIRTUAL DEBIT CARDS SHELF (RADIANT GRADIENTS) -->
-        <section class="virtual-cards-section">
+        <section class="virtual-cards-section" id="cards-section" aria-label="Banks">
           <div class="cards-shelf-header">
             <div class="cards-shelf-title-group">
-              <span class="cards-shelf-title">Virtual Banks</span>
+              <h2 class="cards-shelf-title">Banks</h2>
               <button type="button" class="btn-all-cards-view" id="btn-all-cards-view" title="Toggle between filtered card and all cards view">
-                <span class="all-cards-dot"></span>
                 <span id="all-cards-view-text">All Cards</span>
               </button>
             </div>
-            <button type="button" class="btn-pill btn-outline open-add-bank-trigger" style="font-size: 12px; padding: 6px 14px;">
-              <span>+ Bank</span>
+            <button type="button" class="btn-pill btn-outline open-add-bank-trigger">
+              <svg class="add-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              <span>Add bank</span>
             </button>
           </div>
 
@@ -192,28 +155,26 @@
             <!-- Dynamically populated by workspace.js -->
           </div>
         </section>
+          </div>
         <!-- COMPACT SUMMARY METRIC CARDS -->
         <section class="tactical-summary-grid">
           <div class="metric-card highlight-dark">
             <div class="metric-header">
-              <span class="metric-label">Net</span>
-              <span class="metric-badge" style="background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.2);">LIVE</span>
+              <span class="metric-label">Net cash flow</span>
             </div>
             <div class="metric-value mono-num" id="metric-net-balance">₱0.00</div>
           </div>
 
           <div class="metric-card">
             <div class="metric-header">
-              <span class="metric-label">Inflow</span>
-              <span class="metric-badge">+</span>
+              <span class="metric-label">Income</span>
             </div>
             <div class="metric-value mono-num" id="metric-cash-in">₱0.00</div>
           </div>
 
           <div class="metric-card">
             <div class="metric-header">
-              <span class="metric-label">Burn</span>
-              <span class="metric-badge">-</span>
+              <span class="metric-label">Expenses</span>
             </div>
             <div class="metric-value mono-num" id="metric-cash-out">₱0.00</div>
           </div>
@@ -221,16 +182,25 @@
           <div class="metric-card">
             <div class="metric-header">
               <span class="metric-label">Deductibles</span>
-              <span class="metric-badge">BIZ</span>
             </div>
             <div class="metric-value mono-num" id="metric-tax-deductible">₱0.00</div>
           </div>
         </section>
+          <section class="recent-transactions" aria-label="Recent transactions">
+            <div class="section-heading-row"><h2>Recent transactions</h2><a class="text-link" href="#ledger" data-page="ledger">View ledger</a></div>
+            <div id="overview-transactions"></div>
+          </section>
+        </section>
+        <section class="workspace-page" id="banks" aria-label="Banks" hidden>
+          <div id="banks-cards-slot"></div>
+          <div class="bank-management-list" id="bank-management-list"></div>
+        </section>
+        <section class="workspace-page" id="ledger" aria-label="Ledger" hidden>
 
         <!-- ASYMMETRIC CONTENT GRID: 65% LEDGER / 35% CHARTS & TOOLS -->
         <section class="content-grid-asymmetric">
           <!-- PRIMARY TRANSACTION LEDGER -->
-          <div class="ledger-card">
+          <div class="ledger-card" id="main-content" tabindex="-1">
             <div class="ledger-toolbar">
               <div class="ledger-title-area">
                 <h2 class="ledger-heading">Ledger</h2>
@@ -240,10 +210,10 @@
               <!-- SEGMENTED FILTERS -->
               <div class="segmented-filters">
                 <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="business">Biz</button>
-                <button class="filter-btn" data-filter="personal">Pers</button>
-                <button class="filter-btn" data-filter="income">In</button>
-                <button class="filter-btn" data-filter="expense">Out</button>
+                <button class="filter-btn" data-filter="business">Business</button>
+                <button class="filter-btn" data-filter="personal">Personal</button>
+                <button class="filter-btn" data-filter="income">Income</button>
+                <button class="filter-btn" data-filter="expense">Expenses</button>
               </div>
 
               <div class="ledger-actions-bar">
@@ -255,12 +225,9 @@
                   </svg>
                   <span>Export</span>
                 </button>
-                <button class="btn-pill btn-primary open-add-modal-btn">
-                  <span>+</span>
-                  <span>Add</span>
-                </button>
               </div>
             </div>
+            <div class="search-chips-wrapper" id="search-chips-container"></div>
 
             <!-- TABLE CONTAINER -->
             <div class="ledger-table-container">
@@ -289,9 +256,8 @@
                   <line x1="8" y1="2" x2="8" y2="6"/>
                   <line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
-                <div class="empty-state-title">No matching records found</div>
-                <div class="empty-state-desc">Try clearing your search query or switching your filter.</div>
-                <button class="btn-pill btn-primary open-add-modal-btn" style="margin-top: 6px;">+ Add Transaction</button>
+                <div class="empty-state-title">No transactions yet</div>
+                <div class="empty-state-desc">Add your first income or expense.</div>
               </div>
             </div>
           </div>
@@ -301,25 +267,30 @@
             <div id="analytics-container">
               <!-- Injected by charts.js -->
             </div>
-            <section class="planner-dashboard" id="planner-dashboard">
-              <!-- Rendered by planner.js -->
-            </section>
           </div>
+        </section>
+        </section>
+        <section class="workspace-page" id="planning" aria-label="Planning" hidden>
+        <section class="planner-dashboard" id="planner-dashboard" aria-label="Planning"></section>
         </section>
       </main>
     </div>
 
-    <!-- MOBILE BOTTOM NAVIGATION DOCK (LARGE & WEBAPP COMPATIBLE) -->
     <nav class="mobile-bottom-dock" id="mobile-bottom-dock" aria-label="Mobile Navigation">
-      <button type="button" class="mobile-dock-btn active" data-dock-tab="cards" id="mobile-tab-cards" title="Virtual Banks">
+      <span class="mobile-dock-indicator" aria-hidden="true"></span>
+      <button type="button" class="mobile-dock-btn active" data-page="overview" id="mobile-tab-overview" aria-label="Overview">
+        <svg class="dock-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v11h5v-7h4v7h5V9"/></svg>
+        <span class="dock-label">Home</span>
+      </button>
+      <button type="button" class="mobile-dock-btn" data-page="banks" id="mobile-tab-cards" aria-label="Banks">
         <svg class="dock-icon-svg" viewBox="0 0 24 24">
           <rect x="2" y="5" width="20" height="14" rx="2"/>
           <line x1="2" y1="10" x2="22" y2="10"/>
         </svg>
-        <span class="dock-label">Cards</span>
+        <span class="dock-label">Banks</span>
       </button>
 
-      <button type="button" class="mobile-dock-btn" data-dock-tab="ledger" id="mobile-tab-ledger" title="Transactions Ledger">
+      <button type="button" class="mobile-dock-btn" data-page="ledger" id="mobile-tab-ledger" aria-label="Ledger">
         <svg class="dock-icon-svg" viewBox="0 0 24 24">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
           <polyline points="14 2 14 8 20 8"/>
@@ -329,42 +300,28 @@
         <span class="dock-label">Ledger</span>
       </button>
 
-      <!-- FLOATING CENTER ADD BUTTON -->
-      <button type="button" class="mobile-dock-btn dock-add-center open-add-modal-btn" id="mobile-dock-add-btn" title="Add Entry">
-        <span class="dock-add-icon">+</span>
-      </button>
-
-      <button type="button" class="mobile-dock-btn" data-dock-tab="stats" id="mobile-tab-stats" title="Analytics & Budgets">
+      <button type="button" class="mobile-dock-btn" data-page="planning" id="mobile-tab-stats" aria-label="Planning">
         <svg class="dock-icon-svg" viewBox="0 0 24 24">
           <line x1="18" y1="20" x2="18" y2="10"/>
           <line x1="12" y1="20" x2="12" y2="4"/>
           <line x1="6" y1="20" x2="6" y2="14"/>
         </svg>
-        <span class="dock-label">Stats</span>
+        <span class="dock-label">Plan</span>
       </button>
 
-      <button type="button" class="mobile-dock-btn" data-dock-tab="menu" id="mobile-dock-menu-btn" title="Web App Menu">
-        <div class="dock-menu-icon-wrap">
-          <svg class="dock-icon-svg" viewBox="0 0 24 24">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
-          </svg>
-          <span class="dock-avatar-mini" id="dock-avatar-mini">—</span>
-        </div>
-        <span class="dock-label">Menu</span>
+      <button type="button" class="mobile-dock-btn" id="mobile-dock-menu-btn" aria-label="More" aria-haspopup="dialog" aria-expanded="false" aria-controls="mobile-app-menu-sheet">
+        <svg class="dock-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+        <span class="dock-label">More</span>
       </button>
     </nav>
 
-    <!-- LARGE MOBILE WEB APP MENU SHEET -->
-    <div class="mobile-menu-sheet-backdrop" id="mobile-app-menu-sheet" role="dialog" aria-modal="true">
+    <div class="mobile-menu-sheet-backdrop" id="mobile-app-menu-sheet" role="dialog" aria-modal="true" aria-labelledby="mobile-account-title">
       <div class="mobile-menu-sheet">
         <div class="mobile-sheet-drag-handle"></div>
 
         <div class="mobile-sheet-header">
           <div class="mobile-sheet-title-group">
-            <span class="mobile-sheet-title">Vank Menu</span>
-            <span class="mobile-sheet-badge">Vank PWA</span>
+            <h2 class="mobile-sheet-title" id="mobile-account-title">More</h2>
           </div>
           <button type="button" class="mobile-sheet-close-btn" id="btn-close-mobile-menu" aria-label="Close menu">✕</button>
         </div>
@@ -372,14 +329,11 @@
         <div class="mobile-menu-sheet-body">
           <!-- LARGE USER PROFILE CARD -->
           <div class="mobile-menu-profile-card">
-            <div class="mobile-menu-avatar" id="mobile-menu-avatar">—</div>
+            <div class="mobile-menu-avatar" id="mobile-menu-avatar">U</div>
             <div class="mobile-menu-user-info">
-              <div class="mobile-menu-user-name" id="mobile-menu-user-name">New Profile</div>
-              <div class="mobile-menu-user-email" id="mobile-menu-user-email">Click Personalize to setup</div>
+              <div class="mobile-menu-user-name" id="mobile-menu-user-name">Your profile</div>
+              <div class="mobile-menu-user-email" id="mobile-menu-user-email"></div>
               <div class="mobile-menu-badge-row">
-                <span class="mobile-menu-status-pill">
-                  <span class="status-pulse-dot"></span> Active
-                </span>
                 <span class="mobile-menu-struct-pill" id="mobile-menu-struct-pill">₱ PHP</span>
               </div>
             </div>
@@ -387,18 +341,15 @@
 
           <!-- LARGE WORKSPACE SWITCHER -->
           <div class="mobile-menu-section">
-            <div class="mobile-menu-section-label">Switch Vank View</div>
+            <div class="mobile-menu-section-label">View</div>
             <div class="mobile-workspace-switcher">
               <button type="button" class="mobile-ws-btn active" data-mobile-ws="all">
-                <span class="mobile-ws-dot"></span>
-                <span>Consolidated</span>
+                <span>All</span>
               </button>
               <button type="button" class="mobile-ws-btn" data-mobile-ws="business">
-                <span class="badge-classification business" style="font-size: 10px;">BIZ</span>
                 <span>Business</span>
               </button>
               <button type="button" class="mobile-ws-btn" data-mobile-ws="personal">
-                <span class="badge-classification personal" style="font-size: 10px;">PERS</span>
                 <span>Personal</span>
               </button>
             </div>
@@ -407,8 +358,8 @@
           <!-- LARGE VIRTUAL BANKS STRIP -->
           <div class="mobile-menu-section">
             <div class="mobile-menu-section-header">
-              <span class="mobile-menu-section-label">Virtual Banks</span>
-              <button type="button" class="btn-pill btn-tonal open-add-bank-trigger" style="font-size: 11px; padding: 4px 12px;">+ Add Bank</button>
+              <span class="mobile-menu-section-label">Banks</span>
+              <button type="button" class="btn-pill btn-outline open-add-bank-trigger"><svg class="add-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Add bank</span></button>
             </div>
             <div class="mobile-menu-banks-slider" id="mobile-menu-banks-rack">
               <!-- Dynamically populated by workspace.js -->
@@ -417,8 +368,8 @@
 
           <!-- LARGE WEB APP ACTION MENU ROWS -->
           <div class="mobile-menu-section">
-            <div class="mobile-menu-section-label">Quick Actions</div>
             <div class="mobile-menu-action-list">
+              <button type="button" class="mobile-menu-action-row refresh-data-trigger">Refresh data</button>
               <div class="mobile-menu-action-row" id="mobile-action-setup" role="button" tabindex="0">
                 <div class="mobile-action-left">
                   <div class="mobile-action-icon-box">
@@ -427,41 +378,7 @@
                     </svg>
                   </div>
                   <div class="mobile-action-text">
-                    <span class="mobile-action-title">Setup Wizard</span>
-                    <span class="mobile-action-sub">Re-configure profile, bank & currency</span>
-                  </div>
-                </div>
-                <span class="mobile-action-arrow">→</span>
-              </div>
-
-              <div class="mobile-menu-action-row" id="mobile-action-guide" role="button" tabindex="0">
-                <div class="mobile-action-left">
-                  <div class="mobile-action-icon-box">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="12" cy="12" r="10"/>
-                      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                      <line x1="12" y1="17" x2="12.01" y2="17"/>
-                    </svg>
-                  </div>
-                  <div class="mobile-action-text">
-                    <span class="mobile-action-title">Tutorial Guide</span>
-                    <span class="mobile-action-sub">Step-by-step interactive feature walkthrough</span>
-                  </div>
-                </div>
-                <span class="mobile-action-arrow">→</span>
-              </div>
-
-              <div class="mobile-menu-action-row open-add-bank-trigger" role="button" tabindex="0">
-                <div class="mobile-action-left">
-                  <div class="mobile-action-icon-box">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="2" y="5" width="20" height="14" rx="2"/>
-                      <line x1="2" y1="10" x2="22" y2="10"/>
-                    </svg>
-                  </div>
-                  <div class="mobile-action-text">
-                    <span class="mobile-action-title">Add Virtual Bank</span>
-                    <span class="mobile-action-sub">Maya, GCash, BDO, BPI or custom card</span>
+                    <span class="mobile-action-title">Edit profile</span>
                   </div>
                 </div>
                 <span class="mobile-action-arrow">→</span>
@@ -475,8 +392,7 @@
                     </svg>
                   </div>
                   <div class="mobile-action-text">
-                    <span class="mobile-action-title">Category Budgets</span>
-                    <span class="mobile-action-sub">Set and manage monthly spending caps</span>
+                    <span class="mobile-action-title">Set budget</span>
                   </div>
                 </div>
                 <span class="mobile-action-arrow">→</span>
@@ -493,7 +409,6 @@
                   </div>
                   <div class="mobile-action-text">
                     <span class="mobile-action-title">Export CSV</span>
-                    <span class="mobile-action-sub">Download complete ledger spreadsheet</span>
                   </div>
                 </div>
                 <span class="mobile-action-arrow">↓</span>
@@ -508,8 +423,7 @@
                     </svg>
                   </div>
                   <div class="mobile-action-text">
-                    <span class="mobile-action-title">New Blank Profile</span>
-                    <span class="mobile-action-sub">Reset state with a clean blank slate</span>
+                    <span class="mobile-action-title">New profile</span>
                   </div>
                 </div>
                 <span class="mobile-action-arrow">→</span>
@@ -524,8 +438,7 @@
                     </svg>
                   </div>
                   <div class="mobile-action-text">
-                    <span class="mobile-action-title">Load Demo Records</span>
-                    <span class="mobile-action-sub">Load sample Maya, GCash & BDO cards</span>
+                    <span class="mobile-action-title">Load demo data</span>
                   </div>
                 </div>
                 <span class="mobile-action-arrow">→</span>
@@ -540,24 +453,20 @@
                     </svg>
                   </div>
                   <div class="mobile-action-text">
-                    <span class="mobile-action-title" style="color: #ef4444;">Clear Ledger</span>
-                    <span class="mobile-action-sub">Permanently delete all transaction entries</span>
+                    <span class="mobile-action-title">Clear ledger</span>
                   </div>
                 </div>
-                <span class="mobile-action-arrow" style="color: #ef4444;">✕</span>
               </div>
             </div>
           </div>
 
-          <!-- DONE BUTTON -->
-          <button type="button" class="mobile-sheet-done-btn" id="btn-done-mobile-menu">Close Menu</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- CASHEW ADD/EDIT TRANSACTION MODAL -->
-  <div class="modal-backdrop" id="transaction-modal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" id="transaction-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
     <div class="modal-container">
       <div class="modal-header">
         <h3 class="modal-title" id="modal-title-text">Add Transaction</h3>
@@ -569,17 +478,17 @@
         <div class="cashew-flow-switch">
           <button type="button" class="flow-toggle-btn active expense" id="flow-btn-expense">
             <span>↑</span>
-            <span>Cash Out (Expense)</span>
+            <span>Expense</span>
           </button>
           <button type="button" class="flow-toggle-btn" id="flow-btn-income">
             <span>↓</span>
-            <span>Cash In (Income)</span>
+            <span>Income</span>
           </button>
         </div>
 
         <!-- AMOUNT IN PESOS (₱) -->
         <div class="amount-input-group">
-          <label for="tx-amount" style="font-size: 11px; font-weight: 700; text-transform: uppercase;">Amount (PHP)</label>
+          <label for="tx-amount" class="field-label">Amount</label>
           <div class="amount-input-wrapper">
             <span class="amount-currency-symbol" id="modal-currency-symbol">₱</span>
             <input 
@@ -596,7 +505,7 @@
 
         <!-- CLASSIFICATION: BIZ VS PERS -->
         <div class="classification-selector-group">
-          <label style="font-size: 11px; font-weight: 700; text-transform: uppercase;">Classification</label>
+          <span class="field-label">Classification</span>
           <div class="classification-options">
             <div class="classification-option-card" id="choice-class-business">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -604,8 +513,7 @@
                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
               </svg>
               <div class="classification-text">
-                <span class="classification-label">Business Ops</span>
-                <span class="classification-sub">Work, Studio, Tax Ded.</span>
+                <span class="classification-label">Business</span>
               </div>
             </div>
 
@@ -615,8 +523,7 @@
                 <circle cx="12" cy="7" r="4"/>
               </svg>
               <div class="classification-text">
-                <span class="classification-label">Personal Living</span>
-                <span class="classification-sub">Household & Living</span>
+                <span class="classification-label">Personal</span>
               </div>
             </div>
           </div>
@@ -627,19 +534,19 @@
           <div class="tax-deductible-row">
             <input type="checkbox" id="tx-tax-deductible" class="tax-checkbox">
             <label for="tx-tax-deductible" class="tax-label">
-              <span>Tax-Deductible Business Expense</span>
+              <span>Tax deductible</span>
             </label>
           </div>
           <div class="form-group">
-            <label for="tx-client">Client / Project Code</label>
-            <input type="text" id="tx-client" placeholder="e.g. Acme Studio, Internal Infra, Client XYZ">
+            <label for="tx-client">Client or project</label>
+            <input type="text" id="tx-client" placeholder="Optional">
           </div>
         </div>
 
         <!-- DESCRIPTION & MEMO -->
         <div class="form-group">
-          <label for="tx-description">Description *</label>
-          <input type="text" id="tx-description" placeholder="e.g. AWS Cloud, Client Retainer, Groceries" required>
+          <label for="tx-description">Description</label>
+          <input type="text" id="tx-description" placeholder="e.g. Groceries" required>
         </div>
 
         <div class="form-row-dual">
@@ -659,7 +566,7 @@
           </div>
 
           <div class="form-group">
-            <label for="tx-account">Account / Wallet</label>
+            <label for="tx-account">Bank or wallet</label>
             <select id="tx-account" required>
               <option value="BDO Business Checking">BDO Business Checking</option>
               <option value="Personal Savings">Personal Savings</option>
@@ -671,29 +578,29 @@
 
         <div class="form-row-dual">
           <div class="form-group">
-            <label for="tx-date">Transaction Date</label>
+            <label for="tx-date">Date</label>
             <input type="date" id="tx-date" required>
           </div>
 
           <div class="form-group">
-            <label for="tx-memo">Memo / Note</label>
-            <input type="text" id="tx-memo" placeholder="Optional reference #">
+            <label for="tx-memo">Note</label>
+            <input type="text" id="tx-memo" placeholder="Optional">
           </div>
         </div>
 
+      </form>
         <div class="modal-footer">
           <button type="button" class="btn-pill btn-tonal modal-close-trigger">Cancel</button>
-          <button type="submit" class="btn-pill btn-primary">Save Transaction ↵</button>
+          <button type="submit" form="transaction-form" class="btn-pill btn-primary">Save transaction</button>
         </div>
-      </form>
     </div>
   </div>
 
   <!-- ADD VIRTUAL BANK MODAL (DEBIT CARD THEME) -->
-  <div class="modal-backdrop" id="add-bank-modal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" id="add-bank-modal" role="dialog" aria-modal="true" aria-labelledby="bank-modal-title">
     <div class="modal-container" style="max-width: 440px;">
       <div class="modal-header">
-        <h3 class="modal-title" id="bank-modal-title">New Virtual Bank Card</h3>
+        <h3 class="modal-title" id="bank-modal-title">Add bank</h3>
         <button class="modal-close-btn bank-modal-close-trigger" aria-label="Close modal">✕</button>
       </div>
 
@@ -742,8 +649,7 @@
         <!-- BANK BRAND SELECTION (PHILIPPINES) -->
         <div class="form-group">
           <div class="bank-brand-selector-title">
-            <span>Bank / Wallet Brand</span>
-            <span style="font-size: 10px; color: var(--text-tertiary);">Tap to choose logo</span>
+            <span>Bank or wallet</span>
           </div>
           <div class="bank-brand-grid">
             <button type="button" class="bank-brand-btn selected modal-bank-brand-btn" data-brand="maya" title="Maya (PayMaya)">
@@ -817,7 +723,7 @@
 
         <!-- BANK NAME -->
         <div class="form-group">
-          <label for="new-bank-name">Bank / Card Nickname *</label>
+          <label for="new-bank-name">Account name</label>
           <input type="text" id="new-bank-name" placeholder="e.g. GCash, Maya, BDO" required>
         </div>
 
@@ -841,7 +747,7 @@
 
         <!-- RADIANT GRADIENT PALETTE -->
         <div class="form-group">
-          <label>Card Theme / Gradient</label>
+          <label>Card color</label>
           <div class="gradient-swatch-grid">
             <div class="gradient-swatch-item gradient-obsidian selected bank-swatch-btn" data-gradient="gradient-obsidian" title="Obsidian"></div>
             <div class="gradient-swatch-item gradient-platinum bank-swatch-btn" data-gradient="gradient-platinum" title="Platinum"></div>
@@ -857,22 +763,22 @@
           <input type="number" id="new-bank-balance" placeholder="0.00" step="0.01" min="0">
         </div>
 
-        <div class="modal-footer" style="margin-top: 6px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
-          <button type="button" id="btn-delete-bank-modal" class="btn-pill btn-modal-delete" style="display: none;">Delete Card</button>
+      </form>
+        <div class="modal-footer">
+          <button type="button" id="btn-delete-bank-modal" class="btn-pill btn-modal-delete" aria-label="Delete bank" style="display: none;">Delete</button>
           <div style="display: flex; gap: 8px; margin-left: auto;">
             <button type="button" class="btn-pill btn-tonal bank-modal-close-trigger">Cancel</button>
-            <button type="submit" id="bank-modal-submit-btn" class="btn-pill btn-primary">Create Virtual Card ↵</button>
+            <button type="submit" form="add-bank-form" id="bank-modal-submit-btn" class="btn-pill btn-primary">Add bank</button>
           </div>
         </div>
-      </form>
     </div>
   </div>
 
   <!-- ADD / EDIT BUDGET MODAL -->
-  <div class="modal-backdrop" id="budget-modal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" id="budget-modal" role="dialog" aria-modal="true" aria-labelledby="budget-modal-title">
     <div class="modal-container" style="max-width: 440px;">
       <div class="modal-header">
-        <h3 class="modal-title" id="budget-modal-title">Set Category Budget</h3>
+        <h3 class="modal-title" id="budget-modal-title">Set budget</h3>
         <button class="modal-close-btn budget-modal-close-trigger" aria-label="Close modal">✕</button>
       </div>
 
@@ -899,7 +805,7 @@
         </div>
 
         <div class="amount-input-group">
-          <label for="budget-limit-input" style="font-size: 11px; font-weight: 700; text-transform: uppercase;">Monthly Limit (PHP)</label>
+          <label for="budget-limit-input" class="field-label">Monthly limit</label>
           <div class="amount-field-wrapper">
             <span class="currency-symbol" id="budget-currency-symbol">₱</span>
             <input 
@@ -914,11 +820,11 @@
           </div>
         </div>
 
-        <div class="modal-footer" style="margin-top: 14px;">
-          <button type="button" class="btn-pill btn-tonal budget-modal-close-trigger">Cancel</button>
-          <button type="submit" class="btn-pill btn-primary" id="btn-save-budget">Save Budget Limit ↵</button>
-        </div>
       </form>
+        <div class="modal-footer">
+          <button type="button" class="btn-pill btn-tonal budget-modal-close-trigger">Cancel</button>
+          <button type="submit" form="budget-form" class="btn-pill btn-primary" id="btn-save-budget">Save budget</button>
+        </div>
     </div>
   </div>
 
@@ -1016,7 +922,7 @@
   </div>
 
   <!-- FULLSCREEN CONVERSATIONAL MULTI-STEP ONBOARDING -->
-  <div class="onboarding-overlay" id="onboarding-overlay" role="dialog" aria-modal="true">
+  <div class="onboarding-overlay" id="onboarding-overlay" role="dialog" aria-modal="true" aria-label="Profile setup">
     <div class="onboarding-fullscreen-container">
       <div class="onboarding-top-bar">
         <div class="onboarding-brand">
@@ -1036,13 +942,11 @@
         <div class="onboarding-body">
           <!-- STEP 1: IDENTITY -->
           <div class="onboarding-step active" id="step-1">
-            <span class="step-question-badge">01</span>
             <h2 class="step-question-title">Your name</h2>
-            <p class="step-question-sub">Personalize your financial profile.</p>
 
             <div class="step-interactive-area">
               <div class="conversational-name-box">
-                <div class="dynamic-avatar-preview" id="onboard-avatar-preview">—</div>
+                <div class="dynamic-avatar-preview" id="onboard-avatar-preview">U</div>
                 <input 
                   type="text" 
                   id="onboard-name-input" 
@@ -1053,44 +957,12 @@
                 >
               </div>
 
-              <div class="sso-login-box">
-                <div class="sso-divider-row">
-                  <span class="sso-divider-line"></span>
-                  <span class="sso-divider-text">OR SIGN IN WITH</span>
-                  <span class="sso-divider-line"></span>
-                </div>
-
-                <div class="sso-buttons-row">
-                  <!-- GOOGLE SIGN-IN WITH OFFICIAL LOGO -->
-                  <button type="button" class="sso-auth-btn google-auth-btn" id="btn-google-login">
-                    <svg class="google-icon-svg" width="18" height="18" viewBox="0 0 48 48">
-                      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.79l7.97-6.2z"/>
-                      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                      <path fill="none" d="M0 0h48v48H0z"/>
-                    </svg>
-                    <span>Continue with Google</span>
-                  </button>
-
-                  <!-- ENTERPRISE WORKSPACE SSO -->
-                  <button type="button" class="sso-auth-btn enterprise-auth-btn" id="btn-sso-login">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                    </svg>
-                    <span>Enterprise SSO</span>
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
 
           <!-- STEP 2: TRACKING INTENT -->
           <div class="onboarding-step" id="step-2">
-            <span class="step-question-badge">02</span>
-            <h2 class="step-question-title">Structure</h2>
-            <p class="step-question-sub">Select your account setup.</p>
+            <h2 class="step-question-title">Account type</h2>
 
             <div class="step-interactive-area">
               <div class="choice-cards-grid">
@@ -1137,9 +1009,7 @@
 
           <!-- STEP 3: CURRENCY -->
           <div class="onboarding-step" id="step-3">
-            <span class="step-question-badge">03</span>
             <h2 class="step-question-title">Currency</h2>
-            <p class="step-question-sub">Philippine Pesos (₱ PHP) default.</p>
 
             <div class="step-interactive-area">
               <div class="currency-chips-grid">
@@ -1181,9 +1051,7 @@
 
           <!-- STEP 4: FIRST VIRTUAL BANK & DEBIT CARD -->
           <div class="onboarding-step" id="step-4">
-            <span class="step-question-badge">04</span>
-            <h2 class="step-question-title">Virtual Bank</h2>
-            <p class="step-question-sub">Your starting virtual debit card.</p>
+            <h2 class="step-question-title">First bank</h2>
 
             <div class="step-interactive-area">
               <div class="onboard-step-card-layout">
@@ -1222,7 +1090,7 @@
                           <span class="card-holder-name" id="onboard-preview-holder">User</span>
                         </div>
                         <div class="card-balance-box">
-                          <span class="card-balance-label">Live Balance</span>
+                          <span class="card-balance-label">Balance</span>
                           <span class="card-balance-value" id="onboard-preview-balance">₱0.00</span>
                         </div>
                       </div>
@@ -1259,8 +1127,7 @@
                   <!-- Philippine Bank / Wallet Brand Selection -->
                   <div class="onboard-card-field-group">
                     <div class="bank-brand-selector-title">
-                      <span>Philippine Bank / Wallet Brand</span>
-                      <span style="font-size: 10px; color: var(--text-tertiary);">Tap to choose logo</span>
+                      <span>Bank or wallet</span>
                     </div>
                     <div class="bank-brand-grid">
                       <button type="button" class="bank-brand-btn selected onboard-bank-brand-btn" data-brand="maya" title="Maya (PayMaya)">
@@ -1341,14 +1208,6 @@
                     </div>
                   </div>
 
-                  <!-- Quick Presets -->
-                  <div class="onboard-presets-row">
-                    <span class="onboard-presets-label">Presets:</span>
-                    <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" data-brand="maya">Maya</button>
-                    <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" data-brand="bdo">BDO</button>
-                    <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" data-brand="gcash">GCash</button>
-                    <button type="button" class="btn-pill btn-outline onboard-bank-suggestion" data-brand="unionbank">UnionBank</button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -1356,36 +1215,32 @@
 
           <!-- STEP 5: OPENING BALANCE (PESOS) -->
           <div class="onboarding-step" id="step-5">
-            <span class="step-question-badge">05</span>
             <h2 class="step-question-title">Opening balance</h2>
-            <p class="step-question-sub">Starting liquidity reserve.</p>
+            <p class="step-question-sub">Choose a starting balance to track.</p>
 
             <div class="step-interactive-area">
               <div class="choice-cards-grid">
                 <div class="choice-card balance-choice-card selected" data-amount="0">
-                  <span class="choice-card-title">₱0 Slate</span>
-                  <span class="choice-card-desc">Track from today.</span>
+                  <span class="choice-card-title">₱0</span>
                 </div>
 
                 <div class="choice-card balance-choice-card" data-amount="25000">
-                  <span class="choice-card-title">₱25,000 Buffer</span>
-                  <span class="choice-card-desc">Freelance starter buffer.</span>
+                  <span class="choice-card-title">₱25,000</span>
                 </div>
 
                 <div class="choice-card balance-choice-card" data-amount="100000">
-                  <span class="choice-card-title">₱100,000 Reserve</span>
-                  <span class="choice-card-desc">Studio operating reserve.</span>
+                  <span class="choice-card-title">₱100,000</span>
                 </div>
 
                 <div class="choice-card balance-choice-card" data-amount="250000">
-                  <span class="choice-card-title">₱250,000+ Capital</span>
-                  <span class="choice-card-desc">Venture liquidity reserve.</span>
+                  <span class="choice-card-title">₱250,000</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- CENTER ACTIONS (SKIP & NEXT MAGKADIKIT DIRECTLY IN THE MIDDLE) -->
+        </div>
+      </div>
           <div class="onboarding-center-actions">
             <button type="button" class="onboard-back-btn" id="btn-onboard-back" style="visibility: hidden;">
               ← Back
@@ -1395,15 +1250,18 @@
                 Skip
               </button>
               <button type="button" class="onboard-magkadikit-btn btn-next" id="btn-onboard-next">
-                Next →
+                Next
               </button>
             </div>
           </div>
-        </div>
-      </div>
     </div>
   </div>
 
   <!-- Application Script -->
+  <div class="save-feedback" id="save-feedback" role="status" aria-live="polite" aria-atomic="true" hidden>
+    <span class="button-spinner" aria-hidden="true"></span>
+    <span class="save-feedback-text" id="save-feedback-text"></span>
+    <button type="button" class="btn-pill btn-outline" id="save-feedback-retry" hidden>Retry</button>
+  </div>
 </body>
 </html>

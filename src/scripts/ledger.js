@@ -13,7 +13,14 @@ export function renderLedger(state, tableBodyEl, countEl) {
   const emptyStateEl = document.getElementById('ledger-empty-state');
   if (transactions.length === 0) {
     tableBodyEl.innerHTML = '';
-    if (emptyStateEl) emptyStateEl.style.display = 'flex';
+    if (emptyStateEl) {
+      emptyStateEl.style.display = 'flex';
+      const filtered = state.transactions.length > 0;
+      const title = emptyStateEl.querySelector('.empty-state-title');
+      const description = emptyStateEl.querySelector('.empty-state-desc');
+      if (title) title.textContent = filtered ? 'No matching transactions' : 'No transactions yet';
+      if (description) description.textContent = filtered ? 'Clear your search or change the filters.' : 'Add your first income or expense.';
+    }
     return;
   }
 

@@ -1,11 +1,11 @@
 @echo off
 setlocal enabledelayedexpansion
 
-title Workspace Expense Tracker // Finance OS
+title Vank
 cd /d "%~dp0"
 
 echo ========================================================
-echo   WORKSPACE EXPENSE TRACKER // FINANCE OS
+echo   VANK // LOCAL FINANCE WORKSPACE
 echo ========================================================
 echo.
 
@@ -19,27 +19,27 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-:: 2. Check if node_modules exists, install if missing
-if not exist "node_modules\" (
-    echo [INFO] Dependencies not found. Installing project packages...
-    call npm install
-    if %errorlevel% neq 0 (
-        echo [ERROR] Failed to install dependencies.
-        pause
-        exit /b 1
+:: Check the locked dependency tree after switching branches or pulling updates.
+call npm ls --depth=0 >nul 2>nul
+if %errorlevel% neq 0 (
+    echo [INFO] Installing project packages...
+    call npm ci
+    if errorlevel 1 (
+      echo [ERROR] Failed to install dependencies.
+      pause
+      exit /b 1
     )
-    echo.
 )
 
 :: 3. Launch browser after a brief delay in background
-echo [INFO] Launching Workspace Expense Tracker...
+echo [INFO] Launching Vank...
 start "" cmd /c "timeout /t 2 /nobreak >nul & start http://localhost:5173/"
 
-:: 4. Start the development server
-echo [INFO] Starting Vite dev server on http://localhost:5173/
+:: 4. Start both the API and the frontend
+echo [INFO] Starting Vank on http://localhost:5173/
 echo [INFO] Press Ctrl+C in this terminal window to stop the server.
 echo.
 
-call npm run dev
+call npm start
 
 pause

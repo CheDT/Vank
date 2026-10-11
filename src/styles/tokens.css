@@ -1,6 +1,4 @@
-/* PREMIUM BLACK & WHITE LUXURY DESIGN TOKENS */
 :root {
-  /* Monochromatic Palette (Apple / Vercel / Linear Precision) */
   --mono-black: #09090b;
   --mono-900: #121215;
   --mono-800: #18181b;
@@ -15,7 +13,7 @@
   --mono-white: #ffffff;
 
   /* Theme Surfaces */
-  --surface-canvas: #fcfcfc;
+  --surface-canvas: #fafafa;
   --surface-container-low: #f4f4f5;
   --surface-container: #ebecef;
   --surface-container-high: #e2e4e8;
@@ -24,7 +22,7 @@
   /* Typography */
   --text-primary: #09090b;
   --text-secondary: #52525b;
-  --text-tertiary: #8e8e93;
+  --text-tertiary: #626262;
   --text-inverse: #ffffff;
 
   /* Hairline Borders */
@@ -34,11 +32,13 @@
 
   /* High-Contrast Monochrome Cash In / Cash Out */
   --cash-in-text: #09090b;
+  --cash-in-primary: #09090b;
   --cash-in-bg: #f4f4f5;
   --cash-in-border: #09090b;
   --cash-in-badge: #18181b;
 
   --cash-out-text: #52525b;
+  --cash-out-primary: #52525b;
   --cash-out-bg: #fafafa;
   --cash-out-border: #d4d4d8;
   --cash-out-badge: #71717a;
@@ -46,10 +46,12 @@
   /* Business & Personal Classification (Monochrome Contrast) */
   --biz-bg: #09090b;
   --biz-text: #ffffff;
+  --biz-primary: #ffffff;
   --biz-subtle-bg: #f4f4f5;
 
   --pers-bg: #ffffff;
   --pers-text: #09090b;
+  --pers-primary: #09090b;
   --pers-border: #d4d4d8;
 
   /* Shadows (Subtle Ambient Diffusion) */
@@ -60,20 +62,39 @@
   --shadow-xl: 0 20px 48px -8px rgba(0, 0, 0, 0.12);
 
   /* Compact Radii */
-  --radius-xs: 6px;
-  --radius-sm: 10px;
-  --radius-md: 14px;
-  --radius-lg: 18px;
-  --radius-xl: 24px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
   --radius-pill: 9999px;
 
   /* Typography */
-  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-main: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --type-title: 24px;
+  --line-title: 32px;
+  --type-section: 18px;
+  --line-section: 24px;
+  --type-body: 14px;
+  --line-body: 20px;
+  --type-label: 12px;
+  --line-label: 16px;
+  --control-height: 36px;
+  --touch-target: 48px;
 
   /* Fluid Motion */
   --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-fast: 140ms;
-  --duration-normal: 220ms;
+  --duration-menu: 160ms;
+  --duration-normal: 200ms;
+  --duration-card: 260ms;
 }

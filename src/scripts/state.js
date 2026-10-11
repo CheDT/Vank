@@ -1,6 +1,8 @@
 import { detectBankBrand } from './bankLogos.js';
 import { api } from './api.js';
 
+const STORAGE_KEY = 'gworkspace_tracker_state_v4_virtual_banks';
+
 // Authentic human transactions in Philippine Pesos (₱)
 const INITIAL_TRANSACTIONS = [
   {
@@ -156,6 +158,13 @@ export class StateManager {
     this.transactions = [];
     this.budgets = [];
     this.filter = { search: '', category: 'all', account: 'all', classification: 'all', type: 'all' };
+    this.pendingSave = Promise.resolve();
+    this.saveStatus = 'idle';
+    this.dataStatus = 'loading';
+    this.hasLoadedData = false;
+    this.saveRevision = 0;
+    this.unsyncedChanges = false;
+    this.browserSaveAvailable = false;
     this.ready = this.loadState();
   }
 
@@ -168,45 +177,73 @@ export class StateManager {
     };
   }
 
-  async loadState() {
-    this.filter = { search: '', category: 'all', account: 'all', classification: 'all', type: 'all' };
+  applySavedState(saved) {
+    this.userProfile = saved.userProfile || this.defaultProfile();
+    this.activeWorkspace = saved.activeWorkspace || 'all';
+    this.activeVirtualBankId = saved.activeVirtualBankId || 'all';
+    this.transactions = saved.transactions || [];
+    this.budgets = saved.budgets || [];
+    this.virtualBanks = saved.virtualBanks || this.defaultVirtualBanks();
+    this.plannerSettings = { ...this.defaultPlannerSettings(), ...(saved.plannerSettings || {}) };
+    this.recurringPlans = saved.recurringPlans || [];
+    this.plannerGoals = saved.plannerGoals || [];
+    this.recalculateBankBalances();
+    this.recalculateBudgets();
+    this.hasLoadedData = true;
+  }
+
+  async loadState(refresh = false) {
+    this.dataStatus = refresh ? 'refreshing' : 'loading';
+    if (!refresh) {
+      this.connectionStatus = 'loading';
+      try {
+        const cached = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+        if (cached?.userProfile) {
+          this.applySavedState(cached);
+          this.browserSaveAvailable = true;
+          this.unsyncedChanges = localStorage.getItem(`${STORAGE_KEY}_pending`) === '1';
+        }
+      } catch (error) {
+        console.warn('Browser cache unavailable', error);
+      }
+    }
+    const revision = this.saveRevision;
+    this.notify('sync');
     try {
       const saved = await api.loadState();
-      if (saved && saved.userProfile) {
-        this.userProfile = saved.userProfile;
-        this.activeWorkspace = saved.activeWorkspace || 'all';
-        this.activeVirtualBankId = saved.activeVirtualBankId || 'all';
-        this.transactions = saved.transactions || [];
-        this.budgets = saved.budgets || [];
-        this.virtualBanks = saved.virtualBanks || this.defaultVirtualBanks();
-        this.plannerSettings = { ...this.defaultPlannerSettings(), ...(saved.plannerSettings || {}) };
-        this.recurringPlans = saved.recurringPlans || [];
-        this.plannerGoals = saved.plannerGoals || [];
-        this.recalculateBankBalances();
-        this.recalculateBudgets();
-        this.notify();
+      this.connectionStatus = 'connected';
+      // A refresh must never replace edits made while its request was in flight.
+      if (this.unsyncedChanges || this.saveRevision !== revision) {
+        if (this.saveRevision === revision) await this.saveState();
+        else await this.pendingSave;
+        return;
+      }
+      if (saved?.userProfile) {
+        const workspace = this.activeWorkspace;
+        const bankId = this.activeVirtualBankId;
+        this.applySavedState(saved);
+        if (refresh) {
+          this.activeWorkspace = workspace;
+          this.activeVirtualBankId = this.virtualBanks.some(bank => bank.id === bankId) ? bankId : 'all';
+        }
+        this.browserSaveAvailable = this.cacheState(saved);
+        return;
+      }
+      if (this.hasLoadedData) {
+        await this.saveState();
         return;
       }
     } catch (e) {
+      this.connectionStatus = 'offline';
       console.error('API unavailable, falling back to localStorage', e);
-      const saved = localStorage.getItem('gworkspace_tracker_state_v4_virtual_banks');
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          this.userProfile = parsed.userProfile || this.defaultProfile();
-          this.activeWorkspace = parsed.activeWorkspace || 'all';
-          this.activeVirtualBankId = parsed.activeVirtualBankId || 'all';
-          this.transactions = parsed.transactions || [];
-          this.budgets = parsed.budgets || [];
-          this.virtualBanks = parsed.virtualBanks || this.defaultVirtualBanks();
-          this.plannerSettings = { ...this.defaultPlannerSettings(), ...(parsed.plannerSettings || {}) };
-          this.recurringPlans = parsed.recurringPlans || [];
-          this.plannerGoals = parsed.plannerGoals || [];
-          this.recalculateBankBalances();
-          this.recalculateBudgets();
-          this.notify();
-          return;
-        } catch {}
+      if (this.hasLoadedData) {
+        if (this.unsyncedChanges) this.saveStatus = 'local';
+        return;
+      }
+    } finally {
+      if (this.hasLoadedData) {
+        this.dataStatus = 'ready';
+        this.notify();
       }
     }
     // Fresh state
@@ -217,7 +254,20 @@ export class StateManager {
     this.transactions = [];
     this.budgets = [];
     this.recalculateBankBalances();
-    this.saveState();
+    await this.saveState();
+    this.hasLoadedData = true;
+    this.dataStatus = 'ready';
+    this.notify();
+  }
+
+  async retrySync() {
+    if (this.dataStatus === 'loading') return this.ready;
+    if (this.saveStatus === 'saving') return this.pendingSave;
+    if (this.unsyncedChanges) return this.saveState();
+    if (this.refreshPromise) return this.refreshPromise;
+    this.refreshPromise = this.loadState(true);
+    try { await this.refreshPromise; }
+    finally { this.refreshPromise = null; }
   }
 
   defaultProfile(isFresh = true) {
@@ -525,10 +575,40 @@ export class StateManager {
       recurringPlans: this.recurringPlans,
       plannerGoals: this.plannerGoals
     };
-    api.saveState(toSave).catch(() => {
-      localStorage.setItem('gworkspace_tracker_state_v4_virtual_banks', JSON.stringify(toSave));
+    // Capture each edit now, then send snapshots in order to avoid stale writes.
+    const snapshot = JSON.parse(JSON.stringify(toSave));
+    const revision = ++this.saveRevision;
+    this.unsyncedChanges = true;
+    this.saveStatus = 'saving';
+    this.browserSaveAvailable = this.cacheState(snapshot);
+    try { localStorage.setItem(`${STORAGE_KEY}_pending`, '1'); } catch {}
+    this.pendingSave = this.pendingSave.then(() => api.saveState(snapshot)).then(() => {
+      this.connectionStatus = 'connected';
+      if (revision === this.saveRevision) {
+        this.unsyncedChanges = false;
+        this.saveStatus = 'saved';
+        try { localStorage.removeItem(`${STORAGE_KEY}_pending`); } catch {}
+      }
+      this.notify('sync');
+    }).catch(() => {
+      this.connectionStatus = 'offline';
+      if (revision === this.saveRevision) {
+        this.saveStatus = this.browserSaveAvailable ? 'local' : 'error';
+      }
+      this.notify('sync');
     });
     this.notify();
+    return this.pendingSave;
+  }
+
+  cacheState(data) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      return true;
+    } catch (error) {
+      console.warn('Browser storage unavailable; backend saving remains enabled', error);
+      return false;
+    }
   }
 
   subscribe(listener) {
@@ -538,8 +618,8 @@ export class StateManager {
     };
   }
 
-  notify() {
-    this.listeners.forEach(fn => fn(this));
+  notify(reason = 'data') {
+    this.listeners.forEach(fn => fn(this, reason));
   }
 
   setFilter(updates) {
