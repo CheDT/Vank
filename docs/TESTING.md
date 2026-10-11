@@ -35,8 +35,11 @@ A passing assertion count alone is insufficient: each command must finish with e
 | `server/index.test.js` | Full-state persistence across server instances; transaction, card, budget, profile and planner routes; missing IDs; invalid/corrupt state | Real HTTP and temporary JSON database |
 | `tests/ui.spec.js` | Overview/form, transaction add/reload/edit/delete, budgets, cards, planner, filtering, phone form, offline persistence, four-page navigation and browser history | Real API plus one explicit simulated-offline scenario |
 | `tests/navigation.spec.js` | Page history, card centering/cycling, account placement, keyboard/focus, seven viewport widths, phone dock behavior, full-screen forms, profile setup, reduced motion, search, export download and offline retry | Real API and isolated seeded state |
+| `tests/pages/deployment.spec.js` | Production assets under `/Vank/`, zero API calls, desktop/phone navigation, device saving and onboarding across reloads | Built Pages app with isolated browser storage |
 
 Vitest discovers only `src/**/*.test.js` and `server/**/*.test.js`. Playwright owns `tests/**/*.spec.js`; the runners do not collect each other's tests.
+
+The normal Playwright suite excludes `tests/pages/`. Run `npm run test:pages` for those three production tests; the command builds the Pages app and starts its own preview without a backend. See [DEPLOYMENT.md](DEPLOYMENT.md) for manual preview and publication steps.
 
 Browser tests run sequentially because the backend uses one test workspace. Before each test, sample state is written to the test API. The test frontend uses port **4317**, the test API uses **4318**, and the database is **`test-results/backend/db.json`**. Tests refuse to reuse an existing server, so a normal Vank session cannot be mistaken for the test environment. API tests use temporary directories and ephemeral ports.
 
@@ -106,7 +109,7 @@ Checking out and testing a PR does not merge it. Tests may create ignored files,
 
 ## Automated checks on GitHub
 
-`.github/workflows/verify.yml` runs `npm ci`, installs Chromium, and executes `npm run verify` for pull requests and pushes to `main`. On failure it uploads test output for inspection. This workflow only takes effect after it is pushed; a successful local run is not a claim that hosted CI has already passed.
+`.github/workflows/verify.yml` runs `npm ci`, installs Chromium, and executes `npm run verify` followed by `npm run test:pages` for pull requests and pushes to `main`. On failure it uploads test output for inspection. This workflow only takes effect after it is pushed; a successful local run is not a claim that hosted CI has already passed.
 
 Merge after required checks pass, outstanding findings are resolved, and the changed behavior has been reviewed. The green GitHub mergeability indicator only means there are no detected merge conflicts.
 

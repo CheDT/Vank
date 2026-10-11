@@ -24,7 +24,7 @@ Open **http://localhost:5173**. Keep the terminal open and press **Ctrl+C** to s
 
 `npm run dev` starts only the frontend. Use `npm start` to test backend integration. The API uses `server/db.json`, which is local data and is excluded from Git. Existing local data is preserved; a new checkout starts with onboarding.
 
-The [hosted demo](https://chedt.github.io/Vank/) is a static frontend. It does not host this Node.js API; use the complete local app to test backend persistence.
+The [hosted demo](https://chedt.github.io/Vank/) is a static frontend. The Pages build saves on the device without contacting the local API. See [GitHub Pages deployment](docs/DEPLOYMENT.md) for publishing and testing that build; use the complete local app to test backend persistence.
 
 ## Verify before merging
 
@@ -42,9 +42,10 @@ npm test                  # Integration and real API tests
 npm run test:e2e          # Browser tests with a real backend
 npm run test:e2e:headed   # Watch browser tests
 npm run build            # Build the static frontend into dist/
+npm run test:pages       # Build and test the browser-storage Pages version
 ```
 
-GitHub Actions runs the same verification for pull requests and pushes to `main` after this integration is committed and pushed. The workflow does not deploy or merge changes.
+GitHub Actions runs verification for pull requests and pushes to `main`. The separate Pages workflow verifies and publishes the Pages build on pushes to `main`, once Pages is configured to use GitHub Actions. Neither workflow merges changes.
 
 ## Documentation
 
@@ -53,6 +54,7 @@ GitHub Actions runs the same verification for pull requests and pushes to `main`
 - [Integration and architecture](docs/INTEGRATION.md): components, data flow, API routes, configuration, storage, and limitations.
 - [Testing and pull request workflow](docs/TESTING.md): automated checks, manual checklist, GitHub Desktop steps, and troubleshooting.
 - [Integration review](docs/REVIEW.md): issues fixed, validation results, and the remaining release boundaries.
+- [GitHub Pages deployment](docs/DEPLOYMENT.md): browser saving, production preview, deployment setup and validation.
 
 ## Project structure
 

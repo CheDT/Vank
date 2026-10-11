@@ -5,7 +5,7 @@ const apiProxy = {
 };
 
 export default defineConfig({
-  base: './',
+  base: process.env.VANK_BASE_PATH || './',
   server: { host: '127.0.0.1', port: Number(process.env.VANK_FRONTEND_PORT || 5173), strictPort: true, proxy: apiProxy },
   preview: { host: '127.0.0.1', proxy: apiProxy }
 });

@@ -8,6 +8,7 @@ const frontendUrl = `http://127.0.0.1:${frontendPort}`;
 export default defineConfig({
   testDir: './tests',
   testMatch: '**/*.spec.js',
+  testIgnore: '**/pages/**',
   timeout: 30_000,
   reporter: 'list',
   // The real API uses one test database, so each test gets exclusive access.
