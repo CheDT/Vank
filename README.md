@@ -1,5 +1,7 @@
 # Vank
 
+https://chedt.github.io/Vank/
+
 Vank is a local finance workspace for transactions, virtual bank cards, budgets, recurring plans, and savings goals. The frontend and local API run together; the API persists data in a JSON file.
 
 The redesigned workspace opens on Overview. Banks contains card selection and management, Ledger contains transactions and budgets, and Planning contains targets, recurring items and goals. A compact desktop rail and phone dock open the same four pages. See [what changed](docs/CHANGES.md) for the redesign and integration summary.
