@@ -4,7 +4,7 @@ Reviewed on November 8, 2026. Both supplied links point to the same workbook and
 
 [Functional Testing Workbook](https://docs.google.com/spreadsheets/d/1l7f3hfkSReWWe8j2CM_-_n6iVbKupTOe-tFkSoFEFj8/edit?gid=1634033696#gid=1634033696)
 
-The connected personal Drive accounts could not access this school-domain workbook. It was read through the existing signed-in school browser. The workbook itself has not been edited.
+The connected personal Drive accounts could not access this school-domain workbook. It was reviewed and updated through the existing signed-in school browser. Completed responses were entered in Project Information C12, Internal Testing B9:H16 and D21:H24, and Revision and Improvement Summary B8:D11 and C21:D24. The external tester's results and team contribution entries were preserved.
 
 ## What the external tester actually reported
 
@@ -15,7 +15,7 @@ The `External Testing Results` tab contains two completed cases:
 
 The recommendations in D24 are to test no-match search, capitalization, combined filters, and navigation on desktop and mobile. These are coverage recommendations, not four reported application failures.
 
-The internal test tab still has sample Home/search rows, including a search Fail. The revision tab still says `Search logic corrected` and `Review submission not saved`. Neither statement supplies evidence of work completed in this review; the review-submission feature is not part of Vank's current workflow.
+At the initial review, the internal test tab had sample Home/search rows, including a search Fail. The revision tab said `Search logic corrected` and `Review submission not saved`. Those sample entries have been replaced with the verified scenarios and findings below; the review-submission feature is not part of Vank's current workflow.
 
 ## Changes made
 
@@ -23,7 +23,7 @@ Expanding the tests revealed a separate reproducible search defect: a saved tran
 
 The new browser cases use four disposable transactions, including an `Office lunch` expense of ₱250 with a null memo, plus a second card. They run at 1440 × 900 and 390 × 844 against both the real local API and the built browser-only Pages version. They check matching results and amounts, mixed capitalization, surrounding whitespace, empty results, clearing search, combined filters, clearing the card filter, navigation and reload. Pages cases also assert that no API requests occur. All cases check for browser JavaScript errors.
 
-The fix and tests are in an isolated checkout based on `origin/main` at `cef2be1`, on branch `codex/testing-feedback`. The original checkout remains on `pr/2`; its existing generated-file changes were not altered.
+The fix and tests were committed as `4b181af`, fast-forward merged into `main`, and pushed using the CheDT account. GitHub verification and the Pages deployment both succeeded for that commit. Work used an isolated checkout based on `origin/main` at `cef2be1`. The original checkout remains on `pr/2`; its existing generated-file changes were not altered.
 
 ## What your team needs to fill in (sagutan)
 
@@ -37,7 +37,7 @@ The fix and tests are in an isolated checkout based on `origin/main` at `cef2be1
 
 ### Functional Test Cases and Internal Testing
 
-Replace the sample rows in B9:H16 with the eight regression scenarios below if automated Chromium execution is acceptable for your assessment. These were executed as browser tests; they are not a claim that every team member manually performed them. If manual execution is required, run the steps yourselves and record your own results and evidence.
+The sample rows in B9:H16 were replaced with the eight regression scenarios below, explicitly labeled as automated Chromium execution on November 8, 2026, commit `4b181af`. These are not a claim that every team member manually performed them. If manual execution is required for the assessment, run the steps yourselves and record your own results and evidence.
 
 Precondition: use the test fixture from `searchFeedbackState()` in an isolated test workspace. It contains `Office lunch` (expense, Maya, General, ₱250), `Office lunch personal` (expense, GCash, General, ₱150), `Office lunch refund` (income, Maya, General, ₱100), and `Office supplies` (expense, Maya, Equipment & Office, ₱75). Start on Overview with All accounts and no active filters. Do not replace a personal workspace with test data.
 
@@ -71,7 +71,7 @@ F10 has an extra `transaction.` prefix in its observed-result sentence. Ask the 
 
 ### Revision and Improvement Summary
 
-Replace the unsupported sample entries in B8:D9 and add the remaining rows below. The original external search report should remain traceable as not reproduced; do not describe it as definitively fixed by the missing-memo change.
+The unsupported sample entries were replaced with the four items below in B8:D11. The original external search report remains traceable as not reproduced; it is not described as definitively fixed by the missing-memo change.
 
 | Issue / recommendation | Source | Action taken |
 | --- | --- | --- |
@@ -86,7 +86,7 @@ Suggested summary for C21:C24, using the four tracked entries above:
 | --- | --- |
 | C21 | 4 tracked items: 1 earlier report not reproduced, 1 new internal defect, and 2 recommendations. |
 | C22 | 1 defect fixed and 2 recommendations implemented; the earlier report was reviewed and not reproduced by the external tester. |
-| C23 | 0 implementation items deferred in this review. External retesting and deployment remain pending. |
+| C23 | 0 implementation items deferred in this review. Independent external retesting remains pending. The team must add the recorded validation walkthrough and complete personal contribution/rating fields. |
 | C24 | Safer search for saved records with absent memos; expanded search/filter coverage; desktop and phone navigation checks; production Pages regression coverage and workbook guidance. |
 
 ### Team Contributions Table
@@ -117,4 +117,4 @@ npm run verify
 npm run test:pages
 ```
 
-`npm run verify` checks integration/API tests, the local browser suite and the standard production build. `npm run test:pages` builds and tests `/Vank/` without a backend. These are local checks; they do not confirm a hosted deployment or an independent external retest.
+`npm run verify` checks integration/API tests, the local browser suite and the standard production build. `npm run test:pages` builds and tests `/Vank/` without a backend. These local checks do not establish an independent external retest. Separately, [GitHub verification](https://github.com/CheDT/Vank/actions/runs/42478401506) and [Pages deployment](https://github.com/CheDT/Vank/actions/runs/42478401569) succeeded for `4b181af` after it was pushed to `main`.
