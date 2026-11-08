@@ -42,6 +42,20 @@ describe('Ledger UI rendering', () => {
     expect(document.getElementById('ledger-empty-state').style.display).toBe('flex');
   });
 
+  it.each([null, undefined])('searches saved transactions with an absent memo (%s)', memo => {
+    manager.transactions = [transaction({ description: 'Office lunch', memo, client: null })];
+    manager.setFilter({ search: '  OFFICE LuNcH  ' });
+    render();
+    expect(document.getElementById('ledger-count-tag').textContent).toBe('1 entries');
+    expect(document.querySelector('.description-title').textContent.trim()).toBe('Office lunch');
+    manager.setFilter({ search: 'no-such-transaction' });
+    render();
+    expect(document.getElementById('ledger-count-tag').textContent).toBe('0 entries');
+    manager.setFilter({ search: '' });
+    render();
+    expect(document.getElementById('ledger-count-tag').textContent).toBe('1 entries');
+  });
+
   it('renders user descriptions as text instead of executable HTML', () => {
     manager.transactions = [transaction({ description: '<img src=x onerror=alert(1)>' })];
     render();

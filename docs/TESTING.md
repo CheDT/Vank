@@ -30,16 +30,19 @@ A passing assertion count alone is insufficient: each command must finish with e
 | Suite | Coverage | Data source |
 | --- | --- | --- |
 | `src/scripts/state.integration.test.js` | Loading, balances, edit/delete calculations, opening deposits, filters, planner state, browser fallback, blocked storage, ordered snapshots | Mocked API, isolated browser storage |
-| `src/scripts/ledger.integration.test.js` | Rows, count, filtered empty state, HTML escaping | Mocked API and DOM |
+| `src/scripts/ledger.integration.test.js` | Rows, count, filtered empty state, HTML escaping, search with missing or null memos | Mocked API and DOM |
 | `src/scripts/api.test.js` | Same-origin requests, JSON writes, HTTP errors, encoded categories | Stubbed fetch |
 | `server/index.test.js` | Full-state persistence across server instances; transaction, card, budget, profile and planner routes; missing IDs; invalid/corrupt state | Real HTTP and temporary JSON database |
 | `tests/ui.spec.js` | Overview/form, transaction add/reload/edit/delete, budgets, cards, planner, filtering, phone form, offline persistence, four-page navigation and browser history | Real API plus one explicit simulated-offline scenario |
 | `tests/navigation.spec.js` | Page history, card centering/cycling, account placement, keyboard/focus, seven viewport widths, phone dock behavior, full-screen forms, profile setup, reduced motion, search, export download and offline retry | Real API and isolated seeded state |
 | `tests/pages/deployment.spec.js` | Production assets under `/Vank/`, zero API calls, desktop/phone navigation, device saving and onboarding across reloads | Built Pages app with isolated browser storage |
+| `tests/search.spec.js` and `tests/pages/search.spec.js` | Case-insensitive and trimmed search, no-match recovery, combined type/category/card filters, Ledger-to-Overview navigation at 1440px and 390px | Real API and production Pages browser storage, respectively |
 
 Vitest discovers only `src/**/*.test.js` and `server/**/*.test.js`. Playwright owns `tests/**/*.spec.js`; the runners do not collect each other's tests.
 
-The normal Playwright suite excludes `tests/pages/`. Run `npm run test:pages` for those three production tests; the command builds the Pages app and starts its own preview without a backend. See [DEPLOYMENT.md](DEPLOYMENT.md) for manual preview and publication steps.
+The normal Playwright suite excludes `tests/pages/`. Run `npm run test:pages` for the production Pages tests; the command builds the Pages app and starts its own preview without a backend. See [DEPLOYMENT.md](DEPLOYMENT.md) for manual preview and publication steps.
+
+The external testing workbook's feedback and suggested responses are recorded in [FEEDBACK_RESPONSE.md](FEEDBACK_RESPONSE.md). Tests use disposable fixtures and do not require changes to the external tester's results.
 
 Browser tests run sequentially because the backend uses one test workspace. Before each test, sample state is written to the test API. The test frontend uses port **4317**, the test API uses **4318**, and the database is **`test-results/backend/db.json`**. Tests refuse to reuse an existing server, so a normal Vank session cannot be mistaken for the test environment. API tests use temporary directories and ephemeral ports.
 

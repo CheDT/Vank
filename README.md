@@ -57,6 +57,7 @@ GitHub Actions runs verification for pull requests and pushes to `main`. The sep
 - [Testing and pull request workflow](docs/TESTING.md): automated checks, manual checklist, GitHub Desktop steps, and troubleshooting.
 - [Integration review](docs/REVIEW.md): issues fixed, validation results, and the remaining release boundaries.
 - [GitHub Pages deployment](docs/DEPLOYMENT.md): browser saving, production preview, deployment setup and validation.
+- [Testing feedback response](docs/FEEDBACK_RESPONSE.md): changes following external testing and suggested workbook answers.
 
 ## Project structure
 

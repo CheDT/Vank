@@ -852,12 +852,9 @@ export class StateManager {
       }
       if (this.filter.search && this.filter.search.trim()) {
         const q = this.filter.search.toLowerCase().trim();
-        const matchesDesc = tx.description.toLowerCase().includes(q);
-        const matchesMemo = tx.memo.toLowerCase().includes(q);
-        const matchesCat = tx.category.toLowerCase().includes(q);
-        const matchesAcc = tx.account.toLowerCase().includes(q);
-        const matchesClient = tx.client && tx.client.toLowerCase().includes(q);
-        if (!matchesDesc && !matchesMemo && !matchesCat && !matchesAcc && !matchesClient) {
+        const matches = [tx.description, tx.memo, tx.category, tx.account, tx.client]
+          .some(value => String(value ?? '').toLowerCase().includes(q));
+        if (!matches) {
           return false;
         }
       }
